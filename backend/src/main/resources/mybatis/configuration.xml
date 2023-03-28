@@ -6,7 +6,7 @@
     </settings>
     
 	<typeAliases>
-		<typeAlias type="com.douzone.business.vo.BusinessVo" alias="businessVo" />
+		<typeAlias type="com.douzone.business.vo.BusinessVo" alias="businessvo" />
 	</typeAliases>
 	
 	<mappers>

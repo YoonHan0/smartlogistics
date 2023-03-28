@@ -18,4 +18,8 @@ public class BusinessRepository {
 		return sqlSession.selectList("business.findAll");
 	}
 
+	public List<BusinessVo> findAllByKeyword(BusinessVo vo) {
+		return sqlSession.selectList("business.findAllByKeyword", vo);
+	}
+
 }

@@ -17,4 +17,8 @@ public class BusinessService {
 	public List<BusinessVo> getBusinessList() {
 		return businessRepository.findAll();
 	}
+	
+	public List<BusinessVo> getBusinessListByKeyword(BusinessVo vo) {
+		return businessRepository.findAllByKeyword(vo);
+	}
 }
