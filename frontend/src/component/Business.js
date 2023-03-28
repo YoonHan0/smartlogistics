@@ -5,7 +5,10 @@ import BusinessList from './BusinessList';
 
 const Business = () => {
   console.log("시시작작");
+
+  /** fetch, 즉 list를 출력하기 위한 state */
   const [businesses, setBusinesses] = useState([{}]);
+  /** 검색을 위한 state */
   const [datas, setDatas] = useState({id: "", name: "", phone: "", inputDate: "", userNo: ""});
   
   /** 처음 실행될 때 Business List를 불러오기 위한 fetch 함수 */
@@ -35,6 +38,9 @@ const Business = () => {
     fetchBusinessList();
   }, []);
 
+  const inputClear = () => {
+    setDatas({id: "", name: "", phone: "", inputDate: "", userNo: ""});
+  }
   const textHandleChanges = (e) => {
     setDatas({[e.target.name]: e.target.value});
     // xconsole.log(datas);
@@ -42,6 +48,7 @@ const Business = () => {
     searchFormHandler(datas);
   }
 
+  /** 검색, 조회하는 Handler */
   const searchFormHandler = async function(datas) {
     // console.log(datas);
     try {
@@ -74,7 +81,7 @@ const Business = () => {
 
   return (
     <div className='businessClass'>
-        <Search textHandleChanges={textHandleChanges}/>
+        <Search textHandleChanges={textHandleChanges} clearCallback={inputClear}/>
         <BusinessList businesses={businesses}/>
     </div>
   )

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-function Search({textHandleChanges}) {
+function Search({textHandleChanges, clearCallback}) {
 
   return (
     <div>
@@ -11,7 +11,8 @@ function Search({textHandleChanges}) {
               e.target.elements.id.value = null;
               e.target.elements.name.value = null;
               e.target.elements.phone.value = null;
-
+              
+              clearCallback();
               // setDatas({id: "", name: "", phone: ""}); 
             }}>
         <input type='text' name='id' placeholder='거래처 ID' 
