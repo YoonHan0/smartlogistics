@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Search from './Search';
 import BusinessList from './BusinessList';
 
@@ -10,6 +10,7 @@ const Business = () => {
   const [businesses, setBusinesses] = useState([{}]);
   /** 검색을 위한 state */
   const [datas, setDatas] = useState({id: "", name: "", phone: "", inputDate: "", userNo: ""});
+  // const fileInputRef = useRef(null);
   
   /** 처음 실행될 때 Business List를 불러오기 위한 fetch 함수 */
   const fetchBusinessList = async () => {
@@ -41,10 +42,18 @@ const Business = () => {
   const inputClear = () => {
     setDatas({id: "", name: "", phone: "", inputDate: "", userNo: ""});
   }
-  const textHandleChanges = (e) => {
-    setDatas({[e.target.name]: e.target.value});
-    // xconsole.log(datas);
 
+  const textHandleChanges = (e) => {
+    // console.log(e.target.elements[0].name);
+    const target = e.target.elements;
+    (target[0].value == '' && target[1].value == '' && target[2].value == '') ? fetchBusinessList() : search(target)
+    
+  }
+  const search = (target) => {
+    setDatas({[target[0].name]: target[0].value,
+      [target[1].name]: target[1].value,
+      [target[2].name]: target[2].value});
+    console.log(datas);
     searchFormHandler(datas);
   }
 
@@ -81,7 +90,7 @@ const Business = () => {
 
   return (
     <div className='businessClass'>
-        <Search textHandleChanges={textHandleChanges} clearCallback={inputClear}/>
+        <Search textHandleChanges={textHandleChanges} />
         <BusinessList businesses={businesses}/>
     </div>
   )

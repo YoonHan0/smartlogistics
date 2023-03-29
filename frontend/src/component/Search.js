@@ -1,27 +1,25 @@
 import React, { useState } from 'react'
 
-function Search({textHandleChanges, clearCallback}) {
-
+function Search({textHandleChanges}) {
+  
   return (
     <div>
       <form name='searchForm' 
             onSubmit={e => {
+              
               e.preventDefault();
               // console.log(e.target.elements.value);
+              textHandleChanges(e);  // clear 하기
               e.target.elements.id.value = null;
               e.target.elements.name.value = null;
               e.target.elements.phone.value = null;
-              
-              clearCallback();
+
               // setDatas({id: "", name: "", phone: ""}); 
             }}>
-        <input type='text' name='id' placeholder='거래처 ID' 
-               onChange={e => {textHandleChanges(e)}}/>
-        <input type='text' name='name' placeholder='거래처 NAME' 
-               onChange={e => {textHandleChanges(e)}}/>
-        <input type='text' name='phone' placeholder='거래처 PHONE' 
-               onChange={e => {textHandleChanges(e)}}/>
-        <input type='submit' value='초기화' />
+        <input type='text' name='id' placeholder='거래처 ID' />
+        <input type='text' name='name' placeholder='거래처 NAME' />
+        <input type='text' name='phone' placeholder='거래처 PHONE' />
+        <input type='submit' name='submit' value='검색' />
       </form>
         
     </div>
