@@ -1,18 +1,21 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 function Search({textHandleChanges}) {
-  
+  const refForm = useRef(null);
   return (
     <div>
       <form name='searchForm' 
+            ref={refForm}
             onSubmit={e => {
               
               e.preventDefault();
               // console.log(e.target.elements.value);
               textHandleChanges(e);  // clear 하기
-              e.target.elements.id.value = null;
-              e.target.elements.name.value = null;
-              e.target.elements.phone.value = null;
+
+              // e.target.elements.id.value = null;
+              // e.target.elements.name.value = null;
+              // e.target.elements.phone.value = null;
+              refForm.current.reset();
 
               // setDatas({id: "", name: "", phone: ""}); 
             }}>
