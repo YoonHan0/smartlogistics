@@ -5,8 +5,6 @@ import AddItem from './AddItem';
 
 
 const Business = () => {
-  console.log("시시작작");
-
   /** fetch, 즉 list를 출력하기 위한 state */
   const [businesses, setBusinesses] = useState([{}]);  
   /** 검색을 위한 state */
@@ -36,14 +34,10 @@ const Business = () => {
     }
   }
   useEffect(()=>{
-    console.log("useEffect!");
     fetchBusinessList();
   }, []);
 
-  const inputClear = () => {
-    setDatas({id: "", name: "", phone: "", inputDate: "", userNo: ""});
-  }
-
+  /** 들어오는 값이 빈 값이면 모든 리스트 출력 / 아니면 검색어에 대한 결과값 출력 */
   const textHandleChanges = (e) => {
     // console.log(e.target.elements[0].name);
     const _target = e.target.elements;
