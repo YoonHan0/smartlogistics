@@ -7,7 +7,7 @@ const Business = () => {
   console.log("시시작작");
 
   /** fetch, 즉 list를 출력하기 위한 state */
-  const [businesses, setBusinesses] = useState([{}]);
+  const [businesses, setBusinesses] = useState([{}]);  
   /** 검색을 위한 state */
   const [datas, setDatas] = useState({id: "", name: "", phone: "", inputDate: "", userNo: ""});
   // const fileInputRef = useRef(null);
@@ -45,14 +45,20 @@ const Business = () => {
 
   const textHandleChanges = (e) => {
     // console.log(e.target.elements[0].name);
-    const target = e.target.elements;
-    (target[0].value == '' && target[1].value == '' && target[2].value == '') ? fetchBusinessList() : search(target)
+    const _target = e.target.elements;
+    (_target[0].value == '' && _target[1].value == '' && _target[2].value == '') ? fetchBusinessList() : search(e.target)
     
   }
-  const search = (target) => {
-    setDatas({[target[0].name]: target[0].value,
-      [target[1].name]: target[1].value,
-      [target[2].name]: target[2].value});
+  const search = (_target) => {
+    const datas = Array.from(_target, (input) => {
+      return {n: input.name, v: input.value};
+    })
+    .filter(({n}) => n !== '')
+    .reduce((res, {n, v}) => {
+        console.log(`res: ${res}, name: ${n}, value: ${v}`);
+        res[n] = v;
+        return res;
+    }, {});
     console.log(datas);
     searchFormHandler(datas);
   }
