@@ -21,4 +21,9 @@ public class BusinessService {
 	public List<BusinessVo> getBusinessListByKeyword(BusinessVo vo) {
 		return businessRepository.findAllByKeyword(vo);
 	}
+
+	public boolean addBusinessItem(BusinessVo vo) {
+		return businessRepository.insert(vo);
+		
+	}
 }

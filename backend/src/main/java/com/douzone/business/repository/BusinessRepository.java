@@ -22,4 +22,8 @@ public class BusinessRepository {
 		return sqlSession.selectList("business.findAllByKeyword", vo);
 	}
 
+	public Boolean insert(BusinessVo vo) {
+		return 1 == sqlSession.insert("business.insert", vo);
+	}
+
 }

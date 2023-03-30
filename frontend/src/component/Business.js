@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Search from './Search';
 import BusinessList from './BusinessList';
+import AddItem from './AddItem';
 
 
 const Business = () => {
@@ -94,9 +95,62 @@ const Business = () => {
     return () => {};
   }, [datas]);
 
+  const addList = async function(e) {
+    e.preventDefault();
+    console.log(e.target);
+
+    try {
+      /* input이라는 Parmeter로 e.target애 하나씩 접근 */
+      const addData = Array.from(e.target, (input) => {
+              // simple validatation of empty string
+              // if (input.value === '') {
+              //     throw `validation ${input.placeholder} is empty ''`;
+              // }
+              return {n: input.name, v: input.value};
+          })
+          .filter(({n}) => n !== '')
+          .reduce((res, {n, v}) => {
+              console.log(`res: ${res}, n: ${n}, v: ${v}`);
+              res[n] = v;
+              return res;
+          }, {});
+
+          console.log(`들어가는 데이터 확인: ${addData}`);
+          addItemHandler(addData);  // add api 날리기
+      } catch (err) {
+          console.error(err);
+      }
+  }
+
+  /** 데이터를 리스트에 추가하는 Handler */
+  const addItemHandler = async function(data) {
+    try {
+      const response = await fetch('/api/business/add', {
+          method: 'post',      // get방식
+          headers: {
+            'Content-Type': 'application/json',    
+            'Accept': 'application/json'    // application/json방식으로 받을 수 있다
+          },
+          body: JSON.stringify(data)
+      });
+      if(!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+      }
+      const json = await response.json();
+      if(json.result !== 'success') {
+          throw new Error(`${json.result} ${json.message}`)
+      }
+      
+      setBusinesses([...businesses, json.data]);
+    } catch(err) {
+        console.log(err.message);
+    }
+  }
+
   return (
     <div className='businessClass'>
         <Search textHandleChanges={textHandleChanges} />
+        <AddItem addList={addList} />
         <BusinessList businesses={businesses}/>
     </div>
   )

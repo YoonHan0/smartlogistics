@@ -19,8 +19,11 @@ function Search({textHandleChanges}) {
 
               // setDatas({id: "", name: "", phone: ""}); 
             }}>
+        <label htmlFor="id">ID</label>
         <input type='text' name='id' placeholder='거래처 ID' />
+        <label htmlFor="id">Name</label>
         <input type='text' name='name' placeholder='거래처 NAME' />
+        <label htmlFor="id">Phone</label>
         <input type='text' name='phone' placeholder='거래처 PHONE' />
         <input type='submit' name='submit' value='검색' />
       </form>

@@ -14,6 +14,8 @@ import com.douzone.business.service.BusinessService;
 import com.douzone.business.vo.BusinessVo;
 
 
+
+
 @RestController
 @RequestMapping("/api/business")
 public class BusinessController {
@@ -33,6 +35,18 @@ public class BusinessController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult
 				.success(businessService.getBusinessListByKeyword(businessVo)));
+	}
+	
+	@PostMapping("/add")
+	public ResponseEntity<JsonResult> add(@RequestBody BusinessVo businessVo) {
+		
+		businessVo.setIp("192.168.64.2");
+		businessVo.setUserNo(1L);
+		
+		System.out.println(businessVo);
+		businessService.addBusinessItem(businessVo);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(businessVo));
 	}
 
 }

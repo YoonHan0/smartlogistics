@@ -5,6 +5,7 @@
 		<![CDATA[
 			select id, name, phone, ip, date_format(input_date, '%Y-%m-%d') as inputDate, user_no
 			from business
+			ORDER BY id ASC
 		]]>
 	</select>
 	
@@ -15,4 +16,13 @@
 			WHERE id LIKE '%${id}%' AND name LIKE '%${name}%' AND phone LIKE '%${phone}%'
 		]]>
 	</select>
+	
+	<insert id="insert" parameterType="businessvo">
+		<![CDATA[
+		insert
+		  into business
+		values (#{id}, #{name }, #{phone }, #{ip }, now(), #{userNo})	
+	  	]]>
+	  		
+	</insert>
 </mapper>
