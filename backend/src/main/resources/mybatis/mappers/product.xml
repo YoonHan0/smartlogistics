@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="product">
+
+	<insert id="insert" parameterType="map">
+		<![CDATA[	
+    		INSERT INTO product 
+    		VALUES(#{vo.code}, #{vo.name}, #{vo.size}, #{vo.unit},#{log.id},#{log.ip},#{log.dt},#{log.id},#{log.ip},#{log.dt})
+		]]>
+	</insert>
+	
+	<select id="findByKeyword" resultType="productvo" parameterType="map">
+		<![CDATA[	
+			SELECT code,name,size,unit 
+			FROM product
+		]]>
+		<choose>
+			<when test='psize!=""'>
+			<![CDATA[
+				WHERE (code LIKE CONCAT('%',#{pkeywd },'%')
+				OR name LIKE CONCAT('%',#{pkeywd },'%'))
+				AND size = #{psize }
+			]]>
+			</when>
+			<otherwise>
+			<![CDATA[
+				WHERE code LIKE CONCAT('%',#{pkeywd },'%')
+				OR name LIKE CONCAT('%',#{pkeywd },'%')
+			]]>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findByCode" resultType="productvo"
+		parameterType="string">
+		<![CDATA[	
+			SELECT code,name,size,unit 
+			FROM product
+			WHERE code = #{code}
+		]]>
+	</select>
+	
+	<update id="updateByCode" parameterType="map">
+		<![CDATA[
+			UPDATE product
+			SET code=#{vo.code},name=#{vo.name},size=#{vo.size},unit=#{vo.unit},update_id=#{log.id},update_ip=#{log.ip},update_dt=#{log.dt}
+			WHERE code=#{pcode}
+		]]>
+	</update>
+
+	<delete id="deleteByCode" parameterType="java.util.List">
+		<![CDATA[
+			DELETE
+			FROM product
+			WHERE code in
+		]]>
+		<foreach item="item" collection="list" open="(" separator=","
+			close=")">
+				<![CDATA[
+					#{item}
+				]]>
+		</foreach>
+	</delete>
+	
+</mapper>

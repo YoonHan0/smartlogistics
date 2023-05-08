@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="stock">
+
+	<select id="findAll" resultType="stockvo">
+		<![CDATA[	
+			SELECT master_code AS code,
+			       master.date, 
+    		       state,
+			       product_code,
+			       p.name AS product_name, 
+			       u.name AS user_name, 
+			       b.name AS business_name, 
+			       size, 
+			       unit, 
+			       count, 
+			       COALESCE(
+			       			 LAG(tmp.ending_stock, 1) OVER (
+			       												PARTITION BY product_code 
+			       												    ORDER BY detail_no
+			       										   ),0
+			       		    ) AS beginning_stock, 
+	       		   tmp.ending_stock 
+	       	  FROM (
+	       	  			SELECT master_code,
+			                   detail_no, 
+			                   product_code,
+			  			 	   state,
+			  				   count,
+			  				   SUM(
+			  			     	   CASE WHEN state = 'IS' THEN -1 * count ELSE count END
+			  				      ) OVER (
+										    PARTITION BY product_code
+										        ORDER BY detail_no
+										    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+			  							 ) AS ending_stock
+			       		  FROM stock
+			   		  ORDER BY detail_no
+			   		) tmp
+        	  INNER JOIN (
+		         		(
+		         			SELECT code, 
+		         				   date, 
+		         				   user_id, 
+		         				   business_code
+		       				  FROM receive_master
+		       			)
+						UNION ALL
+						(
+							SELECT code, 
+								   date, 
+								   user_id, 
+								   business_code
+							  FROM release_master
+					    )
+		    		) AS master
+			   ON tmp.master_code = master.code
+			 INNER JOIN user u 
+			   ON master.user_id = u.id
+			 INNER JOIN business b
+			   ON master.business_code = b.code 
+			 INNER JOIN product p
+			   ON tmp.product_code = p.code
+			ORDER BY tmp.detail_no DESC
+			OFFSET 0 ROWS 
+			FETCH NEXT 10 ROWS ONLY
+		]]>
+	</select>
+
+	<select id="stock.getdata" parameterType="map" resultType="stockgraphvo">
+
+		<![CDATA[
+		  SELECT state, date, SUM(count)
+   			FROM (
+					SELECT state, 
+		]]>
+		<choose>
+			<when test='"year".equals(state)'>
+				<![CDATA[
+									EXTRACT(YEAR FROM m.date) AS date
+				]]>
+			</when>
+			<when test='"month".equals(state)'>
+				<![CDATA[
+					CONCAT(
+									EXTRACT(YEAR FROM m.date),
+	                                '-',
+	                                CASE 
+										WHEN EXTRACT(MONTH FROM m.date) < '10' 
+										THEN CONCAT('0',EXTRACT(MONTH FROM m.date))
+	                                ELSE EXTRACT(MONTH FROM m.date) END) AS date
+				]]>
+			</when>
+			<otherwise>
+				<![CDATA[
+							date
+				]]>			
+			</otherwise>
+		</choose>
+		<![CDATA[
+					       , count
+		              FROM stock s
+                INNER JOIN receive_master m
+			            ON s.master_code = m.code
+   			     ) A
+   			     WHERE (     
+ 			     			A.date <=#{startdate}
+   			   			AND 
+   			   				A.date >=#{enddate}
+ 			   		   )	   		   
+    		  GROUP BY A.date;
+		]]>
+	</select>
+		
+	<select id="stock.getrvdata" parameterType="string" resultType="map">
+		<![CDATA[
+			 SELECT m.date, SUM(s.count) AS count
+			   FROM stock s
+			  INNER JOIN receive_master m
+			     ON s.master_code = m.code
+			  WHERE (state='RV'
+			    AND m.date LIKE CONCAT(#{date },'%'))
+			  GROUP BY m.date
+		]]>
+	</select>
+	
+	<select id="stock.getisdata" parameterType="string" resultType="map">
+		<![CDATA[
+			 SELECT m.date, SUM(s.count) AS count
+			   FROM stock s
+			  INNER JOIN receive_master m
+			     ON s.master_code = m.code
+			  WHERE (state='IS'
+			    AND m.date LIKE CONCAT(#{date },'%'))
+			  GROUP BY m.date
+		]]>
+	</select>
+</mapper>

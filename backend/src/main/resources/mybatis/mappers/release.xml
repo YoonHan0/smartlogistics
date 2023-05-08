@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="release">
+	
+	<select id="findByKeyword" resultType="releasemastervo" parameterType="map">
+		<![CDATA[	
+			SELECT r.code, LEFT(r.date,10) AS 'date', u.name AS 'user_name', b.name AS 'business_name'
+			FROM release_master r 
+			INNER JOIN business b 
+			ON r.business_code=b.code
+			INNER JOIN user u
+			ON u.id= r.user_id
+			
+		]]>
+		<choose>
+			<when test='rdate!=""'>
+			<![CDATA[
+				WHERE (b.name LIKE CONCAT('%',#{bname },'%') 
+				AND r.code LIKE CONCAT('%',#{is_code },'%')) 
+				AND LEFT(r.date,10)=#{rdate};
+			]]>
+			</when>
+			<otherwise>
+			<![CDATA[
+				WHERE (b.name LIKE CONCAT('%',#{bname },'%') 
+				AND r.code LIKE CONCAT('%',#{is_code },'%')) 
+			]]>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findByMasterNo" resultType="releasedetailvo" parameterType="string">
+		<![CDATA[
+			SELECT r.no, r.master_code, r.product_code, p.name AS 'product_name', p.size AS 'product_size', p.unit AS 'product_unit', r.count
+			FROM release_detail r
+			INNER JOIN product p
+			ON r.product_code=p.code
+			WHERE r.master_code=#{rcode }
+		]]>
+	</select>
+	
+	<delete id="deleteMasterItem" parameterType="java.util.List">
+		<![CDATA[
+			DELETE
+			FROM release_master
+			WHERE code IN
+		]]>
+			<foreach item="item" collection="list" open="(" separator="," close=")">
+				<![CDATA[
+					#{item}
+				]]>
+			</foreach>
+	</delete>
+	
+	<delete id="deleteDetailByMasterNo" parameterType="java.util.List">
+		<![CDATA[
+			DELETE
+			FROM release_detail
+			WHERE master_code IN
+		]]>
+			<foreach item="item" collection="list" open="(" separator="," close=")">
+				<![CDATA[
+					#{item}
+				]]>
+			</foreach>
+	</delete>
+	
+	<delete id="deleteDetailItem" parameterType="java.util.List">
+		<![CDATA[
+			DELETE
+			FROM release_detail
+			WHERE no IN
+		]]>
+			<foreach item="item" collection="list" open="(" separator="," close=")">
+				<![CDATA[
+					#{item}
+				]]>
+			</foreach>
+	</delete>
+	
+	<delete id="deleteMasterByDetailNo" parameterType="string">
+		<![CDATA[
+			DELETE
+			FROM release_master
+			WHERE code=#{masterCode}
+		]]>
+	</delete>
+	
+</mapper>

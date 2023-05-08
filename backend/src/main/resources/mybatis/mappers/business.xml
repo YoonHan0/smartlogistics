@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="business">
+
+	<select id="findAll" resultType="businessvo">
+		<![CDATA[
+			SELECT code, name, phone, insert_ip, date_format(insert_dt, '%Y-%m-%d') AS insertDate
+			FROM business
+		]]>
+	</select>
+	
+	<select id="findAllByKeyword" parameterType="map" resultType="businessvo">
+		<![CDATA[	
+			SELECT code, name, phone
+			FROM business
+		]]>
+		<choose>
+			<when test='vo.phone!=""'>
+			<![CDATA[
+				WHERE (code LIKE CONCAT('%',#{vo.code },'%')
+				OR name LIKE CONCAT('%',#{vo.code },'%'))
+				AND phone LIKE CONCAT('%',#{vo.phone },'%')
+			]]>
+			</when>
+			<otherwise>
+				<![CDATA[
+					WHERE code LIKE CONCAT('%',#{vo.code },'%')
+					OR name LIKE CONCAT('%',#{vo.code },'%')
+				]]>
+			</otherwise>
+		</choose>
+		<![CDATA[
+			ORDER BY code DESC
+		]]>	
+		<if test='limit > 0'>
+		<![CDATA[
+		LIMIT #{offset}, #{limit}
+		]]>	
+		</if>
+	</select>
+	
+	<insert id="insert" parameterType="map">
+		<![CDATA[
+			INSERT INTO business
+			VALUES (#{vo.code}, #{vo.name }, #{vo.phone }, #{log.id }, #{log.ip}, #{log.dt}, #{log.id }, #{log.ip}, #{log.dt})	
+	  	]]>	  		
+	</insert>
+	
+	<select id="findByCode" resultType="businessvo" parameterType="string">
+		<![CDATA[	
+			SELECT code, name, phone 
+			FROM business
+			WHERE code = #{code}
+		]]>
+	</select>
+	
+	<update id="updateByCode" parameterType="map">
+		<![CDATA[	
+			UPDATE business 
+			SET code=#{vo.code}, name=#{vo.name}, phone=#{vo.phone}, update_id=#{log.id}, update_ip=#{log.ip}, update_dt=#{log.dt}
+			WHERE code=#{bcode}
+		]]>
+	</update>
+	
+	<delete id="delete" parameterType="java.util.List">
+		<![CDATA[
+			DELETE
+			FROM business
+			WHERE code IN
+		]]>
+			<foreach item="item" collection="list" open="(" separator="," close=")">
+				<![CDATA[
+					#{item}
+				]]>
+			</foreach>
+	</delete>
+	
+</mapper>
