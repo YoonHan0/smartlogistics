@@ -37,9 +37,8 @@ public class ReleaseService {
 		System.out.println("선택된 detail no값: " + detailNo.size());
 		System.out.println(detailNo.size() == length);
 		boolean isDeleteDetailSuccess = releaseRepository.deleteDetailItem(detailNo);
-		boolean isDeleteMasterSuccess = releaseRepository.deleteMasterByDetailNo(masterCode);
 		
-		return (detailNo.size() == length) ? (isDeleteDetailSuccess && isDeleteMasterSuccess) : releaseRepository.deleteDetailItem(detailNo);
+		return (detailNo.size() == length) ? (isDeleteDetailSuccess && releaseRepository.deleteMasterByDetailNo(masterCode)) : releaseRepository.deleteDetailItem(detailNo);
 	}
 	
 }

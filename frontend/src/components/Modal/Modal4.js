@@ -28,7 +28,6 @@ const Modal4 = ({ open, onClose }) => {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [checkedRow, setCheckedRow] = useState([{master: "", state:"f",detail: [{no:"",state:"f"}]}]);
-  const [outcheckedRow, setOutcheckedRow] = useState([{master: "", state:"f",detail: [{no:"",state:"f"}]}]);
   const rowColor = useRef();
   // useEffect(() => {
   //   console.log("==== row ==== ");
@@ -40,14 +39,13 @@ const Modal4 = ({ open, onClose }) => {
   console.log(checkedRow);
 
 
-
-  
-
   const [releaseMaster, setreleaseMaster] = useState([]);
   // releaseDetail
   const [releaseDetail, setreleaseDetail] = useState([{}]);
   // const [checkItems, setCheckItems] = useState([]);
   const[data,setData] = useState([]);
+
+  
   useEffect(() => {
     console.log("======8888 =====");
     console.log(data);
@@ -88,9 +86,10 @@ const Modal4 = ({ open, onClose }) => {
     let remainedData = data.filter((item, i) => !item.checked);
     setData(remainedData);
   }
-  chulgoItemOnChangeCheck
+ 
+
   // 출고 체크 박스 선택
-  const chulgoItemOnChangeCheck = (no) => {
+  const chulgoItemOnChangeCheck = (no) => { // [1, 2]
     //console.log('no', no);
     let changedData = data.map((item, index) => {
       if (item.no === no) {
@@ -101,6 +100,7 @@ const Modal4 = ({ open, onClose }) => {
     //console.log('changedData', changedData);
     setData(changedData);
   }
+
 
   // ReceiveMaster
   const [modal4receiveMaster, setreceiveMaster] = useState([]);
@@ -222,7 +222,7 @@ const Modal4 = ({ open, onClose }) => {
               data={data}
               deleteChulgo={deleteChulgo}
               chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}
-              
+              newData={newData}
             />
           </Grid>
           </Box>

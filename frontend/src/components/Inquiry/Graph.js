@@ -5,7 +5,7 @@ import DayGraph from './DayGraph';
 import MonthGraph from './MonthGraph';
 import YearGraph from './YearGraph';
 
-const Graph = ({graph, setGraph, showGraph }) => {
+const Graph = ({graph, setGraph, showGraph,data,setData }) => {
   const handleClickDay =(e) => {
     setGraph((graph) => 'day');
     showGraph();
@@ -64,12 +64,12 @@ const Graph = ({graph, setGraph, showGraph }) => {
         </Box>
         {
           graph === 'day' ?
-            <DayGraph />
+            <DayGraph data={data} setData={setData}/>
             :
             graph === 'month' ?
-              <MonthGraph />
+              <MonthGraph data={data} setData={setData} />
               :
-              <YearGraph />
+              <YearGraph data={data} setData={setData} />
         }
     </Box>
     </Grid >

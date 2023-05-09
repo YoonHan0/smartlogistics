@@ -22,8 +22,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import SearchIcon from "@mui/icons-material/Search";
-import DeleteMasterModal from "../Modal/DeleteMasterModal";
-import NullModal from "../Modal/NullModal";
+import { format } from 'date-fns';
 
 /** 테이블 Header 고정을 위한 styled component 사용 */
 // top의 px값은 첫 행의 높이와 같게
@@ -40,12 +39,31 @@ const ReceiveMaster = ({
     setCheckedRow,
     rowColor,
     toggleModal,
-    deleteMasterHandler,
+    openNullModal,
     openDeleteModalInMaster,
-    setOpenDeleteModalInMaster
+    openManager,
+    openBusiness,
+    nullChkHandler,
+    inputMaster,
+    setInputMaster,
+    masterStateT
 }) => {
-  const [openNullModal, setOpenNullModal] = useState(false);  // 삭제할 것인지 확인하는 모달창
-  const masterStateT = checkedRow.filter(row => row.state === 't').map(row => row.master);
+
+  useEffect(() => {
+    nullChkHandler(inputMaster);
+    return () => {};
+  }, [inputMaster]);
+
+  const onChangeHandler = (e) => {
+    console.log(e.target);
+    const { value, name } = e.target;
+    setInputMaster((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAccept = (date) => {
+    setInputMaster({ ...inputMaster, date: format(date.$d, 'yyyy-MM-dd') });
+  };
+
   /** 모두 선택해주는 체크박스 (All Master) */
   const masterAllCheckBox = (checked) => {
     const updatedCheckedRow = checkedRow.map(row => {
@@ -116,7 +134,7 @@ const ReceiveMaster = ({
             marginLeft: "auto",
           }}
           onClick={() => {
-            masterStateT.length !== 0 ? toggleModal(openDeleteModalInMaster, setOpenDeleteModalInMaster) : toggleModal(openNullModal, setOpenNullModal)
+            masterStateT.length !== 0 ? toggleModal(openDeleteModalInMaster, 'deleteMaster') : toggleModal(openNullModal, 'null')
           }}
         />
       </Box>
@@ -136,7 +154,6 @@ const ReceiveMaster = ({
               paddingTop: 0,
               boxShadow: "none",
               height: 300,
-              // marginLeft: "40px",
             }}
             // onScroll={handleScroll}
           >
@@ -200,7 +217,6 @@ const ReceiveMaster = ({
                         }}
                       >
                         <DatePicker
-                          disablePast
                           format="YYYY-MM-DD"
                           slotProps={{
                             textField: { size: "small" },
@@ -216,6 +232,8 @@ const ReceiveMaster = ({
                                 width: 150,
                               },
                           }}
+                          onAccept={handleAccept}
+                          renderInput={(params) => <TextField {...params} />}
                         ></DatePicker>
                       </DemoContainer>
                     </LocalizationProvider>
@@ -234,6 +252,7 @@ const ReceiveMaster = ({
                       }}
                     >
                       <input
+                        readOnly
                         type="text"
                         style={{
                           marginLeft: "1px",
@@ -241,9 +260,16 @@ const ReceiveMaster = ({
                           height: "27px",
                           border: 0,
                         }}
+                        name="userName"
+                        placeholder="담당자명"
+                        value={inputMaster.userName}
+                        onChange={onChangeHandler}
                       />
                       <SearchIcon
                         sx={{ marginLeft: "auto", marginTop: "3px" }}
+                        onClick={()=> {
+                          toggleModal(openManager, 'manager');
+                        }}
                       />
                     </Box>
                   </TableStickyTypeCell>
@@ -268,9 +294,16 @@ const ReceiveMaster = ({
                           height: "27px",
                           border: 0,
                         }}
+                        name="businessName"
+                        placeholder="거래처명"
+                        value={inputMaster.businessName}
+                        onChange={onChangeHandler}
                       />
                       <SearchIcon
                         sx={{ marginLeft: "auto", marginTop: "3px" }}
+                        onClick={() => {
+                          toggleModal(openBusiness, 'business');
+                        }}
                       />
                     </Box>
                   </TableStickyTypeCell>
@@ -290,7 +323,6 @@ const ReceiveMaster = ({
                       businessname={master.businessName}
                       releaseDetail={releaseDetail}
                       checkedRow={checkedRow}
-                      setCheckedRow={setCheckedRow}
                       masterStateUpdate={masterStateUpdate}
                       rowColor={rowColor}
                     />
@@ -307,19 +339,6 @@ const ReceiveMaster = ({
           </TableContainer>
         </FormControl>
       </Box>
-      <DeleteMasterModal 
-        open={openDeleteModalInMaster}
-        onClose={() => setOpenDeleteModalInMaster(false)}
-        checkedRow={checkedRow}
-        deleteMasterHandler={deleteMasterHandler}
-        data={masterStateT}
-      />
-      <NullModal
-        open={openNullModal}
-        onClose={() => setOpenNullModal(false)}
-      />
-
-        
     </Grid>
   );
 };

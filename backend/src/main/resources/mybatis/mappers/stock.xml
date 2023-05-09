@@ -66,49 +66,66 @@
 			FETCH NEXT 10 ROWS ONLY
 		]]>
 	</select>
-
-	<select id="stock.getdata" parameterType="map" resultType="stockgraphvo">
-
-		<![CDATA[
-		  SELECT state, date, SUM(count)
-   			FROM (
-					SELECT state, 
-		]]>
-		<choose>
+<select id="stock.getdata2" parameterType="map" resultType="String">
+<choose>
 			<when test='"year".equals(state)'>
 				<![CDATA[
-									EXTRACT(YEAR FROM m.date) AS date
+						select #{state},#{startdate}, #{enddate} from dual
 				]]>
 			</when>
 			<when test='"month".equals(state)'>
 				<![CDATA[
-					CONCAT(
-									EXTRACT(YEAR FROM m.date),
-	                                '-',
-	                                CASE 
-										WHEN EXTRACT(MONTH FROM m.date) < '10' 
-										THEN CONCAT('0',EXTRACT(MONTH FROM m.date))
-	                                ELSE EXTRACT(MONTH FROM m.date) END) AS date
+					select #{state},#{startdate}, #{enddate} from dual
 				]]>
 			</when>
 			<otherwise>
 				<![CDATA[
-							date
+					select #{enddate} from dual
+				]]>			
+			</otherwise>
+		</choose>
+</select>
+	<select id="stock.getdata" parameterType="map" resultType="stockgraphvo">
+
+		<![CDATA[
+		  SELECT state, date, SUM(count) AS count
+   			FROM (
+		]]>
+		<choose>
+			<when test='"year".equals(state)'>
+				<![CDATA[
+					SELECT state, EXTRACT(YEAR FROM m.date) AS date, count
+				]]>
+			</when>
+			<when test='"month".equals(state)'>
+				<![CDATA[
+					SELECT state, CONCAT(
+										EXTRACT(YEAR FROM m.date),
+		                                '-',
+		                                CASE 
+											WHEN EXTRACT(MONTH FROM m.date) < '10' 
+											THEN CONCAT('0',EXTRACT(MONTH FROM m.date))
+		                                ELSE EXTRACT(MONTH FROM m.date) END) AS date, count
+				]]>
+			</when>
+			<otherwise>
+				<![CDATA[
+					SELECT state, date, count
 				]]>			
 			</otherwise>
 		</choose>
 		<![CDATA[
-					       , count
+
 		              FROM stock s
                 INNER JOIN receive_master m
 			            ON s.master_code = m.code
    			     ) A
    			     WHERE (     
- 			     			A.date <=#{startdate}
+ 			     			A.date <= '2023-05-08'
    			   			AND 
-   			   				A.date >=#{enddate}
+   			   				A.date >= '2023-05-01'
  			   		   )	   		   
-    		  GROUP BY A.date;
+    		  GROUP BY A.date
 		]]>
 	</select>
 		

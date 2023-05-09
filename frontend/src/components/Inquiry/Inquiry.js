@@ -7,7 +7,7 @@ const inquiry = () => {
   const [state, setState] = useState(true);
   const [list, setList] = useState([]);
   const [graph, setGraph] = useState('day');
-
+  const [data, setData] = useState([]);
   const findList = async () => {
     try {
       const response = await fetch("/api/inquiry/list", {
@@ -82,6 +82,7 @@ const inquiry = () => {
         throw new Error(`${json.result} ${json.message}`);
       }
       console.log(json.data);
+      setData((data) => json.data);
     } catch (err) {
       console.log(err.message);
     }
@@ -98,7 +99,19 @@ const inquiry = () => {
             state={state} 
             setState={setState} />
           {
-            state ? <List list={list} findList={findList} /> : <Graph graph={graph} setGraph={setGraph} showGraph={showGraph}/>
+            state 
+            ? 
+            <List 
+              list={list} 
+              findList={findList} /> 
+              : 
+            <Graph 
+              graph={graph} 
+              setGraph={setGraph} 
+              showGraph={showGraph}
+              data={data}
+              setData={setData}
+              />
           }
         </Grid>
       </Grid>

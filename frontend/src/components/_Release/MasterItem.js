@@ -9,7 +9,6 @@ const MasterItem = ({
   businessname,
   releaseDetail,
   checkedRow,
-  setCheckedRow,
   masterStateUpdate,
   rowColor
 }) => {

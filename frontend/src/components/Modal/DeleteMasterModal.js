@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 
 
-const DeleteMasterModal = ({ open, onClose, checkedRow, deleteMasterHandler, data }) => {
+const DeleteMasterModal = ({ open, onClose, deleteMasterHandler, data }) => {
 
 
   return (

@@ -1,5 +1,5 @@
-import { Box, Checkbox, TableCell, TableRow } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Checkbox, TableCell, TableRow, checkboxClasses } from "@mui/material";
+import React, { useEffect, useState, useRef } from "react";
 import Modal4Outlist from "./Modal4Outlist";
 import Modal4DetailItem from "./Modal4DetailItem";
 const Modal4OutItem = ({
@@ -15,8 +15,11 @@ const Modal4OutItem = ({
   selectedData,
   checked,
   chulgoItemOnChangeCheck,
-}) => {
+  changeHandler,
+  checkedButtons,
   
+}) => {
+  console.log(checked)
   console.log(pcode, pname, stockcnt);
   const [isOpen, setIsOpen] = useState(true);
   const handleClose = () => {
@@ -27,6 +30,13 @@ const Modal4OutItem = ({
     onSave && onSave(); // 저장 이벤트 전달
     handleClose();
   };
+  const checkboxRef = useRef(null)
+
+  useEffect(() => {
+
+    checked === true ? checkboxRef.current.checked = true : null;
+
+  }, [checked]);
   return (
     <TableRow
       key={no}
@@ -44,8 +54,9 @@ const Modal4OutItem = ({
      //    Modal4Outlist(pcode || "");
      // }}
     >
+      {/* {chulgoItemOnChangeCheck(no); */}
       <TableCell align="center">
-        <Checkbox size="small"  onChange={(e) => {chulgoItemOnChangeCheck(no)}} checked={checked}/>
+      <Checkbox size="small" id = "test" name = "test" onChange={(e) => {chulgoItemOnChangeCheck(no); changeHandler(e.currentTarget.checked, no);}}  checked={checkedButtons.includes(no) ? true : false} ref = {checkboxRef}/>
       </TableCell>
       <TableCell>{mcode}</TableCell>
       <TableCell>{pcode}</TableCell>

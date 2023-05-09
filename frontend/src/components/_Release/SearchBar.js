@@ -1,5 +1,5 @@
 import { Button, FormControl, TextField, Box, Grid } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
@@ -7,13 +7,21 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { format } from 'date-fns';
 
 const SerchBar = ({ callback }) => {
   const [searchKw, setSearchKw] = useState({ rcode: "", bname: "", rdate: "" });
+  const [searchChk, setSearchChk] = useState();
+  const refForm = useRef(null);
 
   const changeHandler = (e) => {
     const { value, name } = e.target;
     setSearchKw((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAccept = (date) => {
+    setSearchKw({ ...searchKw, rdate: format(date.$d, 'yyyy-MM-dd') });
+    setSearchChk(true);
   };
 
   useEffect(() => {
@@ -76,9 +84,21 @@ const SerchBar = ({ callback }) => {
 
       <FormControl
         component="form"
+        ref={refForm}
         onSubmit={(e) => {
           e.preventDefault();
-          callback(searchKw);
+          if (searchKw.rdate !== '') {
+            setSearchChk(true);
+          } else {
+            setSearchChk(false);
+            // alert("날짜는 필수값입니다!");
+          }
+          if (searchChk) {
+            callback(searchKw);
+            setSearchChk();
+            refForm.current.reset();
+            setSearchKw({ rcode: '', bname: '', rdate: '' });
+          }
         }}
         sx={{
           display: "flex",
@@ -102,6 +122,7 @@ const SerchBar = ({ callback }) => {
             size="small"
             sx={{ paddingLeft: 2, paddingRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
+            value={searchKw.rcode}
           />
           <label sx={{ fontSize: "0.5rem" }}>거래처</label>
           <TextField
@@ -111,6 +132,7 @@ const SerchBar = ({ callback }) => {
             size="small"
             sx={{ paddingLeft: 2, paddingRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
+            value={searchKw.bname}
           />
           <label sx={{ fontSize: "0.5rem" }}>날짜</label>
           <LocalizationProvider
@@ -140,7 +162,12 @@ const SerchBar = ({ callback }) => {
                     height: 30,
                     width: 150,
                   },
+                  '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
+                    border: searchChk === false || null ? '1px solid red' : null,
+                  },
                 }}
+                value={searchKw.rdate || null}
+                onAccept={handleAccept}
               ></DatePicker>
             </DemoContainer>
           </LocalizationProvider>

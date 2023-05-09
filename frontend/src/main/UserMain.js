@@ -8,10 +8,25 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Donut from "../components/chart/Donut";
+import { customFetch } from "../components/custom/customFetch";
 
 const UserMain = () => {
+  const [receive, setReceive] = useState({});
+
+  const getReceiveData = async () => {
+    await customFetch("/api/donut/receive", { method: "get" }).then((json) => {
+      setReceive(json.data);
+      console.log(json.data);
+    });
+  };
+
+  useEffect(() => {
+    getReceiveData();
+    return () => {};
+  }, []);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid
@@ -126,15 +141,17 @@ const UserMain = () => {
             </Typography>
             <Box sx={{ display: "flex" }}>
               <Box sx={{ alignSelf: "center" }}>
-                <Box>오늘 내 입고 : {10}</Box>
+                <Box>전체 입고 수 : {receive.all}</Box>
                 <br />
-                <Box>가장 최근 입고 : {"2023-04-26"}</Box>
+                <Box>오늘 내 입고 : {receive.my}</Box>
+                <br />
+                <Box>가장 최근 입고 : {receive.code}</Box>
               </Box>
               <Donut
                 {...{
-                  labels: ["my", "all"],
-                  label: "오늘 총 입고",
-                  data: [10, 90],
+                  labels: ["my", "other"],
+                  label: "오늘 입고",
+                  data: [receive.my, receive.todayall - receive.my],
                 }}
               />
             </Box>

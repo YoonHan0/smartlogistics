@@ -26,6 +26,7 @@
 		<mapper resource="mybatis/mappers/receive.xml" />
 		<mapper resource="mybatis/mappers/release.xml" />
 		<mapper resource="mybatis/mappers/stock.xml" />
+		<mapper resource="mybatis/mappers/donut.xml" />
 		
 	</mappers>
 </configuration>
