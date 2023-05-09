@@ -48,7 +48,7 @@ public class StockController {
 	public ResponseEntity<JsonResult> graph(
 			@RequestParam(value="state", required = true, defaultValue="") String state) throws Exception {	
 		
-		System.out.println("state : "+ state+"/");
+		System.out.println("state : "+ state);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(stockService.getGraphData(state)));

@@ -29,11 +29,22 @@ const TableStickyTypeCell = styled(TableCell)`
   }
 `;
 
-const ReceiveDetail = ({ details, toggleModal, openProduct, masterCode, updateReceiveCnt, checkedRow, setCheckedRow }) => {
+const ReceiveDetail = ({
+  details,
+  toggleModal,
+  openProduct,
+  masterCode,
+  updateReceiveCnt,
+  checkedRow,
+  setCheckedRow,
+  filteredDetails,
+  openDeleteModalInDetail,
+  openNullModal,
+}) => {
   /** 모두 선택해주는 체크박스 (detail header부분의 체크박스) */
   const detailAllCheckBox = (checked) => {
     const updatedCheckedRow = checkedRow.map((row) => {
-      if (row.master === details[0].masterCode) {
+      if (row.master === masterCode) {
         const updatedDetail = row.detail.map((detail) => {
           return { ...detail, state: checked ? 't' : 'f' };
         });
@@ -94,6 +105,12 @@ const ReceiveDetail = ({ details, toggleModal, openProduct, masterCode, updateRe
             cursor: 'pointer',
             marginLeft: 'auto',
           }}
+          onClick={() => {
+            console.log(filteredDetails.length);
+            filteredDetails.length > 0
+              ? toggleModal(openDeleteModalInDetail, 'deleteDetail')
+              : toggleModal(openNullModal, 'null');
+          }}
         />
       </Box>
       <Box
@@ -134,14 +151,12 @@ const ReceiveDetail = ({ details, toggleModal, openProduct, masterCode, updateRe
                       checked={
                         details.length ===
                           (filteredRows[0] !== undefined && filteredRows[0].detail.filter((el) => el.state === 't').length) ||
-                        checkedRow.some((row) => row.master === details?.[0]?.masterCode && row.state === 't')
+                        checkedRow.some((row) => row.master === masterCode && row.state === 't')
                       }
                       disabled={
                         checkedRow.filter(
                           (row) =>
-                            row.master === details?.[0]?.masterCode &&
-                            row.state === 't' &&
-                            !row.detail.every((item) => item.state === 't')
+                            row.master === masterCode && row.state === 't' && !row.detail.every((item) => item.state === 't')
                         ).length > 0
                           ? true
                           : false

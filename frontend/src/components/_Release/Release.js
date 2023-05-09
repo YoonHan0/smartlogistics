@@ -3,21 +3,71 @@ import SearchBar from "./SearchBar";
 import { Box, Grid } from "@mui/material";
 import ReleaseMaster from "./ReleaseMaster";
 import ReleaseDetail from "./ReleaseDetail";
-import update from "react-addons-update";
+import ManagerModal from '../Modal/ManagerModal';
+import ProductsModal from '../Modal/ProductsModal';
+import BusinessModal from '../Modal/BusinessModal';
+import DeleteMasterModal from "../Modal/DeleteMasterModal";
+import DeleteDetailModal from "../Modal/DeleteDetailModal";
+import NullModal from "../Modal/NullModal";
 
 const Release = () => {
-  // ReleaseMaster
-  const [releaseMaster, setreleaseMaster] = useState([]);
-  // releaseDetail
-  const [releaseDetail, setreleaseDetail] = useState([{}]);
-  // 체크박스를 다루기 위한 state
-  const [checkedRow, setCheckedRow] = useState([{master: "", state:"f",detail: [{no:"",state:"f"}]}]);
-  const [openDeleteModalInMaster, setOpenDeleteModalInMaster] = useState(false);  // 삭제할 것인지 확인하는 모달창
-  const [openDeleteModalInDetail, setOpenDeleteModalInDetail] = useState(false);  // 삭제할 것인지 확인하는 모달창
-  const rowColor = useRef();
+  /* 화면에 랜더링되는 state */
+  const [releaseMaster, setreleaseMaster] = useState([]); // ReleaseMaster
+  const [releaseDetail, setreleaseDetail] = useState([{}]); // releaseDetail
 
-  const toggleModal = (open, _setOpen) =>
-    open ? _setOpen(false) : _setOpen(true);
+  /* Master Code */
+  const [masterCode, setMasterCode] = useState();
+  /* 체크박스를 다루기 위한 state */
+  const [checkedRow, setCheckedRow] = useState([{master: "", state:"f",detail: [{no:"",state:"f"}]}]);
+
+  /* Modal */
+  const [openDeleteModalInMaster, setOpenDeleteModalInMaster] = useState(false);  // 삭제할 것인지 확인하는 모달창(Master)
+  const [openDeleteModalInDetail, setOpenDeleteModalInDetail] = useState(false);  // 삭제할 것인지 확인하는 모달창(Detail)
+  const [openNullModal, setOpenNullModal] = useState(false);  // 삭제할 것인지 확인하는 모달창(체크된 데이터가 없을 때 띄어주는 모달창)
+
+  const [openManager, setOpenManager] = useState(false);
+  const [openBusiness, setOpenBusiness] = useState(false);
+  const [openProduct, setOpenProduct] = useState(false);    // 나중에 철환이형 Modal 사용하면 됨
+
+  // ReleaseMaster data(date,business,manager)
+  const [inputMaster, setInputMaster] = useState({
+    date: '',
+    businessCode: '',
+    businessName: '',
+    userId: '',
+    userName: '',
+  });
+
+  const rowColor = useRef();  // Master 행 클릭 시 background 색상 변경 Ref
+  const masterStateT = checkedRow.filter(row => row.state === 't').map(row => row.master);
+
+  // checkedRow에 detail 프로퍼티가 없어서 에러가 계속 발생 -> filter로 detail 프로퍼티가 존재하는지 먼저 거르고 시작
+  const filteredRow = checkedRow.filter(row => row.detail !== undefined);
+  const filteredDetails = filteredRow
+    .filter(row => row.master === releaseDetail[0].masterCode,) // master 코드가 같은 것 / flatMap: 배열 내 요소들을 변환하고, 각 변환된 배열 요소를 하나의 배열로 합치는 함수
+    .flatMap(row => row.detail.filter(detail => detail.state === 't' && detail.no !== ''))
+    .map(detail => detail.no);
+
+  const deleteObj = {
+      no: filteredDetails,    // checkedRow의 detail 프로퍼티에서 state값이 "t"인 데이터의 no값
+      masterCode: releaseDetail[0].masterCode,  // 화면에 표시되는 detail List들의 공통된 master code값
+      length: releaseDetail.length  // 화면에 표시되는 detail List들의 길이
+  }
+  const toggleModal = (open, modal) => {
+    if (modal === 'manager') {
+      open ? setOpenManager(false) : setOpenManager(true);
+    } else if (modal === 'product') {
+      open ? setOpenProduct(false) : setOpenProduct(true);
+    } else if (modal === 'business') {
+      open ? setOpenBusiness(false) : setOpenBusiness(true);
+    } else if(modal === 'deleteMaster') {
+      open ? setOpenDeleteModalInMaster(false) : setOpenDeleteModalInMaster(true);
+    } else if(modal === 'deleteDetail') {
+      open ? setOpenDeleteModalInDetail(false) : setOpenDeleteModalInDetail(true);
+    } else if(modal === 'null') {
+      open ? setOpenNullModal(false) : setOpenNullModal(true);
+    }
+  }
 
   useEffect(() => {
     releaseMasterSearch(null);
@@ -29,6 +79,45 @@ const Release = () => {
     console.log("==== row ==== ");
     console.log(checkedRow);
   }, [checkedRow])
+
+  const handleButtonClick = (key, data) => {
+    if (key === 'product') {
+      setOpenProduct(false);
+    } else if (key === 'manager') {
+      setInputMaster({
+        ...inputMaster,
+        userId: data.userId,
+        userName: data.userName,
+      });
+      setOpenManager(false);
+    } else if (key === 'business') {
+      setInputMaster({
+        ...inputMaster,
+        businessCode: data.businessCode,
+        businessName: data.businessName,
+      });
+      setOpenBusiness(false);
+    }
+  };
+
+  // releaseMater nullchk
+  const nullChkHandler = (inputMaster) => {
+    // 아래의 값이 모두 있을경우
+    if (
+      inputMaster.date !== '' &&
+      inputMaster.businessCode !== '' &&
+      inputMaster.businessName !== '' &&
+      inputMaster.userId !== '' &&
+      inputMaster.userName !== ''
+    ) {
+      setInputMaster(inputMaster);
+      // 새로운 product를 추가 하기 전에 reset
+      setreleaseDetail([{}]);
+      setMasterCode('');
+      // productModal open
+      // toggleModal(openProduct, 'product');
+    }
+  };
 
   // ============================ release Master검색 ============================ 
   const releaseMasterSearch = async (searchKw) => {
@@ -64,6 +153,8 @@ const Release = () => {
 
   // ============================ release Detail ============================
   const releaseDetailSearch = async (code) => {
+    //선택한 출고의 출고번호 저장
+    setMasterCode(code);
     try {
       const response = await fetch(`/api/release/detail?ic=${code}`, {
         method: "get",
@@ -128,7 +219,6 @@ const Release = () => {
 
   // ============================ Delete Handler ============================
   const deleteDetailHandler = async (detail) => {   // detail: {no: [], masterCode: "", length: } / no: state가 "t"인 no값들, length: 화면에 보이는 detail의 length
-    console.log("디테일 화긴", detail);
     try {
       const response = await fetch(`/api/release/deleteDetail?no=${detail.no}&masterCode=${detail.masterCode}&length=${detail.length}`, {
         method: "get",
@@ -148,14 +238,8 @@ const Release = () => {
       }
 
       setOpenDeleteModalInDetail(false);  // 모달창 제거
-      if(detail.no.length === detail.length) {
-        setreleaseDetail([{}]);
-        releaseMasterSearch(null);
-      } else {
-        setCheckedRow(updatedCheckedRow(detail));
-        setreleaseDetail(releaseDetail.filter(d => !detail.no.includes(d.no)));
-
-      }
+      detail.no.length === detail.length ? (setreleaseDetail([{}]), releaseMasterSearch(null)) : (setCheckedRow(updatedCheckedRow(detail)), setreleaseDetail(releaseDetail.filter(d => !detail.no.includes(d.no))));
+      
     } catch (err) {
       console.log(err);
     }
@@ -166,7 +250,6 @@ const Release = () => {
     const { master } = row;   // row(하나의 객체)에 있는 master 프로퍼티 값을 사용한다
     const matchingData = data.filter((d) => d.masterCode === master);
     const existingDetail = row.detail || []; // 기존의 detail 값이 없으면 빈 배열로 초기화
-    console.log("기존의 detail", existingDetail);
     const existingNoArray = existingDetail.map((d) => d.no); // 기존의 no 값 배열 추출
     const matchingNoArray = matchingData.map((d) => d.no); // 매칭된 no 값 배열 추출
     const newNoArray = matchingNoArray.filter((no) => !existingNoArray.includes(no)); // 기존에 없는 no 값만 추출
@@ -178,12 +261,6 @@ const Release = () => {
     };
   });
 
-  // /** 삭제할 no(배열)을 파라미터로 받아서 checkedRow state에서 해당 no 값들을 제거 */
-  // const updatedCheckedRow = (nno) => checkedRow.map((row) => ({
-  //   ...row,
-  //   detail: row.detail.filter((detail) => !nno.includes(detail.no))
-  // }));
-
   const updatedCheckedRow = (deleteData) => checkedRow.map(row => {
     if (row.master === deleteData.masterCode) {
       const updatedDetail = row.detail.filter(detail => !deleteData.no.includes(detail.no));
@@ -194,6 +271,12 @@ const Release = () => {
 
   return (
     <Box>
+      <ManagerModal open={openManager} onClose={() => setOpenManager(false)} handleButtonClick={handleButtonClick} />
+      <BusinessModal open={openBusiness} onClose={() => setOpenBusiness(false)} handleButtonClick={handleButtonClick} />
+      <DeleteMasterModal open={openDeleteModalInMaster} onClose={() => setOpenDeleteModalInMaster(false)} deleteMasterHandler={deleteMasterHandler} data={masterStateT}/>
+      <DeleteDetailModal open={openDeleteModalInDetail} onClose={() => setOpenDeleteModalInDetail(false)} deleteDetailHandler={deleteDetailHandler} data={deleteObj} />
+      <NullModal open={openNullModal} onClose={() => setOpenNullModal(false)} />
+
       <Grid container spacing={2} style={{ marginLeft: "0px" }}>
         <SearchBar callback={releaseMasterSearch} />
         <ReleaseMaster
@@ -203,18 +286,24 @@ const Release = () => {
           setCheckedRow={setCheckedRow}
           rowColor={rowColor}
           toggleModal={toggleModal}
-          deleteMasterHandler={deleteMasterHandler}
+          openNullModal={openNullModal}
           openDeleteModalInMaster={openDeleteModalInMaster}
-          setOpenDeleteModalInMaster={setOpenDeleteModalInMaster}
+          openManager={openManager}
+          openBusiness={openBusiness}
+          nullChkHandler={nullChkHandler}
+          inputMaster={inputMaster}
+          setInputMaster={setInputMaster}
+          masterStateT={masterStateT}
         />
         <ReleaseDetail 
           details={releaseDetail}
           checkedRow={checkedRow}
           setCheckedRow={setCheckedRow}
+          masterCode={masterCode}
           toggleModal={toggleModal}
-          deleteDetailHandler={deleteDetailHandler}
+          openNullModal={openNullModal}
+          filteredDetails={filteredDetails}
           openDeleteModalInDetail={openDeleteModalInDetail}
-          setOpenDeleteModalInDetail={setOpenDeleteModalInDetail}
         />
       </Grid>
     </Box>

@@ -7,6 +7,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateRangePicker } from '@mui/x-date-pickers-pro';
 import { format } from 'date-fns';
 
 const SerchBar = ({ callback }) => {
@@ -157,13 +158,28 @@ const SerchBar = ({ callback }) => {
                     width: 150,
                   },
                   '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
-                    border: searchKw.rdate === false || null ? '1px solid red' : null,
+                    border: searchChk === false || null ? '1px solid red' : null,
                   },
                 }}
                 onAccept={handleAccept}
+                // selected={searchKw.rdate}
+                value={searchKw.rdate || null}
               ></DatePicker>
             </DemoContainer>
           </LocalizationProvider>
+          {/* <LocalizationProvider dateAdapter={AdapterDayjs} sx={{ height: '60px' }}>
+            <DemoContainer
+              components={['DatePicker']}
+              sx={{
+                p: 0,
+                '& .css-1xhypcz-MuiStack-root': {
+                  padding: 0,
+                },
+              }}
+            >
+              <DateRangePicker localeText={{ start: 'Check-in', end: 'Check-out' }} />
+            </DemoContainer>
+          </LocalizationProvider> */}
         </Box>
         <Button type="submit" variant="outlined" sx={{ marginRight: 6 }}>
           <SearchIcon />

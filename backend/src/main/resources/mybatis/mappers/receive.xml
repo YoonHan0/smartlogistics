@@ -133,7 +133,52 @@
 			WHERE detail_no=#{vo.no} and state="RV"
 		]]>
 	</update>
+	<delete id="deleteMasterItem" parameterType="java.util.List">
+		<![CDATA[
+			DELETE
+			FROM receive_master
+			WHERE code IN
+		]]>
+			<foreach item="item" collection="list" open="(" separator="," close=")">
+				<![CDATA[
+					#{item}
+				]]>
+			</foreach>
+	</delete>
 	
+	<delete id="deleteDetailByMasterNo" parameterType="java.util.List">
+		<![CDATA[
+			DELETE
+			FROM receive_detail
+			WHERE master_code IN
+		]]>
+			<foreach item="item" collection="list" open="(" separator="," close=")">
+				<![CDATA[
+					#{item}
+				]]>
+			</foreach>
+	</delete>
+	
+	<delete id="deleteDetailItem" parameterType="java.util.List">
+		<![CDATA[
+			DELETE
+			FROM receive_detail
+			WHERE no IN
+		]]>
+			<foreach item="item" collection="list" open="(" separator="," close=")">
+				<![CDATA[
+					#{item}
+				]]>
+			</foreach>
+	</delete>
+	
+	<delete id="deleteMasterByDetailNo" parameterType="string">
+		<![CDATA[
+			DELETE
+			FROM receive_master
+			WHERE code=#{masterCode}
+		]]>
+	</delete>
 
 	
 </mapper>

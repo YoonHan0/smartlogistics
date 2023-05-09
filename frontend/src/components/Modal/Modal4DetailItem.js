@@ -14,7 +14,7 @@ const Modal4DetailItem = ({
   stockcnt,
   item,
   onSave,
-  onRowClick, // onRowClick 함수 추가
+  onRowClick, 
   clicks,
   code,
   checkedRow,
@@ -22,9 +22,7 @@ const Modal4DetailItem = ({
   rowColor,
   setCheckedRow,
 }) => {
- 
-
-
+  
   const [isEditing, setIsEditing] = useState(false);
   const [editedStockCnt, setEditedStockCnt] = useState(stockcnt);
   const [checked, setChecked] = useState(false);
@@ -40,8 +38,6 @@ const Modal4DetailItem = ({
     setEditedStockCnt(event.target.value);
   };
 
-
-  
 
   const updatedCheckedRow = (e) => checkedRow.map((row) => {
     const { master, detail } = row;
@@ -67,6 +63,7 @@ const Modal4DetailItem = ({
     return row;
   });
 
+  
 
   return (
     <TableRow
@@ -98,9 +95,7 @@ const Modal4DetailItem = ({
       <TableCell>{psize}</TableCell>
       <TableCell>{putil}</TableCell>
       <TableCell>{receivecnt}</TableCell>
-      <TableCell>
-      {stockcnt}
-</TableCell>
+      <TableCell>{stockcnt}</TableCell>
       <Button onClick={() => {clicks({no, mcode, pcode, pname, stockcnt, checked: false})}}>저장</Button>
     </TableRow>
   );

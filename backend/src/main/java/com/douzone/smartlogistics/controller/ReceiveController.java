@@ -38,18 +38,18 @@ public class ReceiveController {
 //		System.out.println(DateUtil.minusDays(6)); //startDate -7
 //		System.out.println(DateUtil.addDays(6)); //endDate +7
 		System.out.println(receiveDate);
-		
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(receiveService.findByKeyword(receiveCode, businessName, receiveDate, DateUtil.minusDays(7), DateUtil.addDays(7))));
+
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(receiveService.findByKeyword(receiveCode,
+				businessName, receiveDate, DateUtil.minusDays(7), DateUtil.addDays(7))));
 	}
 
 	// receive select detailList
 	@GetMapping("/detail")
 	public ResponseEntity<JsonResult> readReceive(
 			@RequestParam(value = "rc", required = true, defaultValue = "") String receiveCode) {
-		System.out.println("detail"+receiveCode);
-		for(ReceiveDetailVo vo :receiveService.findByMasterNo(receiveCode)) {
-			System.out.println("detail: "+vo);
+		System.out.println("detail" + receiveCode);
+		for (ReceiveDetailVo vo : receiveService.findByMasterNo(receiveCode)) {
+			System.out.println("detail: " + vo);
 		}
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(receiveService.findByMasterNo(receiveCode)));
@@ -66,7 +66,7 @@ public class ReceiveController {
 		String date = new DateUtil().getCode((receiveVo.getDate()));
 		int no = receiveService.findSeqByDateAndState(date);
 		String rcCode = "RV".concat(date).concat(String.format("%06d", (Object) (no)));
-		
+
 		receiveVo.setCode(rcCode);
 		for (ReceiveDetailVo vo : receiveVo.getReceiveDetails()) {
 			vo.setMasterCode(rcCode);
@@ -75,7 +75,8 @@ public class ReceiveController {
 //		System.out.println("insert");
 		receiveService.insertDetail(receiveVo.getReceiveDetails(), logVO);
 		receiveService.insertMaster(receiveVo, logVO);
-		//System.out.println("***********"+receiveService.insertDetail(receiveVo.getReceiveDetails(), logVO));
+		// System.out.println("***********"+receiveService.insertDetail(receiveVo.getReceiveDetails(),
+		// logVO));
 		receiveService.insertSeq(no, "RV", date, logVO);
 //		System.out.println(receiveVo);
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(receiveVo));
@@ -85,7 +86,7 @@ public class ReceiveController {
 	@PostMapping("/insertdetail")
 	public ResponseEntity<JsonResult> insertReceive(@RequestBody List<ReceiveDetailVo> receiveDetailVo,
 			@DBLog DBLogVo logVO) {
-//		System.out.println(receiveDetailVo);
+		System.out.println(receiveDetailVo);
 		receiveService.insertDetail(receiveDetailVo, logVO);
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(receiveDetailVo));
 	}
@@ -104,13 +105,28 @@ public class ReceiveController {
 		receiveService.updateDetailByCode(receiveVo, logVO);
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(receiveVo));
 	}
-	
-	@GetMapping("/test")
-	public void test() {
-//		System.out.println("***************"+receiveVo);
-		System.out.println(DateUtil.addDays(6));
-		System.out.println(DateUtil.minusDays(6));
 
+	// receive master item delete
+	@PostMapping("/deleteMaster")
+	public ResponseEntity<JsonResult> readRelease(@RequestBody List<String> masterNo) {
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(receiveService.deleteMasterItem(masterNo)));
+	}
+
+	// receive master item delete
+	@GetMapping("/deleteDetail")
+	public ResponseEntity<JsonResult> readRelease(
+			@RequestParam(value = "no", required = true, defaultValue = "") List<Integer> no,
+			@RequestParam(value = "masterCode", required = true, defaultValue = "") String masterCode,
+			@RequestParam(value = "length", required = true, defaultValue = "") int length) {
+
+		for (int item : no) {
+			System.out.println(item);
+		}
+		System.out.println("masterCode: " + masterCode);
+		System.out.println("length: " + length);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(JsonResult.success(receiveService.deleteDetailItem(no, masterCode, length)));
 	}
 
 }

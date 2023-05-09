@@ -31,6 +31,7 @@ public class ReleaseController {
 			@RequestParam(value = "ic", required = true, defaultValue = "") String releaseCode,
 			@RequestParam(value = "bn", required = true, defaultValue = "") String businessName,
 			@RequestParam(value = "dt", required = true, defaultValue = "") String releaseDate) {
+		System.out.println(releaseCode + " : " + businessName + " : " + releaseDate);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(releaseService.findByKeyword(releaseCode, businessName, releaseDate)));
 	}

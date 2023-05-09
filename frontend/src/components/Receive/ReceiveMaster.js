@@ -44,6 +44,9 @@ const ReceiveMaster = ({
   setInputMaster,
   checkedRow,
   setCheckedRow,
+  openDeleteModalInMaster,
+  openNullModal,
+  masterStateT,
 }) => {
   useEffect(() => {
     nullChkHandler(inputMaster);
@@ -51,7 +54,6 @@ const ReceiveMaster = ({
   }, [inputMaster]);
 
   const onChangeHandler = (e) => {
-    console.log(e.target);
     const { value, name } = e.target;
     setInputMaster((prev) => ({ ...prev, [name]: value }));
   };
@@ -126,6 +128,10 @@ const ReceiveMaster = ({
             padding: '7px',
             cursor: 'pointer',
             marginLeft: 'auto',
+          }}
+          onClick={() => {
+            console.log(masterStateT);
+            masterStateT.length !== 0 ? toggleModal(openDeleteModalInMaster, 'deleteMater') : toggleModal(openNullModal, 'null');
           }}
         />
       </Box>
@@ -210,7 +216,7 @@ const ReceiveMaster = ({
                             },
                           }}
                           onAccept={handleAccept}
-                          renderInput={(params) => <TextField {...params} />}
+                          value={inputMaster.date || null}
                         ></DatePicker>
                       </DemoContainer>
                     </LocalizationProvider>
@@ -313,7 +319,7 @@ const ReceiveMaster = ({
                 ) : (
                   <TableRow>
                     <TableCell colSpan={7} sx={{ textAlign: 'center' }}>
-                      등록된 품목이 없습니다.
+                      등록된 입고리스트가 없습니다.
                     </TableCell>
                   </TableRow>
                 )}

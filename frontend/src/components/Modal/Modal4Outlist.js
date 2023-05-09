@@ -13,10 +13,11 @@ import {
   TableRow,
   TextField,
   Button,
+  newData
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import styled from "styled-components";
-import React from "react";
+import React,{ useState, useEffect,useRef } from "react";
 import Modal4DetailItem from "./Modal4DetailItem";
 import checkImg from "../../assets/img/checkmark.png";
 import Modal4OutItem from "./Modal4OutItem";
@@ -27,13 +28,44 @@ const TableStickyTypeCell = styled(TableCell)`
     top: 50.5px;
   }
 `;
-const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data, deleteChulgo, chulgoItemOnChangeCheck}) => {
+const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data, deleteChulgo, chulgoItemOnChangeCheck }) => {
   console.log(outdtail)
   console.log("==== data ==== ")
   console.log(data);
-  
-  
 
+  const [checkedButtons, setCheckedButtons] = useState([]);
+  const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(()=>{
+    console.log("111 " + checkedButtons);
+  }, [checkedButtons])
+  const allCheckBox = (e) => {
+    if(!isChecked) { // e.currentTarget.checked
+      setIsChecked(e.target.checked);
+      // checkedButtons에 business의 모든 code 값 넣기
+      const datas = data.map(el => el.no);
+      console.log(datas);
+      setCheckedButtons(datas);
+    } else {
+      setIsChecked(e.target.checked);
+      setCheckedButtons([]);
+    }
+  }
+
+   /** delete 체크박스 Handler  */
+   const changeHandler = (checked, no) => {
+    console.log(`checked: ${checked}, no: ${no}`);
+    if (checked) {
+      setCheckedButtons([...checkedButtons, no]);
+      console.log('체크 반영 완료');
+      console.log(checkedButtons);
+      console.log(checkedButtons.length);
+    } else {
+        // 클릭된 'code'랑 같으면 제거해서 새로운 배열을 만듬
+        setCheckedButtons(checkedButtons.filter(el => el !== no));
+        console.log('체크 해제 반영 완료');
+    }
+  };
   // const dataa =Object.assign(data);
   // console.log(dataa);
   // const dataas = [dataa];
@@ -89,12 +121,15 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data, del
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ width: "5%", backgroundColor: "#F6F7F9" }}>
-                  <Checkbox                    
-                    size="small"
-                  />  
+                  <Checkbox 
+                      size='small'
+                      onChange={(e)=> {
+                        allCheckBox(e);
+                      }}
+                      />
                   </TableCell>
                   <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
-                    입고번호
+                    순번
                   </TableCell>
                   <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
                     품번
@@ -120,6 +155,8 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data, del
                         selectedRowData={selectedRowData} // 수정된 부분
                         checked={datas.checked}
                         chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}
+                        checkedButtons={checkedButtons}
+                        changeHandler={changeHandler}
                       />
                   ))
                 ) : (

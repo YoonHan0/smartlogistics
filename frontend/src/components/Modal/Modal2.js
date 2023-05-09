@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { customFetch } from "../custom/customFetch";
 const Modal2 = ({ open, onClose }) => {
   const DEFAULT_ROWS_PER_PAGE = 5;
   // productList chk
@@ -49,28 +50,9 @@ const Modal2 = ({ open, onClose }) => {
   // product 검색
   const productSearch = async () => {
     var url = `/api/product/list?pk=${searchKWD.keywd}&ps=${searchKWD.size}`;
-    try {
-      const response = await fetch(url, {
-        method: "get",
-        headers: {
-          Accept: "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-
-      const json = await response.json();
-      if (json.result !== "success") {
-        throw new Error(`${json.result} ${json.message}`);
-      }
-      //console.log(json.data);
-      setProducts(json.data);
-    } catch (err) {
-      console.log(err);
-    }
+    await customFetch(url, { method: "get" }).then((json) =>
+      setProducts(json.data)
+    );
   };
   // searchbox Handler
   const onChangeHandler = (e) => {

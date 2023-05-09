@@ -158,13 +158,11 @@ const filteredRows = checkedRow.filter(row =>
                       putil={detailss.productUnit}
                       receivecnt={detailss.receiveCount}
                       stockcnt={detailss.stockCount}
-                      // code={detailss.code}
+                      
                       code={detailss.no}
-                      // allChecked={allChecked}
-                      // setAllChecked={setAllChecked}
+                      
                       clicks={clicks}
-                      // checkedButtons={checkedButtons}
-                      // changeHandler={changeHandler}
+                      
                       checkedRow={checkedRow}
                       setCheckedRow={setCheckedRow}
                     />

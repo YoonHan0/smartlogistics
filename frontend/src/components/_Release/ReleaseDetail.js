@@ -19,8 +19,6 @@ import React, { useState, useEffect } from "react";
 import DetailItem from "./DetailItem";
 import checkImg from "../../assets/img/checkmark.png";
 import SearchIcon from "@mui/icons-material/Search";
-import DeleteDetailModal from "../Modal/DeleteDetailModal";
-import NullModal from "../Modal/NullModal";
 
 /** 테이블 Header 고정을 위한 styled component 사용 */
 // top의 px값은 첫 행의 높이와 같게
@@ -36,32 +34,17 @@ const ReleaseDetail = ({
     details, 
     checkedRow,
     setCheckedRow,
+    masterCode,
     toggleModal,
-    deleteDetailHandler,
+    openNullModal,
+    filteredDetails,
     openDeleteModalInDetail,
-    setOpenDeleteModalInDetail
   }) => {
-    
-    // checkedRow에 detail 프로퍼티가 없어서 에러가 계속 발생 -> filter로 detail 프로퍼티가 존재하는지 먼저 거르고 시작
-    const filteredRow = checkedRow.filter(row => row.detail !== undefined);
-    const filteredDetails = filteredRow
-      .filter(row => row.master === details[0].masterCode,) // master 코드가 같은 것 / flatMap: 배열 내 요소들을 변환하고, 각 변환된 배열 요소를 하나의 배열로 합치는 함수
-      .flatMap(row => row.detail.filter(detail => detail.state === 't' && detail.no !== ''))
-      .map(detail => detail.no);
-
-    const deleteObj = {
-      no: filteredDetails,    // checkedRow의 detail 프로퍼티에서 state값이 "t"인 데이터의 no값
-      masterCode: details[0].masterCode,  // 화면에 표시되는 detail List들의 공통된 master code값
-      length: details.length  // 화면에 표시되는 detail List들의 길이
-    }
-
-    const [openNullModal, setOpenNullModal] = useState(false);  // 삭제할 것인지 확인하는 모달창
-    
-
+    console.log("===", details);
     /** 모두 선택해주는 체크박스 (detail header부분의 체크박스) */
     const detailAllCheckBox = (checked) => {
       const updatedCheckedRow = checkedRow.map((row) => {
-        if (row.master === details[0].masterCode) {
+        if (row.master === masterCode) {
           const updatedDetail = row.detail.map((detail) => {
             return { ...detail, state: checked ? 't' : 'f' };
           });
@@ -85,7 +68,7 @@ const ReleaseDetail = ({
         details.some(item => item.no === detail.no && detail.state === 't')
       )
     );
-  
+    
     return (
       <Grid
         item
@@ -126,7 +109,7 @@ const ReleaseDetail = ({
               marginLeft: "auto",
             }}
             onClick={() => {
-              filteredDetails.length > 0 ? toggleModal(openDeleteModalInDetail, setOpenDeleteModalInDetail) : toggleModal(openNullModal, setOpenNullModal)
+              filteredDetails.length > 0 ? toggleModal(openDeleteModalInDetail, 'deleteDetail') : toggleModal(openNullModal, 'null')
             }}
           />
         </Box>
@@ -166,8 +149,8 @@ const ReleaseDetail = ({
                           onChange={(e) => {
                             detailAllCheckBox(e.currentTarget.checked);
                           }}
-                          checked={(details.length === (filteredRows[0] !== undefined && filteredRows[0].detail.filter((el) => el.state === "t").length)) || (checkedRow.some(row => row.master === details?.[0]?.masterCode && row.state === 't'))}
-                          disabled={checkedRow.filter(row => row.master === details?.[0]?.masterCode && row.state === "t" && !row.detail.every(item => item.state === "t")).length > 0 ? true : false}
+                          checked={(details.length === (filteredRows[0] !== undefined && filteredRows[0].detail.filter((el) => el.state === "t").length)) || (checkedRow.some(row => row.master === masterCode && row.state === 't'))}
+                          disabled={checkedRow.filter(row => row.master === masterCode && row.state === "t" && !row.detail.every(item => item.state === "t")).length > 0 ? true : false}
                       />
                     </TableCell>
                     <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
@@ -192,46 +175,48 @@ const ReleaseDetail = ({
                       진행상태
                     </TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableStickyTypeCell></TableStickyTypeCell>
-                    <TableStickyTypeCell></TableStickyTypeCell>
-                    <TableStickyTypeCell>
-                      <Box
-                        sx={{
-                          p: 0,
-                          border: "1px solid #C4C4C4",
-                          height: "28px",
-                          display: "flex",
-                          width: "190px",
-                          marginRight: "5px",
-                          borderRadius: "4px",
-                          paddingRight: "8px",
-                        }}
-                      >
-                        <input
-                          type="text"
-                          style={{
-                            marginLeft: "1px",
-                            width: "140px",
-                            height: "27px",
-                            border: 0,
+                  {masterCode && details.length > 0 ? (
+                    <TableRow>
+                      <TableStickyTypeCell></TableStickyTypeCell>
+                      <TableStickyTypeCell></TableStickyTypeCell>
+                      <TableStickyTypeCell>
+                        <Box
+                          sx={{
+                            p: 0,
+                            border: "1px solid #C4C4C4",
+                            height: "28px",
+                            display: "flex",
+                            width: "190px",
+                            marginRight: "5px",
+                            borderRadius: "4px",
+                            paddingRight: "8px",
                           }}
-                        />
-                        <SearchIcon
-                          sx={{ marginLeft: "auto", marginTop: "3px" }}
-                        />
-                      </Box>
-                    </TableStickyTypeCell>
-                    <TableStickyTypeCell></TableStickyTypeCell>
-                    <TableStickyTypeCell></TableStickyTypeCell>
-                    <TableStickyTypeCell></TableStickyTypeCell>
-                    <TableStickyTypeCell></TableStickyTypeCell>
-                    <TableStickyTypeCell></TableStickyTypeCell>
-                    <TableStickyTypeCell></TableStickyTypeCell>
-                  </TableRow>
+                        >
+                          <input
+                            type="text"
+                            style={{
+                              marginLeft: "1px",
+                              width: "140px",
+                              height: "27px",
+                              border: 0,
+                            }}
+                          />
+                          <SearchIcon
+                            sx={{ marginLeft: "auto", marginTop: "3px" }}
+                          />
+                        </Box>
+                      </TableStickyTypeCell>
+                      <TableStickyTypeCell></TableStickyTypeCell>
+                      <TableStickyTypeCell></TableStickyTypeCell>
+                      <TableStickyTypeCell></TableStickyTypeCell>
+                      <TableStickyTypeCell></TableStickyTypeCell>
+                      <TableStickyTypeCell></TableStickyTypeCell>
+                      <TableStickyTypeCell></TableStickyTypeCell>
+                    </TableRow>
+                  ) : null}
                 </TableHead>
                 <TableBody>
-                  {details && details.length && Object.keys(details[0]).length !== 0 ? (
+                  {masterCode && details.length > 0 ? (
                     details.map((detail, index) => (
                       <DetailItem
                         key={index}
@@ -259,17 +244,6 @@ const ReleaseDetail = ({
             </TableContainer>
           </FormControl>
         </Box>
-        <DeleteDetailModal 
-          open={openDeleteModalInDetail}
-          onClose={() => setOpenDeleteModalInDetail(false)}
-          checkedRow={checkedRow}
-          deleteDetailHandler={deleteDetailHandler}
-          data={deleteObj}
-        />
-        <NullModal
-          open={openNullModal}
-          onClose={() => setOpenNullModal(false)}
-        />
       </Grid>
     );
 };

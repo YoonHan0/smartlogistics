@@ -11,6 +11,7 @@ import {
   TextField,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { customFetch } from "../custom/customFetch";
 
 export default function Modal3({ open, onClose, handleButtonClick }) {
   useEffect(() => {
@@ -61,70 +62,36 @@ export default function Modal3({ open, onClose, handleButtonClick }) {
   };
 
   const searchKWDfetch = async () => {
-    try {
-      modalChange({ isLoading: true });
-      const response = await fetch(
-        `/api/business/search?page=${page.current}&offset=${5}`,
-        {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: localStorage.getItem("token"),
-          },
-          body: JSON.stringify(searchKWD),
+    modalChange({ isLoading: true });
+    await customFetch(`/api/business/search?page=${page.current}&offset=${5}`, {
+      method: "post",
+      body: JSON.stringify(searchKWD),
+    })
+      .then((json) => {
+        if (json.data.length < 5) {
+          modalChange({ hasMore: false });
         }
-      );
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-      const json = await response.json();
-      if (json.result !== "success") {
-        throw new Error(`${json.result} ${json.message}`);
-      }
-      if (json.data.length < 5) {
-        modalChange({ hasMore: false });
-      }
-      setPerson((prev) => [...prev.slice(-5), ...json.data]);
-      modalChange({ isLoading: false });
-    } catch (err) {
-      console.log(err.message);
-      modalChange({ isLoading: false });
-    }
+        setPerson((prev) => [...prev.slice(-5), ...json.data]);
+        modalChange({ isLoading: false });
+      })
+      .catch(() => modalChange({ isLoading: false }));
   };
 
   const searchUpKWDfetch = async () => {
-    try {
-      modalChange({ isLoading: true });
-      page.current -= 1;
-      const response = await fetch(
-        `/api/business/search?page=${page.current}&offset=${5}`,
-        {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: localStorage.getItem("token"),
-          },
-          body: JSON.stringify(searchKWD),
-        }
-      );
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-      const json = await response.json();
-      if (json.result !== "success") {
-        throw new Error(`${json.result} ${json.message}`);
-      }
-      setPerson((prev) => [
-        ...json.data,
-        ...prev.slice(person.length % 5 === 0 ? 5 : person.length % 5),
-      ]);
-      modalChange({ hasMore: true, isLoading: false });
-    } catch (err) {
-      console.log(err.message);
-      modalChange({ isLoading: false });
-    }
+    modalChange({ isLoading: true });
+    page.current -= 1;
+    await customFetch(`/api/business/search?page=${page.current}&offset=${5}`, {
+      method: "post",
+      body: JSON.stringify(searchKWD),
+    })
+      .then((json) => {
+        setPerson((prev) => [
+          ...json.data,
+          ...prev.slice(person.length % 5 === 0 ? 5 : person.length % 5),
+        ]);
+        modalChange({ hasMore: true, isLoading: false });
+      })
+      .catch(() => modalChange({ isLoading: false }));
   };
 
   const handleScroll = (event) => {
