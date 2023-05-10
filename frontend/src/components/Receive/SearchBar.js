@@ -7,28 +7,43 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { DateRangePicker } from '@mui/x-date-pickers-pro';
 import { format } from 'date-fns';
 
 const SerchBar = ({ callback }) => {
-  const [searchKw, setSearchKw] = useState({ rcode: '', bname: '', rdate: '' });
+  const [searchKw, setSearchKw] = useState({ rcode: '', bname: '', startdt: '', enddt: '' });
   const [searchChk, setSearchChk] = useState();
-  const refForm = useRef(null);
+  const [minDate, setMindate] = useState();
 
   const changeHandler = (e) => {
     const { value, name } = e.target;
     setSearchKw((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAccept = (date) => {
-    setSearchKw({ ...searchKw, rdate: format(date.$d, 'yyyy-MM-dd') });
+  const handleAcceptStart = (date) => {
+    setMindate(date);
+    setSearchKw({ ...searchKw, startdt: format(date.$d, 'yyyy-MM-dd') });
     setSearchChk(true);
   };
+  const handleAcceptEnd = (date) => {
+    setSearchKw({ ...searchKw, enddt: format(date.$d, 'yyyy-MM-dd') });
+  };
+  const submit = (e) => {
+    e.preventDefault();
+    if (searchKw.startdt !== '') {
+      setSearchChk(true);
+    } else {
+      setSearchChk(false);
+    }
+    if (searchChk) {
+      // setSearchKw({ ...searchKw, startdt: formattedDate });
+      callback(searchKw);
+      setSearchChk();
+      setSearchKw({ rcode: '', bname: '', startdt: '', enddt: '' });
+    }
+  };
   useEffect(() => {
-    //callback(searchKw);
     return () => {};
   }, [searchKw]);
-
   return (
     <Grid
       item
@@ -84,20 +99,8 @@ const SerchBar = ({ callback }) => {
 
       <FormControl
         component="form"
-        ref={refForm}
         onSubmit={(e) => {
-          e.preventDefault();
-          if (searchKw.rdate !== '') {
-            setSearchChk(true);
-          } else {
-            setSearchChk(false);
-          }
-          if (searchChk) {
-            callback(searchKw);
-            setSearchChk();
-            refForm.current.reset();
-            setSearchKw({ rcode: '', bname: '', rdate: '' });
-          }
+          submit(e);
         }}
         sx={{
           display: 'flex',
@@ -150,36 +153,57 @@ const SerchBar = ({ callback }) => {
                   textField: { size: 'small' },
                 }}
                 sx={{
+                  minWidth: 0,
                   paddingLeft: 2,
+                  '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
+                    padding: 0,
+                    height: 30,
+                    width: 105,
+                    marginLeft: '10px',
+                  },
+                  '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
+                    border: searchChk === false || null ? '1px solid red' : null,
+                    width: '165px',
+                  },
+                  '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
+                    minWidth: 0,
+                    height: '35px',
+                  },
+                }}
+                onAccept={handleAcceptStart}
+                value={searchKw.startdt || null}
+              ></DatePicker>
+              <span>~</span>
+              <DatePicker
+                readOnly={searchKw.startdt === '' || searchKw.startdt === null}
+                format="YYYY-MM-DD"
+                slotProps={{
+                  textField: { size: 'small' },
+                }}
+                sx={{
+                  minWidth: 0,
                   paddingRight: 5,
                   '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                     padding: 0,
                     height: 30,
-                    width: 150,
+                    width: 105,
+                    marginLeft: '10px',
                   },
                   '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
                     border: searchChk === false || null ? '1px solid red' : null,
+                    width: '165px',
+                  },
+                  '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
+                    minWidth: 0,
+                    height: '35px',
                   },
                 }}
-                onAccept={handleAccept}
-                // selected={searchKw.rdate}
-                value={searchKw.rdate || null}
+                minDate={minDate || null}
+                onAccept={handleAcceptEnd}
+                value={searchKw.enddt || null}
               ></DatePicker>
             </DemoContainer>
           </LocalizationProvider>
-          {/* <LocalizationProvider dateAdapter={AdapterDayjs} sx={{ height: '60px' }}>
-            <DemoContainer
-              components={['DatePicker']}
-              sx={{
-                p: 0,
-                '& .css-1xhypcz-MuiStack-root': {
-                  padding: 0,
-                },
-              }}
-            >
-              <DateRangePicker localeText={{ start: 'Check-in', end: 'Check-out' }} />
-            </DemoContainer>
-          </LocalizationProvider> */}
         </Box>
         <Button type="submit" variant="outlined" sx={{ marginRight: 6 }}>
           <SearchIcon />

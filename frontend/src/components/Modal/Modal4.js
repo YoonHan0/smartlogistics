@@ -81,11 +81,7 @@ const Modal4 = ({ open, onClose }) => {
     setData([...data, ...myCheckedRow]);
   };
 
-  const deleteChulgo = (index) => {
-    // 삭제하는 로직 추가필요
-    let remainedData = data.filter((item, i) => !item.checked);
-    setData(remainedData);
-  }
+
  
 
   // 출고 체크 박스 선택
@@ -97,7 +93,7 @@ const Modal4 = ({ open, onClose }) => {
       }
       return item;
     });
-    //console.log('changedData', changedData);
+    // console.log('changedData', changedData);
     setData(changedData);
   }
 
@@ -220,9 +216,9 @@ const Modal4 = ({ open, onClose }) => {
               outdtail={modal4outlist}
               selectedRowData={selectedRowData}
               data={data}
-              deleteChulgo={deleteChulgo}
               chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}
-              newData={newData}
+              setData={setData}
+              checkedRow={checkedRow}
             />
           </Grid>
           </Box>

@@ -28,7 +28,7 @@ import { format } from 'date-fns';
 // top의 px값은 첫 행의 높이와 같게
 const TableStickyTypeCell = styled(TableCell)`
   && {
-    top: 43px;
+    top: 38.5px;
   }
 `;
 

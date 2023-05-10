@@ -18,8 +18,9 @@ public class StockRepository {
 		return sqlSession.selectList("stock.findAll");
 	}
 
-	public List<StockGraphVo> getData(Map<String, Object> map) {
-		System.out.println("sqlSession.selectList(\"stock.getdata\", map) : "+sqlSession.selectList("stock.getdata", map));
+	public List<StockGraphVo> getData(String state, String startDate) {
+		Map map = Map.of("state",state,"date",startDate);
+		System.out.println("map : "+map);
 		return sqlSession.selectList("stock.getdata", map);
 	}
 }

@@ -5,20 +5,34 @@ import DayGraph from './DayGraph';
 import MonthGraph from './MonthGraph';
 import YearGraph from './YearGraph';
 
-const Graph = ({graph, setGraph, showGraph,data,setData }) => {
+const Graph = ({
+    graph, 
+    setGraph, 
+    showGraph,
+    data,setData, 
+    startdate,
+    setStartDate,
+    settingStartdate}) => {
   const handleClickDay =(e) => {
     setGraph((graph) => 'day');
-    showGraph();
+    console.log(settingStartdate('day',0));
+    setStartDate(settingStartdate('day',0));
+    console.log(startdate)
+    showGraph(startdate);
+
   }
 
   const handleClickMonth =(e) => {
     setGraph((graph) => 'month');
-    showGraph();
+    setStartDate()
+    setStartDate(settingStartdate('month',0));
+    showGraph(startdate);
   }
 
   const handleClickYear =(e) => {
     setGraph((graph) => 'year');
-    showGraph();
+    setStartDate(settingStartdate('year'),0);
+    showGraph(startdate);
   }
 
   return (
@@ -64,12 +78,12 @@ const Graph = ({graph, setGraph, showGraph,data,setData }) => {
         </Box>
         {
           graph === 'day' ?
-            <DayGraph data={data} setData={setData}/>
+            <DayGraph data={data} setData={setData} showGraph={showGraph} settingStartdate={settingStartdate}/>
             :
             graph === 'month' ?
-              <MonthGraph data={data} setData={setData} />
+              <MonthGraph data={data} setData={setData} showGraph={showGraph} settingStartdate={settingStartdate} />
               :
-              <YearGraph data={data} setData={setData} />
+              <YearGraph data={data} setData={setData} showGraph={showGraph} settingStartdate={settingStartdate} />
         }
     </Box>
     </Grid >

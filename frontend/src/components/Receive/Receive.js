@@ -97,7 +97,7 @@ const Receive = () => {
   const receiveMasterSearch = async (searchKw) => {
     var url = `/api/receive/list`;
     if (searchKw) {
-      url = `/api/receive/list?rc=${searchKw.rcode}&bn=${searchKw.bname}&dt=${searchKw.rdate}`;
+      url = `/api/receive/list?rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
     }
     await customFetch(url, { method: 'get' }).then((json) => {
       setreceiveMaster(json.data);

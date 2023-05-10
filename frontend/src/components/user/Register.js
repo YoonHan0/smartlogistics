@@ -71,9 +71,15 @@ const Register = () => {
     formData.append("name", document.getElementById("name").value);
     formData.append("phone", phone.replace(/\-/g, ""));
     formData.append("role", "user");
-    formData.append("file", file);
+    formData.append("file", file);  
 
-    await customFetch(`/api/user`, { method: "post", body: formData }).then(
+    console.log("file 데이터: ", file);
+    console.log("formData 데이터: ", typeof(formData));   // type: Object
+    // for (let key of formData.keys()) {
+    //   console.log(`${key}: ${formData.get(key)}`);
+    // }
+    
+    await customFetch(`/api/user`, { headers: { Accept: "application/json", Authorization: localStorage.getItem("token")}, method: "post", body: formData }).then(
       () => alert("회원가입 성공하셨습니다.")
     );
   };

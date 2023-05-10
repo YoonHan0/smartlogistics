@@ -11,10 +11,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileUploadService {
-	private static String SAVE_PATH = "/smartlogistics-uploads/smartlogistics";
-	private static String URL_BASE = "/assets/smartlogistics";	
+	
+	private static String URL_BASE = "/assets/smartlogistics";
+	String SAVE_PATH = "/smartlogistics-uploads/smartlogistics";
 	
 	public String restoreImage(MultipartFile file) throws RuntimeException {
+		
+		if (System.getProperty("os.name").startsWith("Mac")) {
+		    SAVE_PATH = "/Users/" + System.getProperty("user.name") + "/smartlogistics-uploads/smartlogistics";
+		}
+		
 		try {
 			File uploadDirectory = new File(SAVE_PATH);
 			if(!uploadDirectory.exists()) {
@@ -28,6 +34,9 @@ public class FileUploadService {
 			String originFilename = file.getOriginalFilename();
 			String extName = originFilename.substring(originFilename.lastIndexOf('.')+1);
 			String saveFilename = generateSaveFilename(extName);
+			
+			System.out.println("fileUploadService 부분 확인!");
+			System.out.println(originFilename + " : " + extName + " : " + saveFilename);
 			
 			byte[] data = file.getBytes();
 			OutputStream os = new FileOutputStream(SAVE_PATH + "/" + saveFilename);

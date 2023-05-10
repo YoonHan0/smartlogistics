@@ -13,7 +13,8 @@ import {
   TableRow,
   TextField,
   Button,
-  newData
+  newData,
+  checkedRow
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import styled from "styled-components";
@@ -28,29 +29,66 @@ const TableStickyTypeCell = styled(TableCell)`
     top: 50.5px;
   }
 `;
-const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data, deleteChulgo, chulgoItemOnChangeCheck }) => {
+const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chulgoItemOnChangeCheck,setData }) => {
+  const isAnyCheckedFalse = data.some(item => item.checked === false);
   console.log(outdtail)
   console.log("==== data ==== ")
   console.log(data);
+  // data: [] === checkedButtons, deleteData: [{}, {}, ...] === rendering되는 state(data)
+  //  const newData = checkedButtons.filter(item => !data.some(deleteItem => deleteItem.no === item));
+  // 
 
-  const [checkedButtons, setCheckedButtons] = useState([]);
+  const [checkedButtons, setCheckedButtons] = useState([]); // [1, 2, 3, 4, ...]
   const [isChecked, setIsChecked] = useState(false);
 
+  const deleteChulgo = (index) => {
+    // 삭제하는 로직 추가필요
+    let remainedData = data.filter((item) => !item.checked);
+    setData(remainedData);
+  }
+
+
+//   const filteredRows = checkedRow.filter(row =>
+//   row.detail.some(detail =>
+//     data.some(item => item.no === detail.no && detail.state === 't')
+//   )
+// );
+  
   useEffect(()=>{
     console.log("111 " + checkedButtons);
   }, [checkedButtons])
+
+
+
   const allCheckBox = (e) => {
-    if(!isChecked) { // e.currentTarget.checked
-      setIsChecked(e.target.checked);
-      // checkedButtons에 business의 모든 code 값 넣기
-      const datas = data.map(el => el.no);
-      console.log(datas);
-      setCheckedButtons(datas);
-    } else {
-      setIsChecked(e.target.checked);
-      setCheckedButtons([]);
+
+    // e.currentTarget.checked;
+    // 체크됐으면 data state에 checked 프로퍼티 true || 해제됐으면 false
+
+    if (e.currentTarget.checked){
+      console.log("선택됨")
+      const updatedData = data.map(item => ({
+        ...item,
+        checked: true,
+      }));
+      setData(updatedData)
+      
     }
-  }
+    
+
+    
+    else{
+      const updatedData = data.map(item => ({
+        ...item,
+        checked: false,
+      }));
+      setData(updatedData)
+      const updatedCheckedButtons = isChecked ? data.map(item => item.no) : [];
+    setCheckedButtons(updatedCheckedButtons);
+    }
+    }
+  
+    console.log("체크크크",checkedButtons);
 
    /** delete 체크박스 Handler  */
    const changeHandler = (checked, no) => {
@@ -65,11 +103,15 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data, del
         setCheckedButtons(checkedButtons.filter(el => el !== no));
         console.log('체크 해제 반영 완료');
     }
+   
   };
   // const dataa =Object.assign(data);
   // console.log(dataa);
   // const dataas = [dataa];
   // console.log(dataas);
+
+
+
   return (
     <Grid
       item
@@ -126,6 +168,7 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data, del
                       onChange={(e)=> {
                         allCheckBox(e);
                       }}
+                      
                       />
                   </TableCell>
                   <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
@@ -157,6 +200,9 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data, del
                         chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}
                         checkedButtons={checkedButtons}
                         changeHandler={changeHandler}
+                        data={data}
+                        setData={setData}
+                       
                       />
                   ))
                 ) : (

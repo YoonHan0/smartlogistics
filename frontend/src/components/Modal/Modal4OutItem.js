@@ -17,6 +17,7 @@ const Modal4OutItem = ({
   chulgoItemOnChangeCheck,
   changeHandler,
   checkedButtons,
+  data
   
 }) => {
   console.log(checked)
@@ -56,7 +57,19 @@ const Modal4OutItem = ({
     >
       {/* {chulgoItemOnChangeCheck(no); */}
       <TableCell align="center">
-      <Checkbox size="small" id = "test" name = "test" onChange={(e) => {chulgoItemOnChangeCheck(no); changeHandler(e.currentTarget.checked, no);}}  checked={checkedButtons.includes(no) ? true : false} ref = {checkboxRef}/>
+      <Checkbox 
+        size="small" 
+        id = "test" 
+        name = "test" 
+        // onChange={(e) => {chulgoItemOnChangeCheck(no); changeHandler(e.currentTarget.checked, no);}}  
+        // checked={checkedButtons.includes(no) ? true : false} 
+        onChange={(e) => {
+          chulgoItemOnChangeCheck(no);
+          changeHandler(e.currentTarget.checked, no);
+        }}  
+        checked={data.find(item => item.no===no).checked} 
+        ref = {checkboxRef}
+      />
       </TableCell>
       <TableCell>{mcode}</TableCell>
       <TableCell>{pcode}</TableCell>

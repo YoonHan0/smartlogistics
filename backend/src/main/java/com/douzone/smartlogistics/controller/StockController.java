@@ -46,35 +46,12 @@ public class StockController {
 
 	@PostMapping("graph")
 	public ResponseEntity<JsonResult> graph(
-			@RequestParam(value="state", required = true, defaultValue="") String state) throws Exception {	
-		
+			@RequestParam(value="state", required = true, defaultValue="") String state,
+			@RequestParam(value="startDate", required = true, defaultValue="") String startDate)throws Exception {
 		System.out.println("state : "+ state);
-
+		System.out.println("startDate : "+ startDate);
+		
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(stockService.getGraphData(state)));
+				.body(JsonResult.success(stockService.getGraphData(state,startDate)));
 	}
-	
-//	@GetMapping("graph/day")
-//	public ResponseEntity<JsonResult> dayGraph() {	
-//		String date = dateUtil.getCurrentDay();
-//
-//		return ResponseEntity.status(HttpStatus.OK)
-//				.body(JsonResult.success(true));
-//	}
-//	
-//	@GetMapping("graph/month")
-//	public ResponseEntity<JsonResult> monthGraph() {
-//		String[] date = dateUtil.getCurrentDay().split("-");
-//		
-//		return ResponseEntity.status(HttpStatus.OK)
-//				.body(JsonResult.success(true));
-//	}
-//	
-//	@GetMapping("graph/year")
-//	public ResponseEntity<JsonResult> yearGraph() {	
-//		String[] date = dateUtil.getCurrentDay().split("-");
-//		
-//		return ResponseEntity.status(HttpStatus.OK)
-//				.body(JsonResult.success(true));
-//	}
 }

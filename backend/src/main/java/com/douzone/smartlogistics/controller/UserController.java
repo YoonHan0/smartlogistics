@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,10 +65,10 @@ public class UserController {
 	//argument에서 읽어서 합친 후 파라미터를 @AuthUser UserVo 하나만 할 지
 	@PostMapping("")
 	public ResponseEntity<JsonResult> add(
-			@RequestParam(value="file", required=false) MultipartFile file,
 			UserVo userVo,
+			@RequestPart(value="file", required=false) MultipartFile file,
 			@DBLog DBLogVo authUser) {
-		System.out.println(file);
+		System.out.println("파일 넘어오나! " + file);
 		System.out.println("userVo "+ userVo);
 		System.out.println("authUser : "+authUser);
 		userVo.setInsert_id(authUser.getId());
@@ -75,7 +76,6 @@ public class UserController {
 		userVo.setInsert_dt(authUser.getDt());
 		userVo.setProfile(FileUploadService.restoreImage(file));
 
-		System.out.println("userVo : "+ userVo);
 		userService.addUser(userVo);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(userVo));
