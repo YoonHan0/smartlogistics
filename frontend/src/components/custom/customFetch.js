@@ -3,13 +3,14 @@ import { refresh } from "./refresh";
 
 // customFetch 함수는 fetch를 확장한 함수로, 에러 발생 시 errorHandlingMiddleware 함수를 호출합니다.
 export const customFetch = async (url, obj) => {
+
   return await fetch(url, {
-    ...obj,
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: localStorage.getItem("token"),
     },
+    ...obj,
   })
     .then(async (response) => {
       if (response.status === 403) {

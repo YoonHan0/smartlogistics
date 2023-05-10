@@ -57,7 +57,8 @@ const filteredRows = checkedRow.filter(row =>
   )
 );
 
-// console.log('details', details);
+console.log('filteredRows',filteredRows )
+console.log('details', details);
 
   return (
     <Grid
@@ -158,11 +159,8 @@ const filteredRows = checkedRow.filter(row =>
                       putil={detailss.productUnit}
                       receivecnt={detailss.receiveCount}
                       stockcnt={detailss.stockCount}
-                      
                       code={detailss.no}
-                      
                       clicks={clicks}
-                      
                       checkedRow={checkedRow}
                       setCheckedRow={setCheckedRow}
                     />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import UserList from "./UserList";
 import UserSerchBar from "./UserSerchBar";
 import UserUpdate from "./UserUpdate";
@@ -26,6 +26,8 @@ const User = () => {
     await customFetch(url, { method: "get" }).then((json) =>
       setUsers(json.data)
     );
+    setDetail([]);
+    setItem({ id: "", name: "", phone: "", code: "" });
   };
 
   // product 추가

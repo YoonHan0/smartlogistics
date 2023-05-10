@@ -32,24 +32,11 @@
 		ON r.business_code=b.code
 		INNER JOIN user u
 		ON r.user_id = u.id 			
-		]]>
-		<choose>
-			<when test='rdate!=""'>
-			<![CDATA[
-				WHERE (b.name LIKE CONCAT('%',#{bname },'%') 
-				AND r.code LIKE CONCAT('%',#{rcode },'%')) 
-				AND LEFT(r.date,10)=#{rdate}
-			]]>
-			</when>
-			<otherwise>
-			<![CDATA[
-				WHERE (b.name LIKE CONCAT('%',#{bname },'%') 
-				AND r.code LIKE CONCAT('%',#{rcode },'%')) 
-				AND DATE_FORMAT(r.date, '%Y-%m-%d') BETWEEN #{startdt} AND #{enddt}		
-			]]>
-			</otherwise>
-		</choose>
+		WHERE (b.name LIKE CONCAT('%',#{bname },'%') 
+		AND r.code LIKE CONCAT('%',#{rcode },'%')) 
+		AND DATE_FORMAT(r.date, '%Y-%m-%d') BETWEEN #{startdt} AND #{enddt}		
 		ORDER BY r.code
+		]]>
 	</select>
 	
 	<select id="findByMasterNo" resultType="receivedetailvo" parameterType="string">

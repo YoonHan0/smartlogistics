@@ -15,10 +15,18 @@ import {
   Paper,
   TextField,
   Typography,
+  Input,
 } from "@mui/material";
+import InputAdornment from "@mui/material/InputAdornment";
+
+import PersonIcon from "@mui/icons-material/Person";
+import KeyIcon from "@mui/icons-material/Key";
 
 const Login = ({ handleLogin }) => {
-  const [userList, setUserList] = useState([]);
+  const [isVisible, setIsVisible] = useState(false);
+  const handleButtonClick = () => {
+    setIsVisible(true);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -48,7 +56,7 @@ const Login = ({ handleLogin }) => {
       }
       const json = await response.json();
       if (json.result !== "success") {
-        alert(`${json.message} 다시 입력해 주세요.`);
+        handleButtonClick();
         throw new Error(`${json.result} ${json.message}`);
       }
 
@@ -63,10 +71,6 @@ const Login = ({ handleLogin }) => {
         .replace("Bearer ", "");
 
       const refreshToken = response.headers.get("refresh");
-      console.log(refreshToken);
-
-      console.log("login success!!!!!");
-      alert("login success!!!!!");
 
       handleLogin(jwtToken, refreshToken, json.data);
     } catch (err) {
@@ -111,7 +115,10 @@ const Login = ({ handleLogin }) => {
               <Typography
                 variant="h5"
                 color="#0573FC"
-                sx={{ paddingTop: 3, fontFamily: "Black Han Sans, sans-serif" }}
+                sx={{
+                  paddingBottom: 1,
+                  fontFamily: "Black Han Sans, sans-serif",
+                }}
               >
                 SMARTLOGISTICS
               </Typography>
@@ -122,31 +129,63 @@ const Login = ({ handleLogin }) => {
                 sx={{ mt: 1 }}
               >
                 <TextField
+                  sx={{
+                    "& .MuiSvgIcon-root": { fontSize: "1.2rem" },
+                    "& .MuiInputBase-input:-webkit-autofill": {
+                      WebkitBoxShadow: "0 0 0 100px #fff inset",
+                      WebkitTextFillColor: "inherit",
+                    },
+                  }}
                   size="small"
                   margin="normal"
                   required
                   fullWidth
                   id="id"
-                  label="id"
                   name="id"
                   autoComplete="id"
                   autoFocus
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <TextField
+                  sx={{
+                    "& .MuiSvgIcon-root": { fontSize: "1.2rem" },
+                    "& .MuiInputBase-input:-webkit-autofill": {
+                      WebkitBoxShadow: "0 0 0 100px #fff inset",
+                      WebkitTextFillColor: "inherit",
+                    },
+                  }}
                   size="small"
                   margin="normal"
                   required
                   fullWidth
                   name="password"
-                  label="Password"
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <KeyIcon />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
-                />
+
+                <Box
+                  sx={{
+                    fontSize: "12px",
+                    color: "red",
+                    display: isVisible ? "block" : "none",
+                  }}
+                >
+                  아이디 또는 비밀번호가 일치하지 않습니다.
+                </Box>
                 <Button
                   type="submit"
                   fullWidth

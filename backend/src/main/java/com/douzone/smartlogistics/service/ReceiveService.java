@@ -18,9 +18,8 @@ public class ReceiveService {
 	@Autowired
 	private ReceiveRepository receiveRepository;
 
-	public List<ReceiveMasterVo> findByKeyword(String receiveCode, String businessName, String receiveDate,
-			String startDate, String endDate) {
-		return receiveRepository.findByKeyword(receiveCode, businessName, receiveDate, startDate, endDate);
+	public List<ReceiveMasterVo> findByKeyword(String receiveCode, String businessName,String startDate, String endDate) {
+		return receiveRepository.findByKeyword(receiveCode, businessName,startDate, endDate);
 	}
 
 	public List<ReceiveDetailVo> findByMasterNo(String receiveCode) {

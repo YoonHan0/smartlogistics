@@ -17,10 +17,8 @@ public class ReceiveRepository {
 	@Autowired
 	private SqlSession sqlSession;
 
-	public List<ReceiveMasterVo> findByKeyword(String receiveCode, String businessName, String receiveDate,
-			String startDate, String endDate) {
-		Map<String, Object> map = Map.of("rcode", receiveCode, "bname", businessName, "rdate", receiveDate, "startdt",
-				startDate, "enddt", endDate);
+	public List<ReceiveMasterVo> findByKeyword(String receiveCode, String businessName, String startDate,String endDate) {
+		Map<String, Object> map = Map.of("rcode", receiveCode, "bname", businessName, "startdt", startDate, "enddt",endDate);
 		return sqlSession.selectList("receive.findByKeyword", map);
 	}
 

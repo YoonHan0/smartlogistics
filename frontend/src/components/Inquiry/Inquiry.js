@@ -8,6 +8,37 @@ const inquiry = () => {
   const [list, setList] = useState([]);
   const [graph, setGraph] = useState('day');
   const [data, setData] = useState([]);
+
+  const settingStartdate = (state,value) => {
+    const currentDate = new Date();
+
+    if(state==='day') {
+      currentDate.setDate(currentDate.getDate() - 7+value);
+    }
+
+    if(state==='month') {
+      currentDate.setMonth(currentDate.getMonth() - 11+value);
+    }
+    if(state==='year') {
+      currentDate.setMonth(currentDate.getFullYear() - 5+value);
+    }
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    if(state==='day') {
+      return `${year}-${month}-${day}`;
+    }
+
+    if(state==='month') {
+      return `${year}-${month}`;
+    }
+    if(state==='year') {
+      return `${year}`;
+    }
+    return null;    
+  }
+  const [startdate, setStartDate] = useState(settingStartdate('day',0));
+
   const findList = async () => {
     try {
       const response = await fetch("/api/inquiry/list", {
@@ -58,12 +89,12 @@ const inquiry = () => {
     }
   }
 
-  const showGraph = async () => {
+  const showGraph = async (startDate) => {
     const data = {
       state: graph
     }
     try {
-      const response = await fetch(`/api/inquiry/graph?state=${graph}`, {
+      const response = await fetch(`/api/inquiry/graph?state=${graph}&startDate=${startDate}`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',    
@@ -111,6 +142,9 @@ const inquiry = () => {
               showGraph={showGraph}
               data={data}
               setData={setData}
+              startdate={startdate}
+              setStartDate={setStartDate}
+              settingStartdate={settingStartdate}
               />
           }
         </Grid>

@@ -33,14 +33,20 @@ public class ReceiveController {
 	public ResponseEntity<JsonResult> readReceive(
 			@RequestParam(value = "rc", required = true, defaultValue = "") String receiveCode,
 			@RequestParam(value = "bn", required = true, defaultValue = "") String businessName,
-			@RequestParam(value = "dt", required = true, defaultValue = "") String receiveDate) {
-		// 첫페이지(-7~오늘날짜~+7) => 2주치의 데이터 가져올 날짜
-//		System.out.println(DateUtil.minusDays(6)); //startDate -7
-//		System.out.println(DateUtil.addDays(6)); //endDate +7
-		System.out.println(receiveDate);
-
-		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(receiveService.findByKeyword(receiveCode,
-				businessName, receiveDate, DateUtil.minusDays(7), DateUtil.addDays(7))));
+			@RequestParam(value = "sdt", required = true, defaultValue = "") String startDate,
+			@RequestParam(value = "edt", required = true, defaultValue = "") String endDate) {
+		if (!startDate.equals("") && endDate.equals("")) {
+			// startDate만 선택했을 시
+			endDate = startDate;
+		} 
+		if (startDate.equals("")) {
+			// 첫페이지(-7~오늘날짜~+7) => 2주치의 데이터 가져올 날짜
+			startDate = DateUtil.minusDays(6);
+			endDate = DateUtil.addDays(6);
+		}
+		System.out.println(startDate+"///"+endDate);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(JsonResult.success(receiveService.findByKeyword(receiveCode, businessName, startDate, endDate)));
 	}
 
 	// receive select detailList
@@ -59,10 +65,7 @@ public class ReceiveController {
 	@PostMapping("/insert")
 	@Transactional
 	public ResponseEntity<JsonResult> insertReceive(@RequestBody ReceiveMasterVo receiveVo, @DBLog DBLogVo logVO) {
-//		System.out.println(receiveVo);
-		// 2022-08-09
-//		System.out.println(receiveVo.getDate().substring(2,7).replaceAll("-", ""));
-//		System.out.println(receiveVo.getReceiveDetails());
+		// 입고 번호 생성(RV2305000001)
 		String date = new DateUtil().getCode((receiveVo.getDate()));
 		int no = receiveService.findSeqByDateAndState(date);
 		String rcCode = "RV".concat(date).concat(String.format("%06d", (Object) (no)));
@@ -71,14 +74,9 @@ public class ReceiveController {
 		for (ReceiveDetailVo vo : receiveVo.getReceiveDetails()) {
 			vo.setMasterCode(rcCode);
 		}
-//		System.out.println(receiveVo);
-//		System.out.println("insert");
 		receiveService.insertDetail(receiveVo.getReceiveDetails(), logVO);
 		receiveService.insertMaster(receiveVo, logVO);
-		// System.out.println("***********"+receiveService.insertDetail(receiveVo.getReceiveDetails(),
-		// logVO));
 		receiveService.insertSeq(no, "RV", date, logVO);
-//		System.out.println(receiveVo);
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(receiveVo));
 	}
 
@@ -118,13 +116,6 @@ public class ReceiveController {
 			@RequestParam(value = "no", required = true, defaultValue = "") List<Integer> no,
 			@RequestParam(value = "masterCode", required = true, defaultValue = "") String masterCode,
 			@RequestParam(value = "length", required = true, defaultValue = "") int length) {
-
-		for (int item : no) {
-			System.out.println(item);
-		}
-		System.out.println("masterCode: " + masterCode);
-		System.out.println("length: " + length);
-
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(receiveService.deleteDetailItem(no, masterCode, length)));
 	}
