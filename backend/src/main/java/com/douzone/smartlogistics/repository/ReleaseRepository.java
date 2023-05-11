@@ -21,8 +21,8 @@ public class ReleaseRepository {
 	private SqlSession sqlSession;
 
 	/* Master List 출력 */
-	public List<ReleaseMasterVo> findByKeyword(String releaseCode, String businessName, String releaseDate) {
-		Map<String, Object> map = Map.of("is_code",releaseCode,"bname",businessName,"rdate",releaseDate);
+	public List<ReleaseMasterVo> findByKeyword(String releaseCode, String businessName, String startDate,String endDate) {
+		Map<String, Object> map = Map.of("is_code",releaseCode,"bname", businessName, "startdt", startDate, "enddt",endDate);
 		return sqlSession.selectList("release.findByKeyword",map);
 	}
 

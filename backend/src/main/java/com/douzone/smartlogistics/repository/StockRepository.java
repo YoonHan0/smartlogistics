@@ -21,6 +21,6 @@ public class StockRepository {
 	public List<StockGraphVo> getData(String state, String startDate) {
 		Map map = Map.of("state",state,"date",startDate);
 		System.out.println("map : "+map);
-		return sqlSession.selectList("stock.getdata", map);
+		return sqlSession.selectList("stock.getdata2", map);
 	}
 }

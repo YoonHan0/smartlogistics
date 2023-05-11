@@ -9,6 +9,7 @@ import BusinessModal from '../Modal/BusinessModal';
 import DeleteMasterModal from "../Modal/DeleteMasterModal";
 import DeleteDetailModal from "../Modal/DeleteDetailModal";
 import NullModal from "../Modal/NullModal";
+import { customFetch } from '../custom/customFetch';
 
 const Release = () => {
   /* 화면에 랜더링되는 state */
@@ -121,10 +122,10 @@ const Release = () => {
 
   // ============================ release Master검색 ============================ 
   const releaseMasterSearch = async (searchKw) => {
-    //console.log(searchKw);
+    console.log("키워드 검색", searchKw);
     var url = `/api/release/list`;
     if (searchKw) {
-      url = `/api/release/list?ic=${searchKw.rcode}&bn=${searchKw.bname}&dt=${searchKw.rdate}`;
+      url = `/api/release/list?ic=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
     }
     try {
       const response = await fetch(url, {

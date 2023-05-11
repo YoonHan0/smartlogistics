@@ -33,7 +33,7 @@ const TableStickyTypeCell = styled(TableCell)`
     height: 30px;
   }
 `;
-const Modal4ReceiveDetail = ({ details, clicks, checkedRow, setCheckedRow, multiClicks }) => {
+const Modal4ReceiveDetail = ({ details, clicks, checkedRow, setCheckedRow, multiClicks,data,setData,updateReceiveCnt,textClick,modal4receiveDetail,setreceiveDetail }) => {
   details[0] !== undefined ? console.log("1111",details[0].masterCode) : null;
 const detailAllCheckBox = (checked) => {
   const updatedCheckedRow = checkedRow.map((row) => {
@@ -163,6 +163,12 @@ console.log('details', details);
                       clicks={clicks}
                       checkedRow={checkedRow}
                       setCheckedRow={setCheckedRow}
+                      data={data}
+                      setData={setData}
+                      updateReceiveCnt={updateReceiveCnt}
+                      textClick={textClick}
+                      modal4receiveDetail={modal4receiveDetail}
+                      setreceiveDetail={setreceiveDetail}
                     />
                   ))
                 ) : (

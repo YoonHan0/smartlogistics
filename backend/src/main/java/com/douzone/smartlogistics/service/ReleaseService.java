@@ -19,8 +19,9 @@ public class ReleaseService {
 	@Autowired
 	private ReleaseRepository releaseRepository;
 
-	public List<ReleaseMasterVo> findByKeyword(String releaseCode, String businessName, String releaseDate) {
-		return releaseRepository.findByKeyword(releaseCode, businessName, releaseDate);
+	public List<ReleaseMasterVo> findByKeyword(String releaseCode, String businessName,String startDate, String endDate) {
+		System.out.println("\\\\\\\\\\" + startDate+" /// "+endDate);
+		return releaseRepository.findByKeyword(releaseCode, businessName,startDate, endDate);
 	}
 
 	public List<ReleaseDetailVo> findByMasterNo(String releaseCode) {

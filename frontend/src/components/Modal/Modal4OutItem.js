@@ -38,6 +38,14 @@ const Modal4OutItem = ({
     checked === true ? checkboxRef.current.checked = true : null;
 
   }, [checked]);
+
+
+
+  console.log("뛔스트",receivecnt,stockcnt);
+
+
+
+  
   return (
     <TableRow
       key={no}
@@ -74,7 +82,6 @@ const Modal4OutItem = ({
       <TableCell>{mcode}</TableCell>
       <TableCell>{pcode}</TableCell>
       <TableCell>{pname}</TableCell>
-      <TableCell>{receivecnt}</TableCell>
       <TableCell >{stockcnt}</TableCell> {/* 주석은 이렇게 */}
     </TableRow>
   );

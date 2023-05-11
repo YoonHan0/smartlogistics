@@ -58,14 +58,39 @@ mybatis:
    config-location: classpath:mybatis/configuration.xml
    mapper-locations: classpath:mybatis/mapper/*.xml
 ---
-# development profile: spring boot configuration
+# development profile: spring boot configuration - Window OS
 spring:
    config:
       activate:
-         on-profile: development
+         on-profile: development-window
    web:
       resources:
          static-locations: classpath:/assets/, file:/smartlogistics-uploads/
+   # devtools - live reload
+   devtools:
+      livereload:
+         enabled: true
+
+
+
+# server
+server:
+   port: 8080
+   servlet:
+      context-path: /
+      encoding:
+         charset: UTF-8
+         enabled: true
+         
+---
+# development profile: spring boot configuration - Mac OS
+spring:
+   config:
+      activate:
+         on-profile: development-mac
+   web:
+      resources:
+         static-locations: classpath:/assets/, file:/Users/yoon/smartlogistics-uploads/
    # devtools - live reload
    devtools:
       livereload:

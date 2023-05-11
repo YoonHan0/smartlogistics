@@ -60,6 +60,13 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chul
 
 
 
+
+  
+
+
+
+
+
   const allCheckBox = (e) => {
 
     // e.currentTarget.checked;
@@ -110,8 +117,10 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chul
   // const dataas = [dataa];
   // console.log(dataas);
 
+  const isAllChecked = data.length > 0 ? data.every(item => item.checked) : false;
 
 
+  console.log("뿌잉뿌잉");
   return (
     <Grid
       item
@@ -168,7 +177,7 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chul
                       onChange={(e)=> {
                         allCheckBox(e);
                       }}
-                      
+                      checked={isAllChecked}
                       />
                   </TableCell>
                   <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
@@ -195,6 +204,7 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chul
                         pcode={datas.pcode}
                         pname={datas.pname}
                         stockcnt={datas.stockcnt}
+                        receivecnt={datas.receivecnt}
                         selectedRowData={selectedRowData} // 수정된 부분
                         checked={datas.checked}
                         chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}

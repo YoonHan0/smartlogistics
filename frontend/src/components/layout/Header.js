@@ -1,4 +1,4 @@
-import { Box, Button, Toolbar } from "@mui/material";
+import { Avatar, Box, Button, Toolbar } from "@mui/material";
 import styled from 'styled-components';
 import React from "react";
 import Logo from "./Logo";
@@ -46,9 +46,14 @@ const Header = ({info}) => {
             </a>
           </Box>
         </Box>
-        <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center'
+          }}>
           {/* <span style={{ backgroundImage: `url(${info.profile})` }}/> */}
-          <img src={info.profile} width="10px" height="10px" alt="img" /> {/* 이미지는 DB에 어떻게 저장되냐에 따라서 경로를 추가해주면 될듯 */}
+          <Avatar alt="img" src={info.profile} />
+          {/*<img src={info.profile} width="20px" height="20px" alt="img" /> */} {/* 이미지는 DB에 어떻게 저장되냐에 따라서 경로를 추가해주면 될듯 */}
           {info.user.jwt === "admin" ? <span>{info.name} 관리자님</span> : <span>{info.name} 사용자님</span>}
           {/* role을 보고 'admin'이면 name+관리자님 | 'user'이면 name+사용자님 */}
         </Box>
