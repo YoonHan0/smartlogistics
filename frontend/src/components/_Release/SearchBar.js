@@ -10,8 +10,10 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { format } from 'date-fns';
 
 const SerchBar = ({ callback }) => {
-  const [searchKw, setSearchKw] = useState({ rcode: "", bname: "", rdate: "" });
+  const [searchKw, setSearchKw] = useState({ rcode: '', bname: '', startdt: '', enddt: '' });
   const [searchChk, setSearchChk] = useState();
+  const [minDate, setMindate] = useState();
+
   const refForm = useRef(null);
 
   const changeHandler = (e) => {
@@ -19,9 +21,26 @@ const SerchBar = ({ callback }) => {
     setSearchKw((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAccept = (date) => {
-    setSearchKw({ ...searchKw, rdate: format(date.$d, 'yyyy-MM-dd') });
+  const handleAcceptStart = (date) => {
+    setMindate(date);
+    setSearchKw({ ...searchKw, startdt: format(date.$d, 'yyyy-MM-dd') });
     setSearchChk(true);
+  };
+  const handleAcceptEnd = (date) => {
+    setSearchKw({ ...searchKw, enddt: format(date.$d, 'yyyy-MM-dd') });
+  };
+  const submit = (e) => {
+    e.preventDefault();
+    if (searchKw.startdt !== '') {
+      setSearchChk(true);
+    } else {
+      setSearchChk(false);
+    }
+    if (searchChk) {
+      callback(searchKw);
+      setSearchChk();
+      setSearchKw({ rcode: '', bname: '', startdt: '', enddt: '' });
+    }
   };
 
   useEffect(() => {
@@ -86,19 +105,7 @@ const SerchBar = ({ callback }) => {
         component="form"
         ref={refForm}
         onSubmit={(e) => {
-          e.preventDefault();
-          if (searchKw.rdate !== '') {
-            setSearchChk(true);
-          } else {
-            setSearchChk(false);
-            // alert("날짜는 필수값입니다!");
-          }
-          if (searchChk) {
-            callback(searchKw);
-            setSearchChk();
-            refForm.current.reset();
-            setSearchKw({ rcode: '', bname: '', rdate: '' });
-          }
+          submit(e);
         }}
         sx={{
           display: "flex",
@@ -154,20 +161,54 @@ const SerchBar = ({ callback }) => {
                   textField: { size: "small" },
                 }}
                 sx={{
+                  minWidth: 0,
                   paddingLeft: 2,
-                  paddingRight: 5,
-
-                  "& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input": {
+                  '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                     padding: 0,
                     height: 30,
-                    width: 150,
+                    width: 105,
+                    marginLeft: '10px',
                   },
                   '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
                     border: searchChk === false || null ? '1px solid red' : null,
+                    width: '165px',
+                  },
+                  '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
+                    minWidth: 0,
+                    height: '35px',
                   },
                 }}
-                value={searchKw.rdate || null}
-                onAccept={handleAccept}
+                value={searchKw.startdt || null}
+                onAccept={handleAcceptStart}
+              ></DatePicker>
+              <span>~</span>
+              <DatePicker
+                readOnly={searchKw.startdt === '' || searchKw.startdt === null}
+                format="YYYY-MM-DD"
+                slotProps={{
+                  textField: { size: "small" },
+                }}
+                sx={{
+                  minWidth: 0,
+                  paddingRight: 5,
+                  '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
+                    padding: 0,
+                    height: 30,
+                    width: 105,
+                    marginLeft: '10px',
+                  },
+                  '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
+                    border: searchChk === false || null ? '1px solid red' : null,
+                    width: '165px',
+                  },
+                  '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
+                    minWidth: 0,
+                    height: '35px',
+                  },
+                }}
+                minDate={minDate || null}
+                value={searchKw.enddt || null}
+                onAccept={handleAcceptEnd}
               ></DatePicker>
             </DemoContainer>
           </LocalizationProvider>

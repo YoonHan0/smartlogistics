@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 import Donut from "../components/chart/Donut";
 import { customFetch } from "../components/custom/customFetch";
+import DateGraph from "../components/Inquiry/DateGraph";
 
 const UserMain = () => {
   const [receive, setReceive] = useState({});
@@ -207,7 +208,7 @@ const UserMain = () => {
         >
           <Box
             sx={{
-              height: "400px",
+              height: "450px",
             }}
           >
             <Box>
@@ -235,6 +236,7 @@ const UserMain = () => {
                   입고 출고현황을 그래프로 나타내줍니다.
                 </Box>
               </Typography>
+              <DateGraph inquiry={false}/>
             </Box>
           </Box>
         </Grid>

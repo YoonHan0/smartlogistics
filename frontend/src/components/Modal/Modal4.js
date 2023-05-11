@@ -44,18 +44,72 @@ const Modal4 = ({ open, onClose }) => {
   const [releaseDetail, setreleaseDetail] = useState([{}]);
   // const [checkItems, setCheckItems] = useState([]);
   const[data,setData] = useState([]);
+  const[nocheck,setNocheck] = useState([]);
 
+  
   
   useEffect(() => {
     console.log("======8888 =====");
     console.log(data);
   }, [data]);
-  const handleSaveClick = (datas) => {  // datas = {}
-    // 선택된 데이터 가져오기
-    console.log("====xxxx")
-    console.log(datas);
+
+  // const updateReceiveCnt = (count,no) => {
+  //   const updatedData = data.map((item) => {
+  //     if (item.no === no) {
+  //       return {
+  //         ...item,
+  //         stockcnt: count
+  //       };
+  //     }
+  //     return item;
+  //   });
+  //   setData(updatedData);
+
+
+  //   console.log("업데이또",updatedData)
+  //   console.log("업데이또 체크",count,no)
+  //   console.log("업데이또 데이터 체크",data)
+  // };
+
+
+
+  const handleSaveClick = (datas) => {  // datas = {no: 1, businessCode: '...', ....} / data state에 있는 [{}, {}, {}]
     setData([...data, datas]);
+    // 선택된 데이터 가져오기
+    // const newData = data.filter((item, index, self) => {
+    //   return index === self.findIndex((t) => t.no === item.no);
+    // });  
+    // console.log(" === sbepdlxj === ");
+    // console.log(newData)
+    // data.length > 0 ? setData(newData) : null;
   };
+  // const textClick = (datas) => {  // datas = {}
+  //   // 선택된 데이터 가져오기
+  //   console.log("====xxxx")
+  //   console.log(datas);
+  //   setData([...data, datas]);
+  // };
+
+  const updateReceiveCnt = (count,no) => {
+    const updatedData = modal4receiveDetail.map((item) => {
+      if (item.no === no) {
+        return {
+          ...item,
+          stockCount: count
+        };
+      }
+      return item;
+    });
+    setreceiveDetail(updatedData);
+
+
+    console.log("업데이또",updatedData)
+    console.log("업데이또 체크",count,no)
+    console.log("업데이또 데이터 체크",modal4receiveDetail)
+  };
+  
+
+
   const handleSaveMultiClick = (details) => {  // datas = {}
     // 선택된 데이터 가져오기
     console.log('checkedRow', checkedRow);
@@ -211,6 +265,12 @@ const Modal4 = ({ open, onClose }) => {
                                  setCheckedRow={setCheckedRow}
                                  clicks={handleSaveClick}
                                  multiClicks={handleSaveMultiClick}
+                                 data={data}
+                                 setData={setData}
+                                 setreceiveDetail={setreceiveDetail}
+                                 modal4receiveDetail={modal4receiveDetail}
+                                updateReceiveCnt={updateReceiveCnt}
+                             
             />
             <Modal4Outlist
               outdtail={modal4outlist}

@@ -16,6 +16,7 @@ import com.douzone.smartlogistics.annotation.DBLog;
 import com.douzone.smartlogistics.dto.JsonResult;
 import com.douzone.smartlogistics.vo.DBLogVo;
 import com.douzone.smartlogistics.service.ReleaseService;
+import com.douzone.smartlogistics.util.DateUtil;
 
 @RestController
 @RequestMapping("/api/release")
@@ -30,10 +31,22 @@ public class ReleaseController {
 	public ResponseEntity<JsonResult> readRelease(
 			@RequestParam(value = "ic", required = true, defaultValue = "") String releaseCode,
 			@RequestParam(value = "bn", required = true, defaultValue = "") String businessName,
-			@RequestParam(value = "dt", required = true, defaultValue = "") String releaseDate) {
-		System.out.println(releaseCode + " : " + businessName + " : " + releaseDate);
+			@RequestParam(value = "sdt", required = true, defaultValue = "") String startDate,
+			@RequestParam(value = "edt", required = true, defaultValue = "") String endDate) {
+		System.out.println(releaseCode + " : " + businessName + " : " + startDate + " : " + endDate);
+		if (!startDate.equals("") && endDate.equals("")) {
+			// startDate만 선택했을 시
+			endDate = startDate;
+		} 
+		if (startDate.equals("")) {
+			// 첫페이지(-7~오늘날짜~+7) => 2주치의 데이터 가져올 날짜
+			startDate = DateUtil.minusDays(6);
+			endDate = DateUtil.addDays(6);
+		}
+		System.out.println("\\\\\\\\\\" + startDate+" /// "+endDate);
+		
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(releaseService.findByKeyword(releaseCode, businessName, releaseDate)));
+				.body(JsonResult.success(releaseService.findByKeyword(releaseCode, businessName, startDate, endDate)));
 	}
 	
 	// release detail list

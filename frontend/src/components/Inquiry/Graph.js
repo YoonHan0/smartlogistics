@@ -2,39 +2,9 @@ import { Box, Button, Grid } from '@mui/material';
 import checkImg from "../../assets/img/checkmark.png";
 import React, { useState } from 'react';
 import DayGraph from './DayGraph';
-import MonthGraph from './MonthGraph';
-import YearGraph from './YearGraph';
+import DateGraph from './DateGraph';
 
-const Graph = ({
-    graph, 
-    setGraph, 
-    showGraph,
-    data,setData, 
-    startdate,
-    setStartDate,
-    settingStartdate}) => {
-  const handleClickDay =(e) => {
-    setGraph((graph) => 'day');
-    console.log(settingStartdate('day',0));
-    setStartDate(settingStartdate('day',0));
-    console.log(startdate)
-    showGraph(startdate);
-
-  }
-
-  const handleClickMonth =(e) => {
-    setGraph((graph) => 'month');
-    setStartDate()
-    setStartDate(settingStartdate('month',0));
-    showGraph(startdate);
-  }
-
-  const handleClickYear =(e) => {
-    setGraph((graph) => 'year');
-    setStartDate(settingStartdate('year'),0);
-    showGraph(startdate);
-  }
-
+const Graph = () => {
   return (
     <Grid
       item
@@ -49,7 +19,9 @@ const Graph = ({
       }}
     >
       <Box sx={{ paddingLeft: 3, width: "94%" }}>
-        <Box sx={{ display: 'flex' }}>
+        <Box 
+          sx={{ 
+            display: 'flex' }}>
           <Box
             component="img"
             src={checkImg}
@@ -71,21 +43,9 @@ const Graph = ({
             현황리스트
           </span>
         </Box>
-        <Box>
-          <Button onClick={handleClickDay}>일</Button>
-          <Button onClick={handleClickMonth}>월</Button>
-          <Button onClick={handleClickYear}>년</Button>
-        </Box>
-        {
-          graph === 'day' ?
-            <DayGraph data={data} setData={setData} showGraph={showGraph} settingStartdate={settingStartdate}/>
-            :
-            graph === 'month' ?
-              <MonthGraph data={data} setData={setData} showGraph={showGraph} settingStartdate={settingStartdate} />
-              :
-              <YearGraph data={data} setData={setData} showGraph={showGraph} settingStartdate={settingStartdate} />
-        }
-    </Box>
+
+        <DateGraph inquiry={true}/>
+      </Box>
     </Grid >
   );
 };

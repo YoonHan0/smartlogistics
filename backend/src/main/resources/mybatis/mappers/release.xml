@@ -5,28 +5,17 @@
 	<select id="findByKeyword" resultType="releasemastervo" parameterType="map">
 		<![CDATA[	
 			SELECT r.code, LEFT(r.date,10) AS 'date', u.name AS 'user_name', b.name AS 'business_name'
-			FROM release_master r 
+			FROM release_master r  
 			INNER JOIN business b 
 			ON r.business_code=b.code
 			INNER JOIN user u
 			ON u.id= r.user_id
-			
+			WHERE (b.name LIKE CONCAT('%',#{bname },'%') 
+			AND r.code LIKE CONCAT('%',#{rcode },'%')) 
+			AND DATE_FORMAT(r.date, '%Y-%m-%d') BETWEEN #{startdt} AND #{enddt}		
+			ORDER BY r.code
 		]]>
-		<choose>
-			<when test='rdate!=""'>
-			<![CDATA[
-				WHERE (b.name LIKE CONCAT('%',#{bname },'%') 
-				AND r.code LIKE CONCAT('%',#{is_code },'%')) 
-				AND LEFT(r.date,10)=#{rdate};
-			]]>
-			</when>
-			<otherwise>
-			<![CDATA[
-				WHERE (b.name LIKE CONCAT('%',#{bname },'%') 
-				AND r.code LIKE CONCAT('%',#{is_code },'%')) 
-			]]>
-			</otherwise>
-		</choose>
+		
 	</select>
 	
 	<select id="findByMasterNo" resultType="releasedetailvo" parameterType="string">
