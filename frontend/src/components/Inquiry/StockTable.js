@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Checkbox,
@@ -15,7 +15,12 @@ import {
   TextField,
 } from "@mui/material";
 import StockItem from './StockItem';
+
+
+
+
 const StockTable = ({ list }) => {
+
   return (
     <TableContainer
       component={Paper}
@@ -73,24 +78,6 @@ const StockTable = ({ list }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow sx={{
-            bgcolor: 'rgba(235, 207, 197, 0.2)',
-            border: '1px solid #000',
-            borderRadius: '10px'
-          }}>
-            <TableCell>2022-08-06</TableCell>
-            <TableCell>RV2305000011</TableCell>  
-            <TableCell>담당자이름</TableCell>
-            <TableCell>거래처이름</TableCell>
-            <TableCell>I-006</TableCell>
-            <TableCell>배</TableCell>
-            <TableCell>small</TableCell>
-            <TableCell>EA</TableCell>
-            <TableCell>100</TableCell>
-            <TableCell>100</TableCell>
-            <TableCell> </TableCell>
-            <TableCell>200</TableCell>
-          </TableRow>
           {
             list.length > 0 ? (
               list.map((item, index) =>

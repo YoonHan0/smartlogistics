@@ -3,11 +3,6 @@ import {
   Box,
   Button,
   Modal,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   TextField,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -18,6 +13,11 @@ import {
   List,
   AutoSizer,
 } from "react-virtualized";
+import Table from "../Table/Table";
+import TableBody from "../Table/TableBody";
+import TableCell from "../Table/TableCell";
+import TableRow from "../Table/TableRow";
+import TableHead from "../Table/TableHead";
 
 export default function Modal3({ open, onClose }) {
   const [person, setPerson] = useState([]);
@@ -105,7 +105,7 @@ export default function Modal3({ open, onClose }) {
         </div>
       );
     }
-    // console.log(style);
+
     return (
       <CellMeasurer
         key={key}
@@ -115,14 +115,19 @@ export default function Modal3({ open, onClose }) {
         rowIndex={index}
       >
         {({ measure }) => (
-          <div style={style} key={person[index].code}>
+          <TableRow style={style} key={person[index].code}>
             {/*스타일 넣어줘야 virtual render 적용됨*/}
-            <div align="center">{index + 1}</div>
-            <div align="center">{person[index].code}</div>
-            <div align="center">{person[index].name}</div>
-            <div align="center">{person[index].phone}</div>
-            <div align="center">선택</div>
-          </div>
+            <TableCell style={{ border: '1px solid #000' }}>
+              {index + 1}</TableCell>
+            <TableCell style={{ border: '1px solid #000' }}>
+              {person[index].code}</TableCell>
+            <TableCell style={{ border: '1px solid #000' }}>
+              {person[index].name}</TableCell>
+            <TableCell style={{ border: '1px solid #000' }}>
+              {person[index].phone}</TableCell>
+            <TableCell style={{ border: '1px solid #000' }}>
+              선택</TableCell>
+          </TableRow>
         )}
       </CellMeasurer>
     );
@@ -222,45 +227,39 @@ export default function Modal3({ open, onClose }) {
                 width={width} // Use width from AutoSizer
               >
                 {({ onRowsRendered, registerChild }) => (
-                  // <Table
-                  //   stickyHeader
-                  //   sx={{
-                  //     width: width,
-                  //     height: height,
-                  //     overflow: "auto",
-                  //     inlineSize: "auto",
-                  //     msOverflowStyle: "none",
-                  //     scrollbarWidth: "none",
-                  //     "&::-webkit-scrollbar": {
-                  //       display: "none",
-                  //     },
-                  //   }}
-                  // >
                   <>
-                    <div>
-                      <div sx={{ background: "#F6F7F9" }}>
-                        <div align="center">순번</div>
-                        <div align="center">아이디</div>
-                        <div align="center">이름</div>
-                        <div align="center">전화번호</div>
-                        <div align="center">선택</div>
-                      </div>
-                    </div>
-                    <div sx={{ width: "900px", height: "200px" }}>
-                      <List
-                        width={width}
-                        height={height}
-                        rowCount={
-                          hasNextPage ? person.length + 1 : person.length
-                        }
-                        rowHeight={cellMeasurerCache.rowHeight}
-                        rowRenderer={rowRenderer}
-                        onRowsRendered={onRowsRendered}
-                        ref={registerChild}
-                      />
-                    </div>
+                    <Table>
+                      <TableHead style={{
+                        background: '#F6F7F9'
+                      }}>
+                        <TableRow>
+                          <TableCell style={{ border: '1px solid #000' }}>
+                            순번</TableCell>
+                          <TableCell style={{ border: '1px solid #000' }}>
+                            아이디</TableCell>
+                          <TableCell style={{ border: '1px solid #000' }}>
+                            이름</TableCell>
+                          <TableCell style={{ border: '1px solid #000' }}>
+                            전화번호</TableCell>
+                          <TableCell style={{ border: '1px solid #000' }}>
+                            선택</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <List
+                          width={width}
+                          height={150}
+                          rowCount={
+                            hasNextPage ? person.length + 1 : person.length
+                          }
+                          rowHeight={cellMeasurerCache.rowHeight}
+                          rowRenderer={rowRenderer}
+                          onRowsRendered={onRowsRendered}
+                          ref={registerChild}
+                        />
+                      </TableBody>
+                    </Table>
                   </>
-                  // </Table>
                 )}
               </InfiniteLoader>
             )}

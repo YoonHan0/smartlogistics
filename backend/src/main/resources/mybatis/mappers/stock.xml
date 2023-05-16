@@ -66,7 +66,75 @@
 			FETCH NEXT 10 ROWS ONLY
 		]]>
 	</select>
-<select id="stock.getdata2" parameterType="map" resultType="stockgraphvo">
+	
+		<select id="findbykeyword" parameterType="map" resultType="stockvo">
+		<![CDATA[	
+			SELECT master_code AS code,
+			       master.date, 
+    		       state,
+			       product_code,
+			       p.name AS product_name, 
+			       u.name AS user_name, 
+			       b.name AS business_name, 
+			       size, 
+			       unit, 
+			       count, 
+			       COALESCE(
+			       			 LAG(tmp.ending_stock, 1) OVER (
+			       												PARTITION BY product_code 
+			       												    ORDER BY detail_no
+			       										   ),0
+			       		    ) AS beginning_stock, 
+	       		   tmp.ending_stock 
+	       	  FROM (
+	       	  			SELECT master_code,
+			                   detail_no, 
+			                   product_code,
+			  			 	   state,
+			  				   count,
+			  				   SUM(
+			  			     	   CASE WHEN state = 'IS' THEN -1 * count ELSE count END
+			  				      ) OVER (
+										    PARTITION BY product_code
+										        ORDER BY detail_no
+										    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+			  							 ) AS ending_stock
+			       		  FROM stock
+			   		  ORDER BY detail_no
+			   		) tmp
+        	  INNER JOIN (
+		         		(
+		         			SELECT code, 
+		         				   date, 
+		         				   user_id, 
+		         				   business_code
+		       				  FROM receive_master
+		       			)
+						UNION ALL
+						(
+							SELECT code, 
+								   date, 
+								   user_id, 
+								   business_code
+							  FROM release_master
+					    )
+		    		) AS master
+			   ON tmp.master_code = master.code
+			 INNER JOIN user u 
+			   ON master.user_id = u.id
+			 INNER JOIN business b
+			   ON master.business_code = b.code 
+			 INNER JOIN product p
+			   ON tmp.product_code = p.code
+			 WHERE (master.date >= #{sdate}
+               AND master.date <= #{edate}
+			   AND u.name LIKE CONCAT('%',#{user_name},'%')
+               AND b.name LIKE CONCAT('%',#{business_name},'%')
+               AND master_code LIKE CONCAT('%',#{code},'%'))
+			ORDER BY master.date DESC
+		]]>
+	</select>
+<select id="stock.getdata" parameterType="map" resultType="stockgraphvo">
 <![CDATA[
 	(
 SELECT A.date, COALESCE(E.state,'RV') AS state, COALESCE(E.count,0) AS count
@@ -292,125 +360,4 @@ SELECT A.date, COALESCE(E.state,'IS') AS state, COALESCE(E.count,0) AS count
 
 	]]>
 </select>
-	<select id="stock.getdata" parameterType="map" resultType="stockgraphvo">
-		<![CDATA[
-			(
-				SELECT A.date, COALESCE(s.state,'RV') AS state, COALESCE(SUM(s.count),0) AS count
-				  FROM (
-							SELECT DATE #{date} + INTERVAL n 
-							]]>
-							<choose>
-								<when test='"year".equals(state)'>
-									<![CDATA[
-										YEAR
-									]]>
-								</when>
-								<when test='"month".equals(state)'>
-									<![CDATA[
-										MONTH
-									]]>
-								</when>
-								<otherwise>
-									<![CDATA[
-										DAY
-									]]>
-								</otherwise>
-							</choose>
-							<![CDATA[
-							 AS date 
-							  FROM (
-									SELECT ROW_NUMBER() OVER () - 1 AS n 
-			                          FROM INFORMATION_SCHEMA.COLUMNS
-								   ) AS nums 
-									 WHERE n BETWEEN 0 AND 
-									 ]]>
- 							<choose>
-								<when test='"year".equals(state)'>
-									<![CDATA[
-										5
-									]]>
-								</when>
-								<when test='"month".equals(state)'>
-									<![CDATA[
-										12
-									]]>
-								</when>
-								<otherwise>
-									<![CDATA[
-										7
-									]]>
-								</otherwise>
-							</choose>
-			<![CDATA[
-					   ) A
-			 LEFT JOIN receive_master m 
-					ON A.date = m.date
-			 LEFT JOIN stock s 
-					ON m.code = s.master_code
-			  GROUP BY A.date
-			  ORDER BY A.date
-			)
-			UNION ALL
-			(
-				SELECT A.date, COALESCE(s.state,'IS') AS state, COALESCE(SUM(s.count),0) AS count
-				  FROM (
-							SELECT DATE #{date} + INTERVAL n DAY AS date 
-							  FROM (
-									SELECT ROW_NUMBER() OVER () - 1 AS n 
-			                          FROM INFORMATION_SCHEMA.COLUMNS
-								   ) AS nums 
-									 WHERE n BETWEEN 0 AND 
-									 ]]>
- 							<choose>
-								<when test='"year".equals(state)'>
-									<![CDATA[
-										5
-									]]>
-								</when>
-								<when test='"month".equals(state)'>
-									<![CDATA[
-										12
-									]]>
-								</when>
-								<otherwise>
-									<![CDATA[
-										7
-									]]>
-								</otherwise>
-							</choose>
-			<![CDATA[
-					   ) A
-			 LEFT JOIN release_master m 
-					ON A.date = m.date
-			 LEFT JOIN stock s 
-					ON m.code = s.master_code
-			  GROUP BY A.date
-			  ORDER BY A.date
-			)
-   		  ]]>
-	</select>
-		
-	<select id="stock.getrvdata" parameterType="string" resultType="map">
-		<![CDATA[
-			 SELECT m.date, SUM(s.count) AS count
-			   FROM stock s
-			  INNER JOIN receive_master m
-			     ON s.master_code = m.code
-			  WHERE (state='RV'
-			    AND m.date LIKE CONCAT(#{date },'%'))
-			  GROUP BY m.date
-		]]>
-	</select>
-	
-	<select id="stock.getisdata" parameterType="string" resultType="map">
-		<![CDATA[
-			 SELECT m.date, SUM(s.count) AS count
-			   FROM stock s
-			  INNER JOIN receive_master m
-			     ON s.master_code = m.code
-			  WHERE (state='IS'
-			    AND m.date LIKE CONCAT(#{date },'%'))
-			  GROUP BY m.date
-		]]>
-	</select>
 </mapper>

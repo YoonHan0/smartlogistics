@@ -7,13 +7,15 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { format } from 'date-fns';
 
-const SerchBar = ({ callback }) => {
+import { format } from 'date-fns';
+import dayjs from 'dayjs';
+const SerchBar = ({ callback, seDate }) => {
   const [searchKw, setSearchKw] = useState({ rcode: '', bname: '', startdt: '', enddt: '' });
   const [searchChk, setSearchChk] = useState();
   const [minDate, setMindate] = useState();
 
+  const refForm = useRef(null);
   const changeHandler = (e) => {
     const { value, name } = e.target;
     setSearchKw((prev) => ({ ...prev, [name]: value }));
@@ -41,6 +43,7 @@ const SerchBar = ({ callback }) => {
       setSearchKw({ rcode: '', bname: '', startdt: '', enddt: '' });
     }
   };
+
   useEffect(() => {
     return () => {};
   }, [searchKw]);
@@ -99,6 +102,7 @@ const SerchBar = ({ callback }) => {
 
       <FormControl
         component="form"
+        ref={refForm}
         onSubmit={(e) => {
           submit(e);
         }}
@@ -142,6 +146,7 @@ const SerchBar = ({ callback }) => {
               components={['DatePicker']}
               sx={{
                 p: 0,
+                minWidth: 0,
                 '& .css-1xhypcz-MuiStack-root': {
                   padding: 0,
                 },
@@ -150,11 +155,12 @@ const SerchBar = ({ callback }) => {
               <DatePicker
                 format="YYYY-MM-DD"
                 slotProps={{
-                  textField: { size: 'small' },
+                  textField: { size: 'small', style: { minWidth: 'unset' } },
                 }}
                 sx={{
                   minWidth: 0,
                   paddingLeft: 2,
+                  overflow: 'hidden',
                   '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                     padding: 0,
                     height: 30,
@@ -171,11 +177,17 @@ const SerchBar = ({ callback }) => {
                   },
                 }}
                 onAccept={handleAcceptStart}
-                value={searchKw.startdt || null}
+                value={searchKw.startdt || dayjs(seDate.sDate) || null}
               ></DatePicker>
               <span>~</span>
               <DatePicker
                 readOnly={searchKw.startdt === '' || searchKw.startdt === null}
+                style={{
+                  '& .css-3tvb69-MuiStack-root>.MuiTextField-root': {
+                    minWidth: 0,
+                    backgroundColor: '#333',
+                  },
+                }}
                 format="YYYY-MM-DD"
                 slotProps={{
                   textField: { size: 'small' },
@@ -183,6 +195,7 @@ const SerchBar = ({ callback }) => {
                 sx={{
                   minWidth: 0,
                   paddingRight: 5,
+                  overflow: 'hidden',
                   '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                     padding: 0,
                     height: 30,
@@ -200,7 +213,7 @@ const SerchBar = ({ callback }) => {
                 }}
                 minDate={minDate || null}
                 onAccept={handleAcceptEnd}
-                value={searchKw.enddt || null}
+                value={searchKw.enddt || dayjs(seDate.eDate) || null}
               ></DatePicker>
             </DemoContainer>
           </LocalizationProvider>

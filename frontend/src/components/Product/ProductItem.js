@@ -1,32 +1,27 @@
-import React, { useRef, useState } from "react";
-import { Checkbox, TableCell, TableRow } from "@mui/material";
+import React, { useRef, useState } from 'react';
+import { Box, Checkbox, TableCell, TableRow } from '@mui/material';
 
-const ProductItem = ({
-  no,
-  code,
-  name,
-  size,
-  unit,
-  productDetail,
-  checkedButtons,
-  changeHandler,
-}) => {
+const ProductItem = ({ no, code, name, size, unit, productDetail, checkedButtons, changeHandler, rowColor }) => {
   const refCode = useRef(null);
   return (
     <TableRow
       key={no}
       sx={{
-        ":hover": {
-          background: "#EFF8FF",
-          fontWeight: 600,
+        ':hover':
+          rowColor.current === code
+            ? ''
+            : {
+                background: '#EFF8FF',
+                fontWeight: 600,
+              },
+        '&.Mui-selected': {
+          backgroundColor: '#000',
         },
-        "&.Mui-selected": {
-          backgroundColor: "#000",
-        },
+        backgroundColor: rowColor.current === code ? '#DCF1FF' : '#FFF',
       }}
       id="searchRow"
       onClick={() => {
-        productDetail(code || "");
+        productDetail(code || '');
       }}
     >
       <TableCell align="center" sx={{ p: 0 }}>
@@ -43,7 +38,7 @@ const ProductItem = ({
       <TableCell id="code" ref={refCode}>
         {code}
       </TableCell>
-      <TableCell>{name}</TableCell>
+      <TableCell title={name}>{name.length > 10 ? name.substring(0, 10) + '...' : name}</TableCell>
       <TableCell>{size}</TableCell>
       <TableCell>{unit}</TableCell>
     </TableRow>

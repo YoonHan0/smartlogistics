@@ -18,7 +18,7 @@
 	
 	<select id="findByKeyword" resultType="uservo" parameterType="map">
 		<![CDATA[	
-			SELECT id,name,phone,password 
+			SELECT id,name,phone,password,profile
 			FROM user
 		]]>
 		 <where>
@@ -47,18 +47,42 @@
 	<select id="findByCode" resultType="uservo"
 		parameterType="string">
 		<![CDATA[	
-			SELECT id,name,phone 
+			SELECT id,name, profile,phone
 			FROM user
 			WHERE id = #{code}
 		]]>
 		</select>
 		
-		<update id="updateByCode" parameterType="map">
+	<update id="updateByCode" parameterType="map">
 		<![CDATA[
 			UPDATE user
 			SET id=#{vo.id},name=#{vo.name},phone=#{vo.phone}
 			WHERE id=#{ucode}
 		]]>
+	</update>
+		
+	<update id="updateMypageByCode" parameterType="map">
+	  <![CDATA[
+	    UPDATE user
+	  ]]>
+	  <choose>
+	    <when test="password != '' and profile!=''" >
+	      <![CDATA[
+	        SET password=#{vo.password}, name=#{vo.name}, phone=#{vo.phone}, profile=#{vo.profile}
+	      ]]>
+	    </when>
+	    <when test="password=='' and profile!=''">
+	      <![CDATA[
+	        SET name=#{vo.name}, phone=#{vo.phone}, profile=#{vo.profile}
+	      ]]>
+	    </when>
+	    <otherwise>
+	      SET id=#{ucode}, name=#{vo.name}, phone=#{vo.phone}
+	    </otherwise>
+	  </choose>
+	  <![CDATA[
+	    WHERE id=#{ucode}
+	  ]]>
 	</update>
 		
 	<select id="findUser" resultType="uservo" parameterType="uservo">
@@ -93,5 +117,13 @@
 		    WHERE id=#{value} 
 		]]>
 	</select>
+	
+	<delete id="deleteUsers" parameterType="String" >
+		<![CDATA[
+			DELETE
+			FROM user
+		    WHERE id=#{value}
+		]]>
+	</delete>
 	
 </mapper>

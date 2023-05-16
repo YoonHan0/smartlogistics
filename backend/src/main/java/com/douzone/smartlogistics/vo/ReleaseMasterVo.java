@@ -17,7 +17,7 @@ public class ReleaseMasterVo {
     private String businessCode;
     private String businessName;
     
-    private List<ReceiveDetailVo> receiveDetails;
+    private List<ReleaseDetailVo> releaseDetails;
     
     
 }

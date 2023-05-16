@@ -255,12 +255,21 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
-                      hover
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={data.productCode}
                       selected={isItemSelected}
+                      sx={{
+                        ':hover': isItemSelected
+                          ? ''
+                          : {
+                              background: '#EFF8FF',
+                              fontWeight: 600,
+                            },
+
+                        backgroundColor: isItemSelected ? '#DCF1FF' : '#FFF',
+                      }}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
@@ -400,12 +409,23 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
                       <TableRow
-                        hover
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
                         key={data.productCode}
                         selected={isItemSelected}
+                        sx={{
+                          ':hover':
+                            details.map((item) => item.productCode).indexOf(data.productCode) !== -1
+                              ? ''
+                              : {
+                                  background: '#EFF8FF',
+                                  fontWeight: 600,
+                                },
+
+                          backgroundColor:
+                            details.map((item) => item.productCode).indexOf(data.productCode) !== -1 ? '#DCF1FF' : '#FFF',
+                        }}
                       >
                         <TableCell padding="checkbox">
                           <Checkbox

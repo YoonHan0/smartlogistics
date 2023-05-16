@@ -18,6 +18,8 @@ const Receive = () => {
   const [receiveDetail, setreceiveDetail] = useState([]);
   // productAdd masterCode
   const [masterCode, setMasterCode] = useState();
+  /* date값을 가지고 있는 */
+  const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
   // Modal
   const [openManager, setOpenManager] = useState(false);
   const [openBusiness, setOpenBusiness] = useState(false);
@@ -34,6 +36,8 @@ const Receive = () => {
     userId: '',
     userName: '',
   });
+  /* detail 리스트에 있는 input 창을 나타낼지 말지를 결정하는 state */
+  const [detailInput, setDetailInput] = useState(false);
 
   // 체크박스를 다루기 위한 state
   const [checkedRow, setCheckedRow] = useState([{ master: '', state: 'f', detail: [{ no: '', state: 'f' }] }]);
@@ -100,10 +104,12 @@ const Receive = () => {
       url = `/api/receive/list?rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
     }
     await customFetch(url, { method: 'get' }).then((json) => {
-      setreceiveMaster(json.data);
+      const { dataList, sDate, eDate } = json.data; // dataList: 기존에 불러오던 data, sDate, eDate: 오늘 날짜를 기준으로 -7, +7일 date 값
+      setreceiveMaster(dataList);
+      setSeDate({ sDate: sDate, eDate: eDate });
       // 넘어온 데이터의 master code 값 담기
       setCheckedRow(
-        json.data.map((item) => ({
+        dataList.map((item) => ({
           master: item.code,
           state: 'f',
           detail: [{ no: '', state: 'f' }],
@@ -146,6 +152,7 @@ const Receive = () => {
       setMasterCode('');
       // productModal open
       toggleModal(openProduct, 'product');
+      setDetailInput(true);
     }
   };
   // ReceiveCntUpdate
@@ -332,7 +339,7 @@ const Receive = () => {
       />
       <NullModal open={openNullModal} onClose={() => setOpenNullModal(false)} />
       <Grid container spacing={2} style={{ marginLeft: '0px' }}>
-        <SearchBar callback={receiveMasterSearch} />
+        <SearchBar callback={receiveMasterSearch} seDate={seDate} />
         <ReceiveMaster
           masters={receiveMaster}
           receiveDetail={receiveDetailSearch}
@@ -360,6 +367,7 @@ const Receive = () => {
           filteredDetails={filteredDetails}
           openDeleteModalInDetail={openDeleteModalInDetail}
           openNullModal={openNullModal}
+          detailInput={detailInput}
         />
       </Grid>
     </Box>

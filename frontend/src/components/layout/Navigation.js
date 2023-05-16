@@ -174,12 +174,8 @@ const Navigation = ({ role, page }) => {
               borderRadius: "20px",
             }}
           >
-            <MenuItem text={"사원 관리"} url={"/register"}>
+            <MenuItem text={"사원 관리"} url={"/"}>
               <PersonIcon />
-            </MenuItem>
-
-            <MenuItem text={"사원 확인"} url={"/register2"}>
-              <SearchIcon />
             </MenuItem>
           </Box>
         ) : (

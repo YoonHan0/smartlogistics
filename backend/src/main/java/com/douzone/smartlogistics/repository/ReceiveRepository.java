@@ -25,6 +25,9 @@ public class ReceiveRepository {
 	public List<ReceiveDetailVo> findByMasterNo(String receiveCode) {
 		return sqlSession.selectList("receive.findByMasterNo", receiveCode);
 	}
+	public List<ReceiveMasterVo> findByName(String userName) {
+		return sqlSession.selectList("receive.findByName", userName);
+	}
 
 	public void insertMaster(ReceiveMasterVo receiveVo, DBLogVo logVO) {
 		Map<String, Object> map = Map.of("vo", receiveVo, "log", logVO);
@@ -84,5 +87,6 @@ public class ReceiveRepository {
 	public boolean deleteMasterByDetailNo(String masterCode) {
 		return 1 == sqlSession.delete("receive.deleteMasterByDetailNo", masterCode);
 	}
+
 
 }

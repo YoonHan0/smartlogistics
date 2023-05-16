@@ -1,17 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  Box,
-  Button,
-  Modal,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TextField,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import { customFetch } from "../custom/customFetch";
+import React, { useState, useEffect, useRef } from 'react';
+import { Box, Button, Modal, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import { customFetch } from '../custom/customFetch';
 
 export default function BusinessModal({ open, onClose, handleButtonClick }) {
   useEffect(() => {
@@ -19,21 +9,21 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
 
     return () => {
       setPerson([]);
-      setSearchKWD({ code: "", phone: "" });
+      setSearchKWD({ code: '', phone: '' });
       setModal({
         isLoading: false,
         hasMore: true,
         isChange: false,
       });
       page.current = 0;
-      console.log("close modal");
+      console.log('close modal');
     };
   }, [open]);
 
   const page = useRef(0);
 
   const [person, setPerson] = useState([]);
-  const [searchKWD, setSearchKWD] = useState({ code: "", phone: "" });
+  const [searchKWD, setSearchKWD] = useState({ code: '', phone: '' });
   const [modal, setModal] = useState({
     isLoading: false,
     hasMore: true,
@@ -64,7 +54,7 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
   const searchKWDfetch = async () => {
     modalChange({ isLoading: true });
     await customFetch(`/api/business/search?page=${page.current}&offset=${5}`, {
-      method: "post",
+      method: 'post',
       body: JSON.stringify(searchKWD),
     })
       .then((json) => {
@@ -81,14 +71,11 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
     modalChange({ isLoading: true });
     page.current -= 1;
     await customFetch(`/api/business/search?page=${page.current}&offset=${5}`, {
-      method: "post",
+      method: 'post',
       body: JSON.stringify(searchKWD),
     })
       .then((json) => {
-        setPerson((prev) => [
-          ...json.data,
-          ...prev.slice(person.length % 5 === 0 ? 5 : person.length % 5),
-        ]);
+        setPerson((prev) => [...json.data, ...prev.slice(person.length % 5 === 0 ? 5 : person.length % 5)]);
         modalChange({ hasMore: true, isLoading: false });
       })
       .catch(() => modalChange({ isLoading: false }));
@@ -97,43 +84,32 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
   const handleScroll = (event) => {
     const { scrollTop, offsetHeight, scrollHeight } = event.target;
     // scrollTop: 스크롤된 높이, offsetHeight: 요소의 총 높이, scrollHeight 스크롤할수있는 최대높이
-    if (
-      scrollTop + offsetHeight === scrollHeight &&
-      modal.hasMore &&
-      !modal.isLoading
-    ) {
+    if (scrollTop + offsetHeight === scrollHeight && modal.hasMore && !modal.isLoading) {
       page.current += 1;
       searchKWDfetch();
       event.target.scrollTop = 12;
-      console.log(
-        "scrollTop:",
-        scrollTop,
-        "offsetHeight:",
-        offsetHeight,
-        "scrollHeight:",
-        scrollHeight
-      );
+      console.log('scrollTop:', scrollTop, 'offsetHeight:', offsetHeight, 'scrollHeight:', scrollHeight);
     } else if (scrollTop === 0 && page.current > 0) {
       searchUpKWDfetch();
       event.target.scrollTop = scrollHeight - 160;
-      console.log(event.target.scrollTop, " ", offsetHeight, " ", scrollHeight);
+      console.log(event.target.scrollTop, ' ', offsetHeight, ' ', scrollHeight);
     }
   };
 
-  window.addEventListener("scroll", handleScroll);
+  window.addEventListener('scroll', handleScroll);
 
   return (
     <Box>
       <Modal open={open} onClose={onClose}>
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
             width: 900,
             height: 400,
-            bgcolor: "background.paper",
+            bgcolor: 'background.paper',
             borderRadius: 1,
             boxShadow: 5,
             p: 3,
@@ -142,9 +118,9 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
           <Box
             variant="h6"
             sx={{
-              fontSize: "28px",
-              textAlign: "center",
-              mb: "20px",
+              fontSize: '28px',
+              textAlign: 'center',
+              mb: '20px',
             }}
           >
             거래처
@@ -153,13 +129,13 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
             <Box
               sx={{
                 mt: 1,
-                display: "flex",
-                float: "right",
+                display: 'flex',
+                float: 'right',
               }}
             >
               <Box
                 sx={{
-                  lineHeight: "40px",
+                  lineHeight: '40px',
                   pl: 1,
                 }}
               >
@@ -177,7 +153,7 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
               ></TextField>
               <Box
                 sx={{
-                  lineHeight: "40px",
+                  lineHeight: '40px',
                   pl: 1,
                 }}
               >
@@ -200,28 +176,28 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
           </Box>
           <Box
             sx={{
-              width: "100%",
-              height: "80px",
-              borderBottom: "0.5px solid #e9e9e9",
+              width: '100%',
+              height: '80px',
+              borderBottom: '0.5px solid #e9e9e9',
             }}
           />
           <Box
             sx={{
-              width: "800px",
-              height: "190px",
-              overflow: "auto",
-              inlineSize: "auto",
-              msOverflowStyle: "none",
-              scrollbarWidth: "none",
-              "&::-webkit-scrollbar": {
-                display: "none",
+              width: '800px',
+              height: '190px',
+              overflow: 'auto',
+              inlineSize: 'auto',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              '&::-webkit-scrollbar': {
+                display: 'none',
               },
             }}
             onScroll={handleScroll}
           >
             <Table stickyHeader size="small">
               <TableHead>
-                <TableRow sx={{ background: "#F6F7F9" }}>
+                <TableRow sx={{ background: '#F6F7F9' }}>
                   <TableCell align="center">순번</TableCell>
                   <TableCell align="center">거래처코드</TableCell>
                   <TableCell align="center">거래처명</TableCell>
@@ -231,20 +207,24 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
               </TableHead>
               <TableBody>
                 {person.map((data, index) => (
-                  <TableRow key={index}>
-                    <TableCell align="center">
-                      {(page.current > 0 ? page.current - 1 : 0) * 5 +
-                        index +
-                        1}
-                    </TableCell>
+                  <TableRow
+                    key={index}
+                    sx={{
+                      ':hover': {
+                        background: '#EFF8FF',
+                        fontWeight: 600,
+                      },
+                    }}
+                  >
+                    <TableCell align="center">{(page.current > 0 ? page.current - 1 : 0) * 5 + index + 1}</TableCell>
                     <TableCell align="center">{data.code}</TableCell>
                     <TableCell align="center">{data.name}</TableCell>
                     <TableCell align="center">{data.phone}</TableCell>
                     <TableCell align="center">
                       <Button
-                        sx={{ width: "100%", p: 0 }}
+                        sx={{ width: '100%', p: 0 }}
                         onClick={() => {
-                          handleButtonClick("business", {
+                          handleButtonClick('business', {
                             businessCode: data.code,
                             businessName: data.name,
                           });

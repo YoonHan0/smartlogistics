@@ -39,8 +39,9 @@ const ReleaseDetail = ({
     openNullModal,
     filteredDetails,
     openDeleteModalInDetail,
+    openReleaseInsert,
+    detailInput
   }) => {
-    console.log("===", details);
     /** 모두 선택해주는 체크박스 (detail header부분의 체크박스) */
     const detailAllCheckBox = (checked) => {
       const updatedCheckedRow = checkedRow.map((row) => {
@@ -175,7 +176,7 @@ const ReleaseDetail = ({
                       진행상태
                     </TableCell>
                   </TableRow>
-                  {masterCode && details.length > 0 ? (
+                  {detailInput || ((!details[0] || Object.keys(details[0]).length !== 0) && masterCode && details.length) > 0 ? (
                     <TableRow>
                       <TableStickyTypeCell></TableStickyTypeCell>
                       <TableStickyTypeCell></TableStickyTypeCell>
@@ -200,9 +201,16 @@ const ReleaseDetail = ({
                               height: "27px",
                               border: 0,
                             }}
+                            placeholder="품번"
+                            onClick={() => {
+                              toggleModal(openReleaseInsert, 'releaseInsert');
+                            }}
                           />
                           <SearchIcon
                             sx={{ marginLeft: "auto", marginTop: "3px" }}
+                            onClick={() => {
+                              toggleModal(openReleaseInsert, 'releaseInsert');
+                            }}
                           />
                         </Box>
                       </TableStickyTypeCell>
@@ -216,7 +224,7 @@ const ReleaseDetail = ({
                   ) : null}
                 </TableHead>
                 <TableBody>
-                  {masterCode && details.length > 0 ? (
+                  {(!details[0] || Object.keys(details[0]).length !== 0) && masterCode && details.length > 0 ? (
                     details.map((detail, index) => (
                       <DetailItem
                         key={index}

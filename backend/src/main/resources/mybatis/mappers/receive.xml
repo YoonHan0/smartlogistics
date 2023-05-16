@@ -53,6 +53,42 @@
 			WHERE r.master_code=#{rcode }
 		]]>
 	</select>
+	<select id="findByName" resultType="receivemastervo" parameterType="string">
+		<![CDATA[	
+		SELECT  r.code,LEFT(r.date,10) AS 'date',u.name AS 'user_name',u.id AS 'user_id',b.code AS 'business_code', b.name AS 'business_name',
+		       CASE 
+		           WHEN tmp.total_cnt = tmp.대기 THEN '대기'
+		           WHEN tmp.total_cnt = tmp.완료 THEN '완료'
+		           ELSE '진행'
+		       END AS state
+		FROM receive_master r
+		INNER JOIN (SELECT master_code, 
+		             COUNT(*) AS total_cnt,
+		             SUM(CASE 
+		                     WHEN (receive_count - release_count > 0 AND release_count > 0) THEN 1
+		                     ELSE 0 
+		                 END) AS "진행",
+		             SUM(CASE 
+		                     WHEN (receive_count - release_count = 0 AND receive_count > 0) THEN 1
+		                     ELSE 0 
+		                 END) AS "완료",
+		             SUM(CASE 
+		                     WHEN (receive_count >=0 AND release_count = 0) THEN 1
+		                     ELSE 0 
+		                 END) AS "대기"
+		      FROM receive_detail 
+		      GROUP BY master_code) tmp
+		ON r.code = tmp.master_code 
+		INNER JOIN business b
+		ON r.business_code=b.code
+		INNER JOIN user u
+		ON r.user_id = u.id 			
+		WHERE u.name=#{name}
+		ORDER BY r.insert_dt
+        OFFSET 0 ROWS 
+		FETCH NEXT 5 ROWS ONLY
+		]]>
+	</select>
 	
 	<select id="findSeqByDateAndState" resultType="int" parameterType="string">
 		<![CDATA[	

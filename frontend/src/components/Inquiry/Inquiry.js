@@ -1,64 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
 import { Box, Grid } from '@mui/material';
 import List from './List';
 import Graph from './Graph';
-const inquiry = () => {
+import { customFetch } from '../custom/customFetch';
+const Inquiry = () => {
   const [state, setState] = useState(true);
   const [list, setList] = useState([]);
+  const currentDate = (value) => {
+    const current = new Date();
 
+    const year = current.getFullYear();
+    const month = String(current.getMonth() + 1).padStart(2, '0');
+    const day = String(current.getDate()+value).padStart(2, '0');
 
-  const findList = async () => {
-    try {
-      const response = await fetch("/api/inquiry/list", {
-        method: 'get',
-        headers: {
-          'Accept': 'application/json',
-          Authorization: localStorage.getItem('token'),
-        }
-      });
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-      const json = await response.json();
-      if (json.result !== 'success') {
-        throw new Error(`${json.result} ${json.message}`);
-      }
-      setList(json.data);
-      console.log(json.data);
-    } catch (err) {
-      console.log(err.message);
-    }
+    return `${year}-${month}-${day}`;
   }
+
+  const [sdate, setSdate] = useState();
+  const [edate, setEdate] = useState();
+  const [searchKw, setSearchKw] = useState({});
 
   const searchKeyword = async (keyword) => {
-    console.log(keyword);
-    try {
-      const response = await fetch("/api/inquiry/search", {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          Authorization: localStorage.getItem("token"),
-        },
-        body: JSON.stringify(keyword)
-      });
-
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-
-      const json = await response.json();
-
-      if (json.result !== 'success') {
-        throw new Error(`${json.result} ${json.message}`);
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
+    console.log(keyword)
+    await customFetch(`/api/inquiry/search?sdate=${keyword.sdate}&edate=${keyword.edate}&code=${keyword.code}&user_name=${keyword.user_name}&business_name=${keyword.business_name}`, {
+      method: "post",
+    }).then((json) => setList(json.data));
   }
 
+  useEffect(() =>{
+    setSearchKw({ sdate: currentDate(-7), edate: currentDate(7), code: '', user_name: '', business_name: '' });
+    setSdate(currentDate(-7));
+    setEdate(currentDate(7));
+  },[]);
 
+  useEffect(() =>{
+    searchKeyword(searchKw);
+  },[searchKw])
 
   return (
     <Box>
@@ -67,15 +45,23 @@ const inquiry = () => {
           <SearchBar
             item
             xs={12}
-            callback={searchKeyword}
             state={state}
-            setState={setState} />
+            setState={setState}
+            searchKeyword={searchKeyword}
+            sdate={sdate}
+            setSdate={setSdate}
+            edate={edate}
+            setEdate={setEdate}
+            searchKw={searchKw}
+            setSearchKw={setSearchKw}
+             />
           {
             state
               ?
               <List
                 list={list}
-                findList={findList} />
+                searchKw={searchKw}
+                searchKeyword={searchKeyword} />
               :
               <Graph/>
           }
@@ -85,4 +71,4 @@ const inquiry = () => {
   );
 };
 
-export default inquiry;
+export default Inquiry;

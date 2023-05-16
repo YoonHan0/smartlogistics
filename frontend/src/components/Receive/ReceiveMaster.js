@@ -213,6 +213,7 @@ const ReceiveMaster = ({
                               padding: 0,
                               height: 30,
                               width: 150,
+                              marginLeft: '10px',
                             },
                           }}
                           onAccept={handleAccept}
@@ -238,11 +239,12 @@ const ReceiveMaster = ({
                         readOnly
                         type="text"
                         style={{
-                          marginLeft: '1px',
+                          marginLeft: '10px',
                           width: '140px',
                           height: '27px',
                           border: 0,
                           font: 'inherit',
+                          cursor: 'pointer',
                         }}
                         name="userName"
                         placeholder="담당자명"
@@ -250,7 +252,7 @@ const ReceiveMaster = ({
                         onChange={onChangeHandler}
                       />
                       <SearchIcon
-                        sx={{ marginLeft: 'auto', marginTop: '3px' }}
+                        sx={{ marginLeft: 'auto', marginTop: '3px', cursor: 'pointer' }}
                         onClick={() => {
                           toggleModal(openManager, 'manager');
                         }}
@@ -273,11 +275,12 @@ const ReceiveMaster = ({
                       <input
                         type="text"
                         style={{
-                          marginLeft: '1px',
+                          marginLeft: '10px',
                           width: '140px',
                           height: '27px',
                           border: 0,
                           font: 'inherit',
+                          cursor: 'pointer',
                         }}
                         name="businessName"
                         placeholder="거래처명"
@@ -285,7 +288,7 @@ const ReceiveMaster = ({
                         onChange={onChangeHandler}
                       />
                       <SearchIcon
-                        sx={{ marginLeft: 'auto', marginTop: '3px' }}
+                        sx={{ marginLeft: 'auto', marginTop: '3px', cursor: 'pointer' }}
                         onClick={() => {
                           toggleModal(openBusiness, 'business');
                         }}

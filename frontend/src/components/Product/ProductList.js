@@ -32,6 +32,8 @@ const ProductList = ({
   deleteItemHandler,
   itemAddHandler,
   setItem,
+  rowColor,
+  codeChk,
 }) => {
   /** fetch, 즉 list를 출력하기 위한 state */
   const refForm = useRef(null);
@@ -43,6 +45,12 @@ const ProductList = ({
   /**  submit하기위한 check여부 */
   const isCheck = useRef(true);
   useEffect(() => {}, [data]);
+  useEffect(() => {
+    if (codeChk) {
+      refForm.current.reset();
+    }
+  }, [codeChk]);
+
   /** form데이터를 베열에 넣어 add*/
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -64,7 +72,9 @@ const ProductList = ({
     setData(formData);
     if (isCheck.current) {
       itemAddHandler(formData);
-      refForm.current.reset();
+      if (!codeChk) {
+        document.getElementById("code").focus();
+      }
     }
     isCheck.current = true;
   };
@@ -112,23 +122,28 @@ const ProductList = ({
     }
   };
   return (
-    <Grid item xs={8}
+    <Grid
+      item
+      xs={8}
       sx={{
-        width: '100%',
-        height: '730px',
+        width: "100%",
+        height: "730px",
         marginRight: 4,
         backgroundColor: "#FFF",
         borderRadius: "8px",
-        boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.1)',
-      }}>
-      <Box sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-      }}>
-        <Box sx={{width: '97%', display: 'flex'}}>
+        boxShadow: "5px 5px 5px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+        }}
+      >
+        <Box sx={{ width: "97%", display: "flex" }}>
           <DeleteIcon
-            sx={{padding: "7px",cursor: "pointer", marginLeft:'auto'}}
+            sx={{ padding: "7px", cursor: "pointer", marginLeft: "auto" }}
             onClick={() => {
               deleteItemHandler(checkedButtons);
               setCheckedButtons([]);
@@ -152,8 +167,8 @@ const ProductList = ({
           >
             <Table stickyHeader size="small">
               <TableHead>
-                <TableRow sx={{height: 3}}>
-                  <TableCell sx={{ width: "10%", backgroundColor: '#F6F7F9' }}>
+                <TableRow sx={{ height: 3 }}>
+                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
                     <Checkbox
                       size="small"
                       onChange={(e) => {
@@ -162,11 +177,21 @@ const ProductList = ({
                       checked={isChecked}
                     />
                   </TableCell>
-                  <TableCell sx={{ width: "10%", backgroundColor: '#F6F7F9'}}>순번</TableCell>
-                  <TableCell sx={{backgroundColor: '#F6F7F9'}}>품번</TableCell>
-                  <TableCell sx={{backgroundColor: '#F6F7F9'}}>품명</TableCell>
-                  <TableCell sx={{backgroundColor: '#F6F7F9'}}>규격</TableCell>
-                  <TableCell sx={{ width: "15%", backgroundColor: '#F6F7F9'}}>단위</TableCell>
+                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                    순번
+                  </TableCell>
+                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
+                    품번
+                  </TableCell>
+                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
+                    품명
+                  </TableCell>
+                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
+                    규격
+                  </TableCell>
+                  <TableCell sx={{ width: "15%", backgroundColor: "#F6F7F9" }}>
+                    단위
+                  </TableCell>
                 </TableRow>
                 <TableRow sx={{ height: 2, p: 0 }}>
                   <TableStickyTypeCell></TableStickyTypeCell>
@@ -176,10 +201,16 @@ const ProductList = ({
                       id="code"
                       name="code"
                       type="text"
+                      placeholder="품번"
                       variant="outlined"
                       size="small"
                       onKeyPress={handleKeyDown}
-                      error={data && data.code === "" ? true : false}
+                      error={
+                        (data && data.code === "") ||
+                        (!codeChk && codeChk != null)
+                          ? true
+                          : false
+                      }
                       InputProps={{ sx: { height: 30 } }}
                     ></TextField>
                   </TableStickyTypeCell>
@@ -188,6 +219,7 @@ const ProductList = ({
                       id="name"
                       name="name"
                       type="text"
+                      placeholder="품명"
                       variant="outlined"
                       size="small"
                       onKeyPress={handleKeyDown}
@@ -200,6 +232,7 @@ const ProductList = ({
                       id="size"
                       name="size"
                       type="text"
+                      placeholder="규격"
                       variant="outlined"
                       size="small"
                       onKeyPress={handleKeyDown}
@@ -235,6 +268,7 @@ const ProductList = ({
                       productDetail={productDetail}
                       checkedButtons={checkedButtons}
                       changeHandler={changeHandler}
+                      rowColor={rowColor}
                     />
                   ))
                 ) : (

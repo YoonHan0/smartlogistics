@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.douzone.smartlogistics.annotation.DBLog;
 import com.douzone.smartlogistics.dto.JsonResult;
@@ -51,15 +52,25 @@ public class UserController {
 	@GetMapping("/detail")
 	public ResponseEntity<JsonResult> readUser(
 			@RequestParam(value = "uc", required = true, defaultValue = "") String id) {
-		System.out.println("id");
+		System.out.println(id);
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(userService.findByCode(id)));
 	}
-	
 	
 	@PostMapping("/update")
 	public ResponseEntity<JsonResult> updateUser(
 			@RequestParam(value = "uc", required = true, defaultValue = "") String userCode,@RequestBody UserVo vo,@DBLog DBLogVo logVO) {
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(userService.updateByCode(userCode,vo,logVO)));
+	}
+
+	@PostMapping("/updateprofile")
+	public ResponseEntity<JsonResult> updateUser(
+			@RequestParam(value = "uc", required = true, defaultValue = "") String userCode,UserVo vo,	@RequestParam(value="file", required=false) MultipartFile file,@DBLog DBLogVo logVO) {
+		System.out.println("------"+vo);
+		System.out.println(file);
+		vo.setProfile(FileUploadService.restoreImage(file));
+		//return null;
+		JsonResult.success(userService.updateMypageByCode(userCode,vo,logVO));
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(vo));
 	}
 	
 	//argument에서 읽어서 합친 후 파라미터를 @AuthUser UserVo 하나만 할 지
@@ -79,6 +90,11 @@ public class UserController {
 		userService.addUser(userVo);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(userVo));
+	}
+	
+	@PostMapping("/delete")
+	public ResponseEntity<JsonResult> deleteUser(@RequestBody String[] data) {
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(userService.deleteUsers(data)));
 	}
 	
 }

@@ -64,7 +64,7 @@ const Modal4OutItem = ({
      // }}
     >
       {/* {chulgoItemOnChangeCheck(no); */}
-      <TableCell align="center">
+      <TableCell  sx={{ p: 0 }}>
       <Checkbox 
         size="small" 
         id = "test" 

@@ -1,6 +1,7 @@
 package com.douzone.smartlogistics.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,7 @@ public class ProductController {
 	@GetMapping("/list")
 	public ResponseEntity<JsonResult> readProduct(
 			@RequestParam(value = "pk", required = true, defaultValue = "") String productkeywd,
-			@RequestParam(value = "ps", required = true, defaultValue = "") String productSize
-		) {
+			@RequestParam(value = "ps", required = true, defaultValue = "") String productSize) {
 		// System.out.println(productId+":"+productName+":"+productSize);
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -49,28 +49,35 @@ public class ProductController {
 	// product update
 	@PostMapping("/update")
 	public ResponseEntity<JsonResult> updateProduct(
-			@RequestParam(value = "pc", required = true, defaultValue = "") String productCode,@RequestBody ProductVo vo,@DBLog DBLogVo logVO) {
-		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(productService.updateByCode(productCode,vo,logVO)));
+			@RequestParam(value = "pc", required = true, defaultValue = "") String productCode,
+			@RequestBody ProductVo vo, @DBLog DBLogVo logVO) {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(JsonResult.success(productService.updateByCode(productCode, vo, logVO)));
 	}
 
 	// product insert
 	@PostMapping("/data")
-	public ResponseEntity<JsonResult> insertProduct(@RequestBody ProductVo vo,@DBLog DBLogVo logVO) {
+	public ResponseEntity<JsonResult> insertProduct(@RequestBody ProductVo vo, @DBLog DBLogVo logVO) {
 		System.out.println(vo);
-		//System.out.println(authUser);
-		productService.insert(vo,logVO);
-		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(vo));
+		Map<String, Object> map = Map.of("vo", vo, "state", "false");
+		// productcode 중복체크
+		System.out.println("///"+productService.findByCode(vo.getCode()) );
+		if (productService.findByCode(vo.getCode()) == null) {
+			productService.insert(vo, logVO);
+			map = Map.of("vo", vo, "state", "true");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(map));
 	}
-	
+
 	// product delete
 	@PostMapping("/delete")
-	public ResponseEntity<JsonResult> deleteBusiness(@RequestBody List<String> deleteItem) {	
+	public ResponseEntity<JsonResult> deleteBusiness(@RequestBody List<String> deleteItem) {
 		for (String item : deleteItem) {
-		  //System.out.println(item);
-		}		
+			// System.out.println(item);
+		}
 		boolean result = productService.deleteByCode(deleteItem);
 		System.out.println(result);
-		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(result ? deleteItem:null));
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(result ? deleteItem : null));
 	}
 
 }

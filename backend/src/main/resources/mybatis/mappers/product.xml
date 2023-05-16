@@ -39,7 +39,6 @@
 			WHERE code = #{code}
 		]]>
 	</select>
-	
 	<update id="updateByCode" parameterType="map">
 		<![CDATA[
 			UPDATE product
