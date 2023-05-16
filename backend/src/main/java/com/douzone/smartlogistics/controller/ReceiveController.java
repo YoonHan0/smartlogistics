@@ -1,6 +1,8 @@
 package com.douzone.smartlogistics.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import com.douzone.smartlogistics.util.DateUtil;
 import com.douzone.smartlogistics.vo.DBLogVo;
 import com.douzone.smartlogistics.vo.ReceiveDetailVo;
 import com.douzone.smartlogistics.vo.ReceiveMasterVo;
+import com.douzone.smartlogistics.vo.ReleaseMasterVo;
 
 @RestController
 @RequestMapping("/api/receive")
@@ -45,8 +48,16 @@ public class ReceiveController {
 			endDate = DateUtil.addDays(6);
 		}
 		System.out.println(startDate+"///"+endDate);
+		List<ReceiveMasterVo> dataList = receiveService.findByKeyword(receiveCode, businessName, startDate, endDate);
+		String sDate = startDate;
+		String eDate = endDate;
+
+		Map<String, Object> responseData = new HashMap<>();
+		responseData.put("dataList", dataList);
+		responseData.put("sDate", sDate);
+		responseData.put("eDate", eDate);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(receiveService.findByKeyword(receiveCode, businessName, startDate, endDate)));
+				.body(JsonResult.success(responseData));
 	}
 
 	// receive select detailList
@@ -59,6 +70,13 @@ public class ReceiveController {
 		}
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(receiveService.findByMasterNo(receiveCode)));
+	}
+	// my receive master list
+	@GetMapping("/mylist")
+	public ResponseEntity<JsonResult> readMyReceive(
+			@RequestParam(value = "u", required = true, defaultValue = "") String userName) {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(JsonResult.success(receiveService.findByName(userName)));
 	}
 
 	// receive master,detail insert
@@ -119,5 +137,6 @@ public class ReceiveController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(receiveService.deleteDetailItem(no, masterCode, length)));
 	}
+
 
 }

@@ -1,15 +1,32 @@
-import { Button, FormControl, TextField, Typography } from "@mui/material";
-import React, { useRef, useState } from "react";
+import {
+  Button,
+  FormControl,
+  TextField,
+  Typography,
+  Modal,
+  Box,
+} from "@mui/material";
+import React, { useState } from "react";
 import sha256 from "sha256";
-import { customFetch } from "../custom/customFetch";
+
 // user 등록
-const Register = () => {
-  const [id, setId] = useState();
-  const [password, setPassword] = useState();
-  const [checkPassword, setCheckPassword] = useState();
-  const [name, setName] = useState();
+const Register = ({ open, onClose, itemAddHandler }) => {
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [checkPassword, setCheckPassword] = useState("");
+  const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const refForm = useRef(null);
+  const [onSubmit, setOnSubmit] = useState(false);
+
+  const onClickHandler = () => {
+    setId("");
+    setPassword("");
+    setCheckPassword("");
+    setName("");
+    setPhone("");
+    setOnSubmit(false);
+    onClose();
+  };
 
   // const [file, setFile] = useState('');
   const autoHyphen = (target) => {
@@ -34,31 +51,24 @@ const Register = () => {
 
   const handleRegisterSubmit = (e) => {
     e.preventDefault();
-
-    if (id === null) {
-      alert("id 입력하세요.");
-      return;
-    }
-
-    if (password === "") {
-      alert("password 입력하세요.");
-      return;
-    }
-    if (name === "") {
-      alert("name 입력하세요.");
-      return;
-    }
-    if (phone === "") {
-      alert("phone 입력하세요.");
-      return;
-    }
-
-    if (password !== checkPassword) {
-      alert("password 불일치");
-      return;
-    }
     const file = e.target["file"].files[0];
+
+    if (
+      id === "" ||
+      password === "" ||
+      name === "" ||
+      phone === "" ||
+      password !== checkPassword ||
+      !/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{0,12}$/g.test(id) ||
+      !/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{9,12}$/g.test(password)
+    ) {
+      setOnSubmit(true);
+      return;
+    }
+    setOnSubmit(false);
+    console.log("file:" + file);
     registerUser(file);
+    onClickHandler();
   };
 
   const registerUser = async (file) => {
@@ -68,106 +78,178 @@ const Register = () => {
       "password",
       sha256(document.getElementById("password").value)
     );
-    formData.append("name", document.getElementById("name").value);
-    formData.append("phone", phone.replace(/\-/g, ""));
+    formData.append("name", document.getElementById("username").value);
+    formData.append("phone", phone);
     formData.append("role", "user");
-    formData.append("file", file);  
+    formData.append("file", file);
 
-    console.log("file 데이터: ", file);
-    console.log("formData 데이터: ", typeof(formData));   // type: Object
-    // for (let key of formData.keys()) {
-    //   console.log(`${key}: ${formData.get(key)}`);
-    // }
-    
-    await customFetch(`/api/user`, { headers: { Accept: "application/json", Authorization: localStorage.getItem("token")}, method: "post", body: formData }).then(
-      () => alert("회원가입 성공하셨습니다.")
-    );
+    itemAddHandler(formData);
   };
   return (
-    <div>
-      <h1>사원 관리</h1>
-      <br></br>
-      <FormControl component="form" onSubmit={handleRegisterSubmit}>
-        <TextField
-          type="text"
-          id="id"
-          label="id"
-          name="id"
-          variant="outlined"
-          size="small"
-          onChange={(e) => setId(e.target.value)}
-        />
-        <Typography id="issue-id">
-          {id !== "" ? " " : "id가 빈값입니다."}{" "}
-        </Typography>
-        <br></br>
-        <TextField
-          type="password"
-          id="password"
-          label="password"
-          name="password"
-          variant="outlined"
-          size="small"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Typography id="issue-password">
-          {password !== "" ? " " : "password가 빈값입니다."}
-        </Typography>
-        <br></br>
-        <TextField
-          type="password"
-          id="check-password"
-          label="check-password"
-          name="check-password"
-          variant="outlined"
-          size="small"
-          onChange={(e) => setCheckPassword(e.target.value)}
-        />
-        <Typography id="issue-check-password">
-          {checkPassword !== "" ? " " : "checkPassword이 빈값입니다."}
-        </Typography>
-        <br></br>
-        <TextField
-          type="text"
-          id="name"
-          label="name"
-          name="name"
-          size="small"
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Typography id="issue-name">
-          {name !== "" ? " " : "name가 빈값입니다."}
-        </Typography>
-        <br></br>
-        <TextField
-          type="text"
-          id="phone"
-          label="phone"
-          name="phone"
-          size="small"
-          value={phone}
-          onChange={handlePhone}
-        />
-        <Typography id="issue-phone">
-          {phone !== "" ? " " : "phone가 빈값입니다."}
-        </Typography>
-        <br></br>
-
-        <TextField
-          id="file"
-          name="file"
-          type="file"
-          variant="outlined"
-          size="small"
+    <Box>
+      <Modal open={open}>
+        <Box
           sx={{
-            marginTop: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 600,
+            height: 500,
+            bgcolor: "background.paper",
+            borderRadius: 1,
+            boxShadow: 5,
+            p: 3,
           }}
-        />
-        <Button type="submit" variant="outlined">
-          Register
-        </Button>
-      </FormControl>
-    </div>
+        >
+          <FormControl component="form" onSubmit={handleRegisterSubmit}>
+            <h1>사원 관리</h1>
+            <br></br>
+            <TextField
+              type="text"
+              id="id"
+              label="id"
+              name="id"
+              variant="outlined"
+              size="small"
+              value={id}
+              onChange={(e) =>
+                setId(e.target.value.replace(/[^0-9a-zA-Z]/g, ""))
+              }
+            />
+            <Typography
+              sx={{ color: "red" }}
+              id="issue-id"
+              display={onSubmit ? "block" : "none"}
+            >
+              {id === ""
+                ? "id가 빈값입니다."
+                : !/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{0,12}$/g.test(id)
+                ? "영어, 숫자를 하나씩 포함한 최대 12자여야 합니다."
+                : " "}
+            </Typography>
+            <br></br>
+            <TextField
+              type="password"
+              id="password"
+              label="password"
+              name="password"
+              variant="outlined"
+              size="small"
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value.replace(/[^0-9a-zA-Z]/g, ""))
+              }
+            />
+            <Typography
+              sx={{ color: "red" }}
+              id="issue-password"
+              display={onSubmit ? "block" : "none"}
+            >
+              {password === ""
+                ? "password가 빈값입니다."
+                : !/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{9,12}$/g.test(password)
+                ? "영어, 숫자를 포함한 최소 9자 최대 12자여야 합니다."
+                : " "}
+            </Typography>
+            <br></br>
+            <TextField
+              type="password"
+              id="check-password"
+              label="check-password"
+              name="check-password"
+              variant="outlined"
+              size="small"
+              value={checkPassword}
+              onChange={(e) =>
+                setCheckPassword(e.target.value.replace(/[^0-9a-zA-Z]/g, ""))
+              }
+            />
+            <Typography
+              sx={{ color: "red" }}
+              id="issue-check-password"
+              display={onSubmit ? "block" : "none"}
+            >
+              {checkPassword === ""
+                ? "checkPassword이 빈값입니다."
+                : checkPassword !== password
+                ? "password와 일치하지 않습니다."
+                : ""}
+            </Typography>
+            <br></br>
+            <TextField
+              type="text"
+              id="username"
+              label="username"
+              name="username"
+              size="small"
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+            />
+            <Typography
+              sx={{ color: "red" }}
+              id="issue-name"
+              display={onSubmit ? "block" : "none"}
+            >
+              {name !== "" ? " " : "name가 빈값입니다."}
+            </Typography>
+            <br></br>
+            <TextField
+              type="text"
+              id="phone"
+              label="phone"
+              name="phone"
+              size="small"
+              value={phone}
+              onChange={handlePhone}
+            />
+            <Typography
+              sx={{ color: "red" }}
+              id="issue-phone"
+              display={onSubmit ? "block" : "none"}
+            >
+              {phone !== "" ? " " : "phone가 빈값입니다."}
+            </Typography>
+
+            <TextField
+              id="file"
+              name="file"
+              type="file"
+              variant="outlined"
+              size="small"
+              sx={{
+                marginTop: 1,
+              }}
+            />
+
+            <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+              <Button
+                sx={{
+                  marginTop: 2,
+                }}
+                type="submit"
+                variant="outlined"
+              >
+                회원가입
+              </Button>
+              <Button
+                sx={{
+                  marginTop: 2,
+                }}
+                variant="outlined"
+                onClick={onClickHandler}
+              >
+                취소
+              </Button>
+            </Box>
+          </FormControl>
+        </Box>
+      </Modal>
+    </Box>
   );
 };
 

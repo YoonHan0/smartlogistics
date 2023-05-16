@@ -42,11 +42,17 @@ public class UserService {
 	public int updateByCode(String userCode, UserVo vo,DBLogVo logVo) {
 		return  userRepository.updateByCode(userCode,vo,logVo);
 	}
+	public int updateMypageByCode(String userCode, UserVo vo,DBLogVo logVo) {
+		return  userRepository.updateMypageByCode(userCode,vo,logVo);
+	}
 	public UserVo findByCode(String UserCode) {
 		return userRepository.findByCode(UserCode);
 	}
 	public UserVo findByCodeforlocalStorage(String id) {
 		return userRepository.findByCodeForLocalStorage(id);
+	}
+	public boolean deleteUsers(String[] data) {
+		return userRepository.deleteUsers(data);
 	}
 
 }

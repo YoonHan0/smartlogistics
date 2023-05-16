@@ -34,9 +34,22 @@ function List({
   /** Delete를 위한 체크박스 State */
   const [checkedButtons, setCheckedButtons] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
-
+  const [codeChk, setCodeChk] = useState();
   /**  submit하기위한 check여부 */
   const isCheck = useRef(true);
+  const [phone, setPhone] = useState("");
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    if (value.length > 13) {
+      return;
+    }
+    setPhone(
+      value
+        .replace(/[^0-9]/g, "")
+        .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
+        .replace(/(\-{1,2})$/g, "")
+    );
+  };
 
   /** form 데이터를 관리하기 위한 state */
   const [data, setData] = useState({});
@@ -87,10 +100,16 @@ function List({
   };
   // ================================================================================
 
-  // 이건 왜 있는거지...?
   useEffect(() => {
     fetchBusinessList();
   }, []);
+
+  useEffect(() => {
+    if (codeChk) {
+      refForm.current.reset();
+      setPhone("");
+    }
+  }, [codeChk]);
 
   // =================================== ADD =======================================
   /** 데이터를 리스트에 추가하는 Handler */
@@ -98,7 +117,15 @@ function List({
     await customFetch("/api/business/add", {
       method: "post",
       body: JSON.stringify(data),
-    }).then((json) => setBusinesses([...businesses, json.data]));
+    }).then((json) => {
+      console.log(json.data);
+      if (json.data.state === "true") {
+        setBusinesses((prev) => [...prev, json.data.vo]);
+        setCodeChk(true);
+      } else {
+        setCodeChk(false);
+      }
+    });
   };
 
   /** form 데이터 변환 */
@@ -122,10 +149,11 @@ function List({
       }, {});
 
     setData(data);
-
     if (isCheck.current) {
       addItemHandler(data);
-      refForm.current.reset();
+      if (!codeChk) {
+        document.getElementById("code").focus();
+      }
     }
     isCheck.current = true;
   }
@@ -218,11 +246,16 @@ function List({
                       id="code"
                       name="code"
                       type="text"
-                      label="코드"
+                      placeholder="코드"
                       variant="outlined"
                       size="small"
                       onKeyPress={handleKeyDown}
-                      error={data && data.code === "" ? true : false}
+                      error={
+                        (data && data.code === "") ||
+                        (!codeChk && codeChk != null)
+                          ? true
+                          : false
+                      }
                       InputProps={{ sx: { height: 30 } }}
                     ></TextField>
                   </TableStickyTypeCell>
@@ -231,7 +264,7 @@ function List({
                       id="name"
                       name="name"
                       type="text"
-                      label="이름"
+                      placeholder="이름"
                       variant="outlined"
                       size="small"
                       onKeyPress={handleKeyDown}
@@ -244,12 +277,14 @@ function List({
                       id="phone"
                       name="phone"
                       type="text"
-                      label="전화번호"
+                      placeholder="전화번호"
                       variant="outlined"
                       size="small"
                       onKeyPress={handleKeyDown}
                       error={data && data.phone === "" ? true : false}
                       InputProps={{ sx: { height: 30 } }}
+                      value={phone}
+                      onChange={handlePhoneChange}
                     ></TextField>
                   </TableStickyTypeCell>
                 </TableRow>

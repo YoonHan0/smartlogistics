@@ -14,7 +14,7 @@ import {
   TextField,
   Button,
   newData,
-  checkedRow
+  checkedRow,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import styled from "styled-components";
@@ -29,11 +29,25 @@ const TableStickyTypeCell = styled(TableCell)`
     top: 50.5px;
   }
 `;
-const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chulgoItemOnChangeCheck,setData }) => {
+const Modal4Outlist = ({ 
+  outdtail,
+  modal4outlistDetail,
+  selectedRowData,
+  data,
+  chulgoItemOnChangeCheck,
+  setData,
+  handleButtonClick,
+  details,
+  releaseAdd,
+  setIsButtonDisabled,
+  isButtonDisabled }) => {
+
+
+
   const isAnyCheckedFalse = data.some(item => item.checked === false);
-  console.log(outdtail)
-  console.log("==== data ==== ")
-  console.log(data);
+  // console.log(outdtail)
+  // console.log("==== data ==== ")
+  // console.log(data);
   // data: [] === checkedButtons, deleteData: [{}, {}, ...] === rendering되는 state(data)
   //  const newData = checkedButtons.filter(item => !data.some(deleteItem => deleteItem.no === item));
   // 
@@ -95,7 +109,7 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chul
     }
     }
   
-    console.log("체크크크",checkedButtons);
+    // console.log("체크크크",checkedButtons);
 
    /** delete 체크박스 Handler  */
    const changeHandler = (checked, no) => {
@@ -118,9 +132,6 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chul
   // console.log(dataas);
 
   const isAllChecked = data.length > 0 ? data.every(item => item.checked) : false;
-
-
-  console.log("뿌잉뿌잉");
   return (
     <Grid
       item
@@ -133,21 +144,50 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chul
         borderRadius: "25px",
       }}
     >
-      <Box sx={{ display: "flex", paddingLeft: 3, width: "94%" }}>
+      <Box sx={{ display: "flex", paddingLeft: 0, width: "94%" }}>
+      <Box
+          component="img"
+          src={checkImg}
+          sx={{
+            width: '30px',
+            height: '30px',
+          }}
+        />
         <span
           style={{
             position: "relative",
             fontSize: "16px",
             fontWeight: 800,
             marginRight: "15px",
-            marginTop: "5px",
+            // marginTop: "5px",
             marginLeft: "2px",
+            height: 30
+            
           }}
         >
-          추가된 출고 리스트
+        추가된 출고 리스트
         </span>
       </Box>
-        <Button  onClick={() => {deleteChulgo();}}><strong>삭제</strong></Button>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", paddingRight: 3,cursor: "pointer", }}>
+        <DeleteIcon  onClick={() => 
+          
+          {
+            
+            deleteChulgo();
+            
+          }
+          
+          }><strong>삭제</strong></DeleteIcon>
+          </Box>
+          
+          {/* <Button  onClick={() => {
+            if ( receivecnt >= stockcnt) {
+            releaseAdd(data.filter((itemA) => !details.find((itemB) => itemB.productCode === itemA.productCode)))
+            handleButtonClick('releaseInsert', data)
+            }
+          }}>
+          <strong>추가</strong>
+        </Button> */}
       <Box
         sx={{
           display: "flex",
@@ -159,19 +199,19 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chul
           <TableContainer
             component={Paper}
             sx={{
-              width: "49%",
-              paddingLeft: 3,
+              width: "100%",
+             
               paddingTop: 0,
               boxShadow: "none",
-              height: 180,
+              height: 157,
               // marginLeft: "40px",
             }}
             // onScroll={handleScroll}
           >
             <Table stickyHeader size="small">
               <TableHead>
-                <TableRow>
-                  <TableCell sx={{ width: "5%", backgroundColor: "#F6F7F9" }}>
+                <TableRow sx={{ height: 3 }}>
+                  <TableCell sx={{ width: "5%", backgroundColor: "#F6F7F9",p:0}}>
                   <Checkbox 
                       size='small'
                       onChange={(e)=> {
@@ -197,6 +237,7 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chul
               <TableBody>
               {data.length > 0 ? (
                   data.map((datas) => (
+                    
                     <Modal4OutItem
                         key={datas.no}
                         no={datas.no}
@@ -243,7 +284,32 @@ const Modal4Outlist = ({ outdtail, modal4outlistDetail,selectedRowData,data,chul
               </TableBody>
             </Table>
           </TableContainer>
-        </FormControl>
+        </FormControl>        
+        <Box sx={{ display: "flex", justifyContent: "flex-end", paddingRight: 3 }}>
+          <Button
+          sx={{
+            mt: 2,
+            color: "#41719C",
+            border: "2px solid #41719C",
+            borderRadius: "5px",
+            marginTop:1,
+            width: "4%",
+            ":hover": {
+              color: "#fff",
+              backgroundColor: "#41719C",
+            },
+            height: "40px",
+          }}
+
+          onClick={() => {
+            if ( receivecnt >= stockcnt) {
+            releaseAdd(data.filter((itemA) => !details.find((itemB) => itemB.productCode === itemA.productCode)))
+            handleButtonClick('releaseInsert', data)
+            }
+          }}>
+          <strong>추가</strong>
+        </Button>
+        </Box> 
       </Box>
     </Grid>
   );

@@ -17,7 +17,7 @@ const StockItem = ({
 }) => {
   return (
     <TableRow sx={{
-      bgcolor: state==='RV' ? 'rgba(235, 207, 197, 0.2)':'rgba(102, 131, 189, 0.2)',
+      bgcolor: state==='RV' ? 'rgba(255, 99, 132, 0.1)':'rgba(54, 162, 235, 0.1)',
       border: '1px solid #000',
       borderRadius: '10px'
     }}>

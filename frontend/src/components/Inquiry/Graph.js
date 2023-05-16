@@ -3,6 +3,7 @@ import checkImg from "../../assets/img/checkmark.png";
 import React, { useState } from 'react';
 import DayGraph from './DayGraph';
 import DateGraph from './DateGraph';
+import DateController from './DateController';
 
 const Graph = () => {
   return (
@@ -12,6 +13,7 @@ const Graph = () => {
       sx={{
         width: "100%",
         height: 720,
+        paddingTop: 2,
         backgroundColor: "#FFF",
         borderRadius: "8px",
         marginBottom: 1.8,
@@ -21,7 +23,8 @@ const Graph = () => {
       <Box sx={{ paddingLeft: 3, width: "94%" }}>
         <Box 
           sx={{ 
-            display: 'flex' }}>
+            display: 'flex'
+            }}>
           <Box
             component="img"
             src={checkImg}
@@ -44,7 +47,7 @@ const Graph = () => {
           </span>
         </Box>
 
-        <DateGraph inquiry={true}/>
+        <DateGraph inquiry={true} page={'inquiry'} />
       </Box>
     </Grid >
   );

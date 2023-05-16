@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Useritem from "./Useritem";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -20,6 +20,8 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UserItem from "./Useritem";
+import AddIcon from "@mui/icons-material/Add";
+import RegisterModal from "./Register";
 
 /** 테이블 Header 고정을 위한 styled component 사용 */
 // top의 px값은 첫 행의 높이와 같게
@@ -35,49 +37,10 @@ const UserList = ({
   deleteItemHandler,
   itemAddHandler,
   setItem,
+  setDetail,
 }) => {
-  /** fetch, 즉 list를 출력하기 위한 state */
-  const refForm = useRef(null);
-  /** Delete를 위한 체크박스 State */
   const [checkedButtons, setCheckedButtons] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
-  /** form 데이터 */
-  const [data, setData] = useState({});
-  /**  submit하기위한 check여부 */
-  const isCheck = useRef(true);
-  useEffect(() => {}, [data]);
-  /** form데이터를 베열에 넣어 add*/
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = Array.from(refForm.current.elements, (input) => {
-      console.log(input);
-      return { n: input.name, v: input.value };
-    })
-      .filter(({ n }) => n !== "")
-      .reduce((res, { n, v }) => {
-        //console.log(`res: ${res}, n: ${n}, v: ${v}`);
-        if (v === "") {
-          if (isCheck.current) {
-            isCheck.current = false;
-            document.getElementById(n).focus();
-          }
-        }
-        res[n] = v;
-        return res;
-      }, {});
-    setData(formData);
-    if (isCheck.current) {
-      itemAddHandler(formData);
-      refForm.current.reset();
-    }
-    isCheck.current = true;
-  };
-  /** 마지막행에서 Enter 누르면 */
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSubmit(e);
-    }
-  };
 
   /**scroll 미완 */
   const [scrollTop, setScrollTop] = useState(0);
@@ -116,9 +79,10 @@ const UserList = ({
       setCheckedButtons([]);
     }
   };
-
+  //삭제 모달 관련
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
+    setDetail([]);
     setOpen(true);
   };
 
@@ -145,6 +109,24 @@ const UserList = ({
     setCheckedButtons([]);
     setIsChecked(false);
     setItem({ id: "", name: "", phone: "" });
+    handleClose();
+  };
+
+  //회원가입 모달
+  const [registerOpen, setRegisterOpen] = useState(false);
+  const handleRegisterOpen = () => {
+    setDetail([]);
+    setRegisterOpen(true);
+  };
+
+  const handleRegisterClose = () => {
+    setRegisterOpen(false);
+  };
+
+  //체크박스 관련
+  const handleCheckboxClick = (event) => {
+    event.stopPropagation();
+    setDetail([]);
   };
 
   return (
@@ -163,31 +145,56 @@ const UserList = ({
       <Modal open={open} onClose={handleClose}>
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "none",
-
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 600,
-            height: 200,
+            width: 230,
+            height: 110,
             bgcolor: "background.paper",
             borderRadius: 1,
             boxShadow: 5,
             p: 3,
           }}
         >
-          <Box>{modalMessage()}</Box>
+          <Box
+            variant="h6"
+            sx={{
+              fontSize: "20px",
+              mb: "20px",
+            }}
+          >
+            삭제
+          </Box>
+          <Box
+            sx={{
+              fontSize: "13px",
+              mb: "20px",
+            }}
+          >
+            {modalMessage()}
+          </Box>
 
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button>YES</Button>
-            <Button>NO</Button>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            {checkedButtons.length === 0 ? undefined : (
+              <Button onClick={onDeleteButton}>확인</Button>
+            )}
+            <Button onClick={handleClose}>취소</Button>
           </Box>
         </Box>
       </Modal>
+
+      <RegisterModal
+        open={registerOpen}
+        onClose={handleRegisterClose}
+        itemAddHandler={itemAddHandler}
+      />
+
       <Box
         sx={{
           display: "flex",
@@ -198,16 +205,21 @@ const UserList = ({
         <Box
           sx={{
             width: "97%",
-            display: "flex",
+            display: "table-column-group",
+            textAlign: "right",
           }}
         >
+          <AddIcon
+            sx={{ padding: "7px", cursor: "pointer", marginLeft: "auto" }}
+            onClick={handleRegisterOpen}
+          />
           <DeleteIcon
             sx={{ padding: "7px", cursor: "pointer", marginLeft: "auto" }}
             onClick={handleOpen}
           />
         </Box>
 
-        <FormControl component="form" onSubmit={handleSubmit} ref={refForm}>
+        <FormControl component="form">
           <TableContainer
             component={Paper}
             sx={{
@@ -222,7 +234,13 @@ const UserList = ({
             <Table stickyHeader size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                  <TableCell
+                    sx={{
+                      width: "10%",
+                      backgroundColor: "#F6F7F9",
+                      textAlignLast: "center",
+                    }}
+                  >
                     <Checkbox
                       size="small"
                       onChange={(e) => {
@@ -242,47 +260,7 @@ const UserList = ({
                     연락처
                   </TableCell>
                 </TableRow>
-                <TableRow sx={{ height: 2, p: 0 }}>
-                  <TableStickyTypeCell></TableStickyTypeCell>
-                  <TableStickyTypeCell></TableStickyTypeCell>
-                  <TableStickyTypeCell>
-                    <TextField
-                      id="code"
-                      name="code"
-                      type="text"
-                      variant="outlined"
-                      size="small"
-                      onKeyPress={handleKeyDown}
-                      error={data && data.code === "" ? true : false}
-                      InputProps={{ sx: { height: 30 } }}
-                    ></TextField>
-                  </TableStickyTypeCell>
-                  <TableStickyTypeCell>
-                    <TextField
-                      id="name"
-                      name="name"
-                      type="text"
-                      variant="outlined"
-                      size="small"
-                      onKeyPress={handleKeyDown}
-                      error={data && data.name === "" ? true : false}
-                      InputProps={{ sx: { height: 30 } }}
-                    ></TextField>
-                  </TableStickyTypeCell>
-                  <TableStickyTypeCell>
-                    <TextField
-                      id="size"
-                      name="size"
-                      type="text"
-                      variant="outlined"
-                      size="small"
-                      onKeyPress={handleKeyDown}
-                      error={data && data.size === "" ? true : false}
-                      InputProps={{ sx: { height: 30 } }}
-                    ></TextField>
-                  </TableStickyTypeCell>
-                  <TableStickyTypeCell></TableStickyTypeCell>
-                </TableRow>
+                <TableRow sx={{ height: 2, p: 0 }}></TableRow>
               </TableHead>
               <TableBody>
                 {users.length > 0 ? (
@@ -296,10 +274,11 @@ const UserList = ({
                       userDetail={userDetail}
                       checkedButtons={checkedButtons}
                       changeHandler={changeHandler}
+                      handleCheckboxClick={handleCheckboxClick}
                     />
                   ))
                 ) : (
-                  <TableRow>
+                  <TableRow key={users.length}>
                     <TableCell colSpan={5} sx={{ textAlign: "center" }}>
                       등록된 계정이 존재하지 않습니다.
                     </TableCell>

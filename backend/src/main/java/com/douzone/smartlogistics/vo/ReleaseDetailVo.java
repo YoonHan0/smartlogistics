@@ -14,5 +14,9 @@ public class ReleaseDetailVo {
     private String productName;
     private String productSize;
     private String productUnit;
+    private String receiveCode;
+    private String receiveDetailNo;
     private int count;
+    
+    private DBLogVo log;
 }

@@ -75,4 +75,59 @@
 		]]>
 	</delete>
 	
+	<select id="findSeqByDateAndState" resultType="int" parameterType="string">
+		<![CDATA[	
+			SELECT IF(MAX(no) IS NULL,1,(MAX(no)+1) )AS cnt FROM sequence WHERE date=#{date} and state="IS"
+		]]>
+	</select>
+	
+	<insert id="insertMaster" parameterType="map">
+		<![CDATA[
+			INSERT INTO release_master
+			VALUES (#{vo.code}, #{vo.date }, #{vo.businessCode}, #{vo.userId},#{log.id }, #{log.ip}, #{log.dt}, #{log.id }, #{log.ip}, #{log.dt})	
+	  	]]>	  		
+	</insert>
+	
+	<insert id="insertDetail" parameterType="receivedetailvo">
+		<![CDATA[
+			INSERT INTO release_detail
+			VALUES( null ,#{masterCode},#{productCode}, #{count}, #{receiveCode}, #{receiveDetailNo}, #{log.id }, #{log.ip}, #{log.dt}, #{log.id }, #{log.ip}, #{log.dt})
+	    ]]>	
+	    
+	    <selectKey keyProperty="no" resultType="long" keyColumn="no" order="AFTER">
+			<![CDATA[
+			select last_insert_id()
+			]]>
+		</selectKey>
+	  
+	</insert>
+	
+	<insert id="insertSeq" parameterType="map" >
+		<![CDATA[
+			INSERT INTO sequence
+			VALUES (#{no}, #{state}, #{date},#{log.id }, #{log.ip}, #{log.dt}, #{log.id }, #{log.ip}, #{log.dt})	
+	  	]]>	  		
+	</insert>
+	<insert id="insertStock" parameterType="receivedetailvo">
+		<![CDATA[
+			INSERT INTO stock 
+			VALUES(#{masterCode},#{no},"IS",#{productCode},#{count},#{log.id }, #{log.ip}, #{log.dt}, #{log.id }, #{log.ip}, #{log.dt});
+	    ]]>		    	  
+	</insert>
+	
+	<select id="findByName" resultType="releasemastervo" parameterType="string">
+		<![CDATA[	
+		SELECT  r.code,LEFT(r.date,10) AS 'date',u.name AS 'user_name',u.id AS 'user_id',b.code AS 'business_code', b.name AS 'business_name'
+		FROM release_master r
+		INNER JOIN business b
+		ON r.business_code=b.code
+		INNER JOIN user u
+		ON r.user_id = u.id 			
+		WHERE u.name=#{name}
+		ORDER BY r.insert_dt
+        OFFSET 0 ROWS 
+		FETCH NEXT 5 ROWS ONLY
+		]]>
+	</select>
+	
 </mapper>

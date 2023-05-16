@@ -24,72 +24,79 @@ import Modal4MasterItem from "./Modal4MasterItem";
 import Modal4ReceiveDetail from "./Modal4ReceiveDetail";
 import Modal4Outlist from "./Modal4Outlist";
 import Modal4DetailItem from "./Modal4DetailItem";
-const Modal4 = ({ open, onClose }) => {
+const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [checkedRow, setCheckedRow] = useState([{master: "", state:"f",detail: [{no:"",state:"f"}]}]);
   const rowColor = useRef();
-  // useEffect(() => {
-  //   console.log("==== row ==== ");
-  //   console.log(checkedRow);
-  // }, [checkedRow])
-  // ReleaseMaster
+  const[data,setData] = useState([]);     // 추기된 출고 리스트 관리하는 state
 
-  console.log("==== row ==== ");
-  console.log(checkedRow);
-
-
+  // ReceiveMaster
+  const [modal4receiveMaster, setreceiveMaster] = useState([]);
+  // ReceiveDetail
+  const [modal4receiveDetail, setreceiveDetail] = useState([]);
+  const[modal4outlist,setoutdetail] = useState([]);
+  
   const [releaseMaster, setreleaseMaster] = useState([]);
   // releaseDetail
   const [releaseDetail, setreleaseDetail] = useState([{}]);
   // const [checkItems, setCheckItems] = useState([]);
-  const[data,setData] = useState([]);
   const[nocheck,setNocheck] = useState([]);
+  // const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+
 
   
   
+  const graybutton = (no) => {
+    console.log("호로로롱 전", modal4receiveDetail);
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].no === no) {
+        const newModal4receiveDetail = modal4receiveDetail.map((detail) =>
+          detail.no === no ? { ...detail, disabled: true } : detail
+        );
+        console.log("호로로롱", newModal4receiveDetail);
+        setreceiveDetail(newModal4receiveDetail);
+        break;
+      }
+    }
+    console.log(modal4receiveDetail);
+  };
+
   useEffect(() => {
-    console.log("======8888 =====");
+    console.log("====== 추기된 출고 리스트 관리하는 state =====");
     console.log(data);
+    
   }, [data]);
 
-  // const updateReceiveCnt = (count,no) => {
-  //   const updatedData = data.map((item) => {
-  //     if (item.no === no) {
-  //       return {
-  //         ...item,
-  //         stockcnt: count
-  //       };
-  //     }
-  //     return item;
-  //   });
-  //   setData(updatedData);
+  useEffect(() => {
+    console.log("====== checkedRow state =====");
+    console.log(checkedRow);
+  }, [checkedRow]);
 
-
-  //   console.log("업데이또",updatedData)
-  //   console.log("업데이또 체크",count,no)
-  //   console.log("업데이또 데이터 체크",data)
-  // };
-
-
-
-  const handleSaveClick = (datas) => {  // datas = {no: 1, businessCode: '...', ....} / data state에 있는 [{}, {}, {}]
-    setData([...data, datas]);
-    // 선택된 데이터 가져오기
-    // const newData = data.filter((item, index, self) => {
-    //   return index === self.findIndex((t) => t.no === item.no);
-    // });  
-    // console.log(" === sbepdlxj === ");
-    // console.log(newData)
-    // data.length > 0 ? setData(newData) : null;
+  /* detail 리스트에서 선택 버튼 클릭 시 */
+    
+  const handleSaveClick = (datas) => {
+    // datas = {no: 1, businessCode: '...', ....} / data state에 있는 [{}, {}, {}]
+    let isDuplicate = false; // 중복 여부를 나타내는 변수
+    
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].no === datas.no) {
+        console.log("동일한 no 값을 찾았습니다: " + datas.no);
+        isDuplicate = true;
+        break; // 중복을 찾았으므로 반복문을 종료합니다.
+      }
+    }
+    
+    if (!isDuplicate) {
+      setData([...data, datas]);
+    }
   };
-  // const textClick = (datas) => {  // datas = {}
-  //   // 선택된 데이터 가져오기
-  //   console.log("====xxxx")
-  //   console.log(datas);
-  //   setData([...data, datas]);
-  // };
 
+
+  
+
+  /* detail item에서 잔량 수정후 Enter */
   const updateReceiveCnt = (count,no) => {
     const updatedData = modal4receiveDetail.map((item) => {
       if (item.no === no) {
@@ -102,40 +109,50 @@ const Modal4 = ({ open, onClose }) => {
     });
     setreceiveDetail(updatedData);
 
-
-    console.log("업데이또",updatedData)
-    console.log("업데이또 체크",count,no)
-    console.log("업데이또 데이터 체크",modal4receiveDetail)
+    
   };
   
 
+  
 
-  const handleSaveMultiClick = (details) => {  // datas = {}
-    // 선택된 데이터 가져오기
-    console.log('checkedRow', checkedRow);
-    console.log('details', details);
-    // let checkedList = checkedRow.filter(row => row.state === 't');
+  const handleSaveMultiClick = (details) => {
     let myCheckedRow = [];
-    checkedRow.forEach(row => {
-        row.detail.forEach(detail => {
-            if (detail.state === 't') {
-                // console.log(detail.no);
-              details.forEach(item => {
-                if (item.no === detail.no) {
-                  // mcode: 'RV2305000015', pcode: 'i-001', pname: '상자', stockcnt: 8
-                  // no: 9, masterCode: 'RV2305000015', productCode: 'i-001', productName: '상자', productSize: '10',
-                  myCheckedRow.push({no: item.no, mcode:item.masterCode, pcode: item.productCode, pname: item.productName, stockcnt: item.stockCount, checked: false});
-                  // console.log('item', item);
-                }
-              })
-            }
+    if (checkedRow.length > 0 && details.length > 0) {
+      checkedRow.forEach((row) => {
+        row.detail.forEach((detail) => {
+          if (detail.state === 't' || row.state === 't') {
+            details.forEach((item) => {
+              if (item.no === detail.no && item.stockCount <= item.receiveCount) { // stockcnt가 receivecnt보다 작거나 같은 경우에만 추가
+                myCheckedRow.push({
+                  no: item.no,
+                  mcode: item.masterCode,
+                  pcode: item.productCode,
+                  pname: item.productName,
+                  psize: item.productSize,
+                  punit: item.productUnit,
+                  receivecnt: item.receiveCount,
+                  stockcnt: item.stockCount,
+                  checked: false,
+                });
+              }
+            });
+          }
         });
-    })
-    //console.log('myCheckedRow', myCheckedRow);
-    setData([...data, ...myCheckedRow]);
+      });
+    }
+  
+    const newData = data.filter((item) => {
+      return !myCheckedRow.some((row) => row.no === item.no);
+    });
+  
+    if (newData.length + myCheckedRow.length === data.length) {
+      console.log('stockcnt is greater than receivecnt');
+    } else {
+      setData([...newData, ...myCheckedRow]);
+      console.log(modal4receiveDetail);
+    }
   };
-
-
+  
  
 
   // 출고 체크 박스 선택
@@ -152,20 +169,15 @@ const Modal4 = ({ open, onClose }) => {
   }
 
 
-  // ReceiveMaster
-  const [modal4receiveMaster, setreceiveMaster] = useState([]);
-  // ReceiveDetail
-  const [modal4receiveDetail, setreceiveDetail] = useState([]);
-  const[modal4outlist,setoutdetail] = useState([]);
+  
   useEffect(() => {
     modal4receiveMasterSearch(null);
   }, []);
   // ReceiveMaster검색
   const modal4receiveMasterSearch = async (searchKw) => {
-    //console.log(searchKw);
     var url = `/api/receive/list`;
     if (searchKw) {
-      url = `/api/receive/list?rc=${searchKw.rcode}&bn=${searchKw.bname}&dt=${searchKw.rdate}`;
+      url = `/api/receive/list?rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
     }
     try {
       const response = await fetch(url, {
@@ -184,12 +196,16 @@ const Modal4 = ({ open, onClose }) => {
       }
       //console.log(json.data);
       setreceiveMaster(json.data);
+      
 
       setCheckedRow(json.data.map(item => ({master: item.code, state: 'f', detail: [{no: '', state: 'f'}]})));
+      console.log("체크체크",checkedRow)
     } catch (err) {
       console.log(err);
     }
   };
+
+  
   // ReceiveDetail
   const modal4receiveDetailSearch = async (code) => {
     try {
@@ -220,6 +236,10 @@ const Modal4 = ({ open, onClose }) => {
       console.log(err);
     }
   };
+
+
+
+
   const addDetailArrayHandler = (data) => checkedRow.map((row) => {
     const { master } = row;   // row(하나의 객체)에 있는 master 프로퍼티 값을 사용한다
     const matchingData = data.filter((d) => d.masterCode === master);
@@ -251,7 +271,7 @@ const Modal4 = ({ open, onClose }) => {
               borderRadius: "8px",
             }}
           >
-          <Grid container spacing={2}>
+          <Grid >
             <Modal4Search callback={modal4receiveMasterSearch} />
             <Modal4ReceiveMaster
               masters={modal4receiveMaster}
@@ -270,6 +290,8 @@ const Modal4 = ({ open, onClose }) => {
                                  setreceiveDetail={setreceiveDetail}
                                  modal4receiveDetail={modal4receiveDetail}
                                 updateReceiveCnt={updateReceiveCnt}
+                                graybutton={graybutton}
+                              
                              
             />
             <Modal4Outlist
@@ -279,6 +301,11 @@ const Modal4 = ({ open, onClose }) => {
               chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}
               setData={setData}
               checkedRow={checkedRow}
+              handleButtonClick={handleButtonClick}
+              releaseAdd={releaseAdd}
+              details={modal4receiveDetail}
+              // setIsButtonDisabled={setIsButtonDisabled}
+              // isButtonDisabled={isButtonDisabled}
             />
           </Grid>
           </Box>

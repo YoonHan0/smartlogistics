@@ -2,15 +2,14 @@ import React, { useRef, useState } from "react";
 import { Checkbox, TableCell, TableRow } from "@mui/material";
 
 const Useritem = ({
-  key,
   no,
   id,
   name,
-  password,
   phone,
   userDetail,
   checkedButtons,
   changeHandler,
+  handleCheckboxClick,
 }) => {
   const refCode = useRef(null);
   return (
@@ -36,6 +35,7 @@ const Useritem = ({
             changeHandler(e.currentTarget.checked, id);
           }}
           checked={checkedButtons.includes(id) ? true : false}
+          onClick={handleCheckboxClick}
         />
       </TableCell>
       <TableCell>{no + 1}</TableCell>
@@ -44,7 +44,6 @@ const Useritem = ({
       </TableCell>
       <TableCell>{name}</TableCell>
       <TableCell>{phone}</TableCell>
-      <TableCell>{password}</TableCell>
     </TableRow>
   );
 };

@@ -10,6 +10,8 @@ import DeleteMasterModal from "../Modal/DeleteMasterModal";
 import DeleteDetailModal from "../Modal/DeleteDetailModal";
 import NullModal from "../Modal/NullModal";
 import { customFetch } from '../custom/customFetch';
+import Modal4 from "../Modal/Modal4";
+import { format } from 'date-fns';
 
 const Release = () => {
   /* 화면에 랜더링되는 state */
@@ -28,7 +30,7 @@ const Release = () => {
 
   const [openManager, setOpenManager] = useState(false);
   const [openBusiness, setOpenBusiness] = useState(false);
-  const [openProduct, setOpenProduct] = useState(false);    // 나중에 철환이형 Modal 사용하면 됨
+  const [openReleaseInsert, setOpenReleaseInsert] = useState(false);
 
   // ReleaseMaster data(date,business,manager)
   const [inputMaster, setInputMaster] = useState({
@@ -38,14 +40,20 @@ const Release = () => {
     userId: '',
     userName: '',
   });
+  /* detail 리스트에 있는 input 창을 나타낼지 말지를 결정하는 state */
+  const [detailInput, setDetailInput] = useState(false);
 
+  /* date값을 가지고 있는 */
+  const [seDate, setSeDate] = useState({sDate: '', eDate: ''});
   const rowColor = useRef();  // Master 행 클릭 시 background 색상 변경 Ref
+
+
   const masterStateT = checkedRow.filter(row => row.state === 't').map(row => row.master);
 
   // checkedRow에 detail 프로퍼티가 없어서 에러가 계속 발생 -> filter로 detail 프로퍼티가 존재하는지 먼저 거르고 시작
   const filteredRow = checkedRow.filter(row => row.detail !== undefined);
   const filteredDetails = filteredRow
-    .filter(row => row.master === releaseDetail[0].masterCode,) // master 코드가 같은 것 / flatMap: 배열 내 요소들을 변환하고, 각 변환된 배열 요소를 하나의 배열로 합치는 함수
+    .filter(row => row.master === releaseDetail[0].masterCode) // master 코드가 같은 것 / flatMap: 배열 내 요소들을 변환하고, 각 변환된 배열 요소를 하나의 배열로 합치는 함수
     .flatMap(row => row.detail.filter(detail => detail.state === 't' && detail.no !== ''))
     .map(detail => detail.no);
 
@@ -57,8 +65,8 @@ const Release = () => {
   const toggleModal = (open, modal) => {
     if (modal === 'manager') {
       open ? setOpenManager(false) : setOpenManager(true);
-    } else if (modal === 'product') {
-      open ? setOpenProduct(false) : setOpenProduct(true);
+    } else if (modal === 'releaseInsert') {
+      open ? setOpenReleaseInsert(false) : setOpenReleaseInsert(true);
     } else if (modal === 'business') {
       open ? setOpenBusiness(false) : setOpenBusiness(true);
     } else if(modal === 'deleteMaster') {
@@ -81,9 +89,22 @@ const Release = () => {
     console.log(checkedRow);
   }, [checkedRow])
 
+  useEffect(() => {
+    console.log(" ===== inputMaster =====");
+    console.log(inputMaster);
+  }, [inputMaster])
+  
+  useEffect(() => {
+    console.log(" ===== releaseMaster ===== ");
+    console.log(releaseMaster);
+  }, [releaseMaster])
+  
+
   const handleButtonClick = (key, data) => {
-    if (key === 'product') {
-      setOpenProduct(false);
+    console.log(" ===== handleButtonClick 데이터 출력 ===== ")
+    console.log(key, data);
+    if (key === 'releaseInsert') { 
+      setOpenReleaseInsert(false);
     } else if (key === 'manager') {
       setInputMaster({
         ...inputMaster,
@@ -101,9 +122,8 @@ const Release = () => {
     }
   };
 
-  // releaseMater nullchk
+  /** 아래의 값이 모두 있을경우 */
   const nullChkHandler = (inputMaster) => {
-    // 아래의 값이 모두 있을경우
     if (
       inputMaster.date !== '' &&
       inputMaster.businessCode !== '' &&
@@ -112,11 +132,12 @@ const Release = () => {
       inputMaster.userName !== ''
     ) {
       setInputMaster(inputMaster);
-      // 새로운 product를 추가 하기 전에 reset
-      setreleaseDetail([{}]);
+      
+      setreleaseDetail([{}]); // 새로운 product를 추가 하기 전에 reset
       setMasterCode('');
-      // productModal open
-      // toggleModal(openProduct, 'product');
+      
+      toggleModal(openReleaseInsert, 'releaseInsert');   // Release insert Madal open
+      setDetailInput(true);
     }
   };
 
@@ -144,9 +165,15 @@ const Release = () => {
       if (json.result !== "success") {
         throw new Error(`${json.result} ${json.message}`);
       }
-      setreleaseMaster(json.data);
+
+      const { dataList, sDate, eDate } = json.data;   // dataList: 기존에 불러오던 data, sDate, eDate: 오늘 날짜를 기준으로 -7, +7일 date 값
+      setreleaseMaster(dataList);
+      setSeDate({sDate: sDate, eDate: eDate});
+      
+      setreleaseDetail([{}]);   // 검색 했을 때 기존에 있는 releaseDetail List Clear
+      rowColor.current = '';    // Master 행 선택 시 Background Color 변경했던 거 Clear
       // 넘어온 데이터의 master code 값 담기
-      setCheckedRow(json.data.map(item => ({master: item.code, state: 'f', detail: [{no: '', state: 'f'}]})));
+      setCheckedRow(dataList.map(item => ({master: item.code, state: 'f', detail: [{no: '', state: 'f'}]})));
     } catch (err) {
       console.log(err);
     }
@@ -156,6 +183,7 @@ const Release = () => {
   const releaseDetailSearch = async (code) => {
     //선택한 출고의 출고번호 저장
     setMasterCode(code);
+    setInputMaster({ date: '', businessCode: '', businessName: '', userId: '', userName: '' })
     try {
       const response = await fetch(`/api/release/detail?ic=${code}`, {
         method: "get",
@@ -187,6 +215,95 @@ const Release = () => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  // ============================ release insert ============================
+  const releaseAdd = async (selectList) => {  
+    //selectList: 출고 detail List에 있는 데이터를 제외하고 출고를 위해서 추가된 데이터 === data state: [{code: "RV0000000510", no: 8, ...}, {...}, ...]
+    
+    var url = '';
+    var data = '';
+    /* vo에 담기 위해서 detailVo 형태로 key값 변경 */
+    const transformedList = selectList.map(item => ({
+      receiveDetailNo: item.no,
+      receiveCode: item.mcode,
+      productCode: item.pcode,
+      productName: item.pname,
+      productSize: item.psize,
+      productUnit: item.punit,
+      count: item.stockcnt
+    }));
+    // 어느 Master도 클릭하지 않은 상태에서 오로지 추가만 할 때
+    if (releaseDetail === null || releaseDetail === {} || releaseDetail === [] || masterCode === '') {
+      url = '/api/release/insert';
+      data = {
+        ...inputMaster,
+        releaseDetails: transformedList,
+      };
+    } else {
+      console.log("====== insert Detail ====== ");
+      // release Detail Insert
+      url = '/api/release/insertdetail';
+      data = transformedList.map((obj) => {
+        //masterCode set
+        return {
+          ...obj,
+          masterCode: masterCode,
+        };
+      });
+    }
+
+    await customFetch(url, { method: 'post', body: JSON.stringify(data) }).then((json) => {
+      // json.data: {businessCode: "...", businessName: "...", code: "...", releaseDetails: [{}, {}, ..], userId: "", userName: ""}
+      if (json.data.code) {
+        /* receiveMaster,receiveDetail Add */
+        // 등록 후 선택(rowColor Set)
+        rowColor.current = json.data.code;
+        
+        setMasterCode(json.data.code);
+        console.log("===== json.data.releaseDetails =====");
+        console.log(json.data.releaseDetails)
+        setreleaseDetail(json.data.releaseDetails);
+        setreleaseMaster((DetailList) => [
+          {
+            code: json.data.code,
+            businessName: json.data.businessName,
+            userName: json.data.userName,
+            date: json.data.date,
+          },
+          ...DetailList,
+        ]);
+        setCheckedRow((checkedRow) => [
+          ...checkedRow,
+          {
+            master: json.data.code,
+            state: 'f',
+            detail: json.data.releaseDetails.map((item) => ({
+              no: item.no,
+              state: 'f',
+            })),
+          },
+        ]);
+      } else {
+        /* releaseDetail Add */
+        json.data.map((item) => {
+          setreleaseDetail((DetailList) => [...DetailList, item]);
+        });
+
+        const updatedCheckedRow = checkedRow.map((row) => {
+          if (row.master === masterCode) {
+            const updatedDetail = row.detail.concat(json.data.map((detail) => ({ no: detail.no, state: 'f' })));
+            console.log(updatedDetail);
+            return { ...row, detail: updatedDetail };
+          } else {
+            return row;
+          }
+        });
+
+        setCheckedRow(updatedCheckedRow);
+      }
+      setInputMaster({ date: '', businessCode: '', businessName: '', userId: '', userName: '' });
+    });
   };
 
   // ============================ Delete Handler ============================
@@ -274,12 +391,13 @@ const Release = () => {
     <Box>
       <ManagerModal open={openManager} onClose={() => setOpenManager(false)} handleButtonClick={handleButtonClick} />
       <BusinessModal open={openBusiness} onClose={() => setOpenBusiness(false)} handleButtonClick={handleButtonClick} />
+      <Modal4 open={openReleaseInsert} onClose={() => setOpenReleaseInsert(false)} handleButtonClick={handleButtonClick} details={releaseDetail} releaseAdd={releaseAdd} />
       <DeleteMasterModal open={openDeleteModalInMaster} onClose={() => setOpenDeleteModalInMaster(false)} deleteMasterHandler={deleteMasterHandler} data={masterStateT}/>
       <DeleteDetailModal open={openDeleteModalInDetail} onClose={() => setOpenDeleteModalInDetail(false)} deleteDetailHandler={deleteDetailHandler} data={deleteObj} />
       <NullModal open={openNullModal} onClose={() => setOpenNullModal(false)} />
 
       <Grid container spacing={2} style={{ marginLeft: "0px" }}>
-        <SearchBar callback={releaseMasterSearch} />
+        <SearchBar callback={releaseMasterSearch} seDate={seDate} />
         <ReleaseMaster
           masters={releaseMaster}
           releaseDetail={releaseDetailSearch}
@@ -305,6 +423,8 @@ const Release = () => {
           openNullModal={openNullModal}
           filteredDetails={filteredDetails}
           openDeleteModalInDetail={openDeleteModalInDetail}
+          openReleaseInsert={openReleaseInsert}
+          detailInput={detailInput}
         />
       </Grid>
     </Box>

@@ -40,6 +40,7 @@ const ReceiveDetail = ({
   filteredDetails,
   openDeleteModalInDetail,
   openNullModal,
+  detailInput,
 }) => {
   /** 모두 선택해주는 체크박스 (detail header부분의 체크박스) */
   const detailAllCheckBox = (checked) => {
@@ -172,7 +173,7 @@ const ReceiveDetail = ({
                   <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9' }}>잔량</TableCell>
                   <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9' }}>진행상태</TableCell>
                 </TableRow>
-                {masterCode && details.length > 0 ? (
+                {detailInput || ((!details[0] || Object.keys(details[0]).length !== 0) && masterCode && details.length) > 0 ? (
                   <TableRow>
                     <TableStickyTypeCell></TableStickyTypeCell>
                     <TableStickyTypeCell></TableStickyTypeCell>
@@ -220,7 +221,7 @@ const ReceiveDetail = ({
                 ) : null}
               </TableHead>
               <TableBody>
-                {masterCode && details.length > 0 ? (
+                {(!details[0] || Object.keys(details[0]).length !== 0) && masterCode && details.length > 0 ? (
                   details.map((detail, index) => {
                     return (
                       <DetailItem

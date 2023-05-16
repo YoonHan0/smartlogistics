@@ -58,6 +58,8 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
         }
       }));
     }
+
+
   return (
     <Grid
       item
@@ -68,20 +70,31 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
         // position: "relative",
         backgroundColor: "#FFF",
         borderRadius: "25px",
-        marginBottom: 2,
+         marginBottom: 0,
+        // boxShadow: "5px 5px 5px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <Box sx={{ display: "flex",  width: "94%" }}>
+      <Box sx={{ display: "flex", paddingLeft: 0, width: "94%" ,marginBottom:1}}>
+      <Box
+          component="img"
+          src={checkImg}
+          sx={{
+            width: '30px',
+            height: '30px',
+          }}
+        />
         <span
           style={{
             position: "relative",
             fontSize: "16px",
             fontWeight: 800,
             marginRight: "15px",
-            marginTop: "0px",
-            marginLeft: "10px",
+            marginTop: "5px",
+            marginLeft: "2px",
+            height: 30
           }}
         >
+        입고리스트
         </span>
       </Box>
       <Box
@@ -95,17 +108,18 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
           <TableContainer
             component={Paper}
             sx={{
-              width: "94%",
+              width: "100%",
+              marginBottom:2,
               paddingTop: 0,
               boxShadow: "none",
-              height: 230,
+              height: 157,
               // marginLeft: "40px",
             }}
             // onScroll={handleScroll}
           >
             <Table stickyHeader size="small">
               <TableHead>
-              <span
+              {/* <span
           style={{
             position: "relative",
             fontSize: "16px",
@@ -116,36 +130,27 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
           }}
         >
           입고리스트
-        </span>
-                <TableRow>
-                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+        </span> */}
+                <TableRow sx={{ height: 3 }}>
+                  <TableCell sx={{ width: "5%", backgroundColor: "#F6F7F9", p:0, }}>
                     <Checkbox size="small"
                     onChange={(e) => {
                       masterAllCheckBox(e.currentTarget.checked);
                     }}
                     checked={checkedRow.every((row) => row.state === 't')} />
                   </TableCell>
-                  <TableCell sx={{ width: "5%", backgroundColor: "#F6F7F9" }}>
+                  <TableCell sx={{width: "10%", backgroundColor: "#F6F7F9" }}>
                     입고번호
                   </TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
+                  <TableCell sx={{  width: "10%",backgroundColor: "#F6F7F9" }}>
                     입고일
                   </TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
+                  <TableCell sx={{  width: "10%",backgroundColor: "#F6F7F9" }}>
                     담당자
                   </TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
+                  <TableCell sx={{  width: "10%",backgroundColor: "#F6F7F9" }}>
                     거래처
                   </TableCell>
-                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
-                    선택
-                  </TableCell>
-                </TableRow>
-                <TableRow sx={{ height: 5 }}>
-                  <TableStickyTypeCell></TableStickyTypeCell>
-                  <TableStickyTypeCell></TableStickyTypeCell>
-                  <TableStickyTypeCell></TableStickyTypeCell>
-                  <TableStickyTypeCell></TableStickyTypeCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -163,6 +168,8 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
                       setCheckedRow={setCheckedRow}
                       masterStateUpdate={masterStateUpdate}
                       rowColor={rowColor}
+                      state={master.state}
+                      
                     />
                   ))
                 ) : (

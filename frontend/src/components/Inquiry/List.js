@@ -16,11 +16,11 @@ import {
 import React, { useEffect } from 'react';
 import checkImg from "../../assets/img/checkmark.png";
 import StockTable from "./StockTable";
+import StockTable1 from "./StockTable1";
 
-const InquiryList = ({list, findList}) => {
+const InquiryList = ({list, searchKw, searchKeyword}) => {
   useEffect(() => {
-    console.log('gdgdg');
-    findList();
+    searchKeyword(searchKw);
   },[]);
   return (
     <Grid
@@ -29,6 +29,7 @@ const InquiryList = ({list, findList}) => {
       sx={{
         width: "100%",
         height: 720,
+        paddingTop: 2,
         backgroundColor: "#FFF",
         borderRadius: "8px",
         marginBottom: 1.8,
@@ -61,11 +62,14 @@ const InquiryList = ({list, findList}) => {
         <Box
           sx={{
             display: "flex",
+            marginTop: 1,
             flexDirection: "column",
             width: "100%",
           }}
         >
-            <StockTable list={list}/>
+            {/* <StockTable list={list}/> */}
+            <StockTable1 list={list}/>
+            
         </Box>
       </Box>
     </Grid>

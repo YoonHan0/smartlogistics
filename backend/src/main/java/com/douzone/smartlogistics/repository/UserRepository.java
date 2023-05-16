@@ -6,10 +6,9 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.douzone.smartlogistics.vo.BusinessVo;
 import com.douzone.smartlogistics.vo.DBLogVo;
-import com.douzone.smartlogistics.vo.ProductVo;
 import com.douzone.smartlogistics.vo.UserVo;
 
 @Repository
@@ -49,12 +48,26 @@ public class UserRepository {
 		return sqlSession.update("user.updateByCode",map);
 	}
 
+	public int updateMypageByCode(String userCode, UserVo vo,DBLogVo logVo) {
+		Map<String, Object> map = Map.of("ucode",userCode,"vo",vo,"password",(vo.getPassword()==null?"":vo.getPassword()), "profile",(vo.getProfile()==null?"":vo.getProfile()),"log",logVo);
+		System.out.println("___________"+map.get("password")+","+map.get("profile")+"_______________");
+		return sqlSession.update("user.updateMypageByCode",map);
+	}
+
 	public List<UserVo> findAllByKeyword(UserVo vo) {
 		return sqlSession.selectList("user.findAllByKeyword", vo);
 	}
 
 	public UserVo findByCodeForLocalStorage(String id) {
 		return sqlSession.selectOne("user.findByCodeForLocalStorage", id);
+	}
+
+	@Transactional
+	public boolean deleteUsers(String[] data) {
+		for(String userid:data) {
+			sqlSession.delete("user.deleteUsers",userid);
+		}
+		return true;
 	}
 	
 }

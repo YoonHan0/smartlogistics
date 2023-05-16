@@ -18,6 +18,7 @@ const Business = () => {
   });
   const [Detail, setDetail] = useState([]);
   const [item, setItem] = useState({ code: "", name: "", phone: "" });
+  const [codeChk, setCodeChk] = useState();
 
   // const fileInputRef = useRef(null);
 
@@ -62,6 +63,7 @@ const Business = () => {
       method: "post",
       body: JSON.stringify(datas),
     }).then((json) => setBusinesses(json.data));
+    setDetail([]);
   };
 
   // useEffect(() => {

@@ -32,4 +32,8 @@ public class StockService {
 		return stockRepository.getData(state,startDate);
 
 	}
+
+	public Object findByKeyword(Map map) {
+		return stockRepository.findByKeyword(map);
+	}
 }

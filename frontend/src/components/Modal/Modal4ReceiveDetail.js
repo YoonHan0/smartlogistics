@@ -33,7 +33,43 @@ const TableStickyTypeCell = styled(TableCell)`
     height: 30px;
   }
 `;
-const Modal4ReceiveDetail = ({ details, clicks, checkedRow, setCheckedRow, multiClicks,data,setData,updateReceiveCnt,textClick,modal4receiveDetail,setreceiveDetail }) => {
+const Modal4ReceiveDetail = ({ 
+  details,
+  clicks,
+  checkedRow,
+  setCheckedRow,
+  multiClicks,
+  data,
+  setData,
+  updateReceiveCnt,
+  textClick,
+  modal4receiveDetail,
+  setreceiveDetail,
+  graybutton
+   }) => {
+
+   console.log("간다이이잉",details);
+  
+
+
+
+
+  // const isDisabled = (no2) => {
+  //   const item = details.find((item) => item.no === no2);
+  //   console.log("첵첵",details,item);
+  //   // item.checked 값이 true인 경우 disabled 속성을 설정함
+  //   if (item && item.checked) {
+  //     console.log(true);
+  //     return true;
+  //   }
+  //   console.log(false);
+  //   return false;
+    
+  // };
+
+
+
+
   details[0] !== undefined ? console.log("1111",details[0].masterCode) : null;
 const detailAllCheckBox = (checked) => {
   const updatedCheckedRow = checkedRow.map((row) => {
@@ -57,8 +93,26 @@ const filteredRows = checkedRow.filter(row =>
   )
 );
 
-console.log('filteredRows',filteredRows )
-console.log('details', details);
+
+
+
+  const disabledchecked = (no) => {
+      const updatedData = modal4receiveDetail.map((item) => {
+        if (item.no === no) {
+          return {
+            ...item,
+            disabled: true 
+          };
+        }
+        return item;
+      });
+      setreceiveDetail(updatedData);
+  };
+
+
+
+
+  
 
   return (
     <Grid
@@ -70,9 +124,18 @@ console.log('details', details);
         // position: "relative",
         backgroundColor: "#FFF",
         borderRadius: "25px",
+        marginBottom: 0,
       }}
     >
-      <Box sx={{ display: "flex", paddingLeft: 3, width: "94%" }}>
+      <Box sx={{ display: "flex", paddingLeft: 0, width: "94%" }}>
+      <Box
+          component="img"
+          src={checkImg}
+          sx={{
+            width: '30px',
+            height: '30px',
+          }}
+        />
         <span
           style={{
             position: "relative",
@@ -81,6 +144,7 @@ console.log('details', details);
             marginRight: "15px",
             marginTop: "5px",
             marginLeft: "2px",
+            height: 30
           }}
         >
           품목리스트
@@ -97,19 +161,19 @@ console.log('details', details);
           <TableContainer
             component={Paper}
             sx={{
-              width: "94%",
-              paddingLeft: 3,
+              width: "100%",
+              
               paddingTop: 0,
               boxShadow: "none",
-              height: 200,
+              height: 157,
               // marginLeft: "40px",
             }}
             // onScroll={handleScroll}
           >
             <Table stickyHeader size="small">
               <TableHead>
-                <TableRow>
-                  <TableCell sx={{ width: "5%", backgroundColor: "#F6F7F9" }}>
+                <TableRow sx={{ height: 3 }}>
+                  <TableCell sx={{ width: "5%", backgroundColor: "#F6F7F9",p:0, }}>
                     <Checkbox
                       size="small"
                       onChange={(e) => {
@@ -140,9 +204,6 @@ console.log('details', details);
                   <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
                     출고할잔량
                   </TableCell>
-                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
-                    선택
-                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -169,8 +230,17 @@ console.log('details', details);
                       textClick={textClick}
                       modal4receiveDetail={modal4receiveDetail}
                       setreceiveDetail={setreceiveDetail}
+                      // isDisabled={isDisabled}
+                      // isButtonDisabled={isButtonDisabled}
+                      // setIsButtonDisabled={setIsButtonDisabled}
+                      graybutton={graybutton}
+                      disabled={detailss.disabled}
+
+                      
+
+                 
                     />
-                  ))
+                    ))
                 ) : (
                   <TableRow>
                     <TableCell colSpan={10} sx={{ textAlign: "center" }}>
@@ -184,18 +254,20 @@ console.log('details', details);
         </FormControl>
         <Box sx={{ display: "flex", justifyContent: "flex-end", paddingRight: 3 }}>
         <Button
+        
             sx={{
               mt: 2,
               color: "#41719C",
               border: "2px solid #41719C",
               borderRadius: "5px",
+              marginTop:1,
               ":hover": {
                 color: "#fff",
                 backgroundColor: "#41719C",
               },
               height: "40px",
             }}
-            onClick={() => {multiClicks(details)}}
+            onClick={() => {multiClicks(details);}}
           ><strong>추가</strong></Button>
     </Box>
       </Box>

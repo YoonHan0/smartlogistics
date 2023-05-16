@@ -1,23 +1,16 @@
 import { Box, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Bar, Doughnut } from "react-chartjs-2";
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import DateController from './DateController';
+import { customFetch } from '../custom/customFetch';
 
-const DateGraph = ({ inquiry }) => {
+const DateGraph = ({ inquiry, page }) => {
   const [graph, setGraph] = useState('day');
-  const [data, setData] = useState([]);
-  const [value, setValue] = useState(0);
-
-  const dateArray = data
-    .filter(data => data.state === 'RV')
-    .map(data => data.date);
-
+  const [data, setData] = useState([]);  
+  
+  // dateArray = ["2023-01-01", ....]]
+  const dateArray = data.filter(data => data.state === 'RV').map(data => data.date);
   const RVcountArray = data
     .filter(dt => dt.state === 'RV')
     .map(dt => dt.count);
@@ -28,7 +21,6 @@ const DateGraph = ({ inquiry }) => {
 
   const sum = (arr) => {
     const a = arr.reduce((total, num) => total + num, 0);
-    console.log(a);
     return a;
   }
 
@@ -38,99 +30,123 @@ const DateGraph = ({ inquiry }) => {
     const currentDate = new Date();
     
     if (graph === 'day') {
-      currentDate.setDate(currentDate.getDate() - 7 + value);
+      currentDate.setDate(currentDate.getDate() + value);
     }
 
     if (graph === 'month') {
-      currentDate.setMonth(currentDate.getMonth() - 11 + value);
+      currentDate.setMonth(currentDate.getMonth()  + value);
     }
     if (graph === 'year') {
-      currentDate.setYear(currentDate.getFullYear() - 5 + value);
+      currentDate.setYear(currentDate.getFullYear() + value);
     }
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
     const day = String(currentDate.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }
-
-  const [startdate, setStartDate] = useState(settingStartdate('day', 0));
-
-  // DatePicker의 값을 저장하는 메소드
-  const settingdate = (value) => {
-    if (graph === 'day') {
-      value.add(-7, 'day').format();
-    }
-
-    if (graph === 'month') {
-      value.add(-12, 'month').format();
-    }
-    if (graph === 'year') {
-      value.add(-5, 'year').format();
-    }
-    const year = value.get('year');
-    const month = String(value.get('month') + 1).padStart(2, '0');
-    const day = String(value.get('date')).padStart(2, '0');
     console.log(year, month, day)
     return `${year}-${month}-${day}`;
   }
 
-  // 그래프를 그리기 위해 데이터 값을 받아오는 메소드
-  const showGraph = async (startDate) => {
-    const data = {
-      state: graph
+  const [startdate, setStartDate] = useState();
+
+  useEffect(() => {
+    setStartDate(settingStartdate('day', -7));
+  },[])
+
+  // DatePicker의 값을 저장하는 메소드
+  const settingdate = (date,value) => {
+    var _date;
+    const _dayjs = dayjs(date);
+    if (graph === 'day') {
+      _date = _dayjs.add(value, 'day').format();
+      console.log(date);
     }
-    try {
-      const response = await fetch(`/api/inquiry/graph?state=${graph}&startDate=${startDate}`, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          Authorization: localStorage.getItem("token"),
-        }
-      });
 
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-
-      const json = await response.json();
-
-      if (json.result !== 'success') {
-        throw new Error(`${json.result} ${json.message}`);
-      }
-      console.log(json.data);
-      setData(json.data);
-    } catch (err) {
-      console.log(err.message);
+    if (graph === 'month') {
+      _date = _dayjs.add(value, 'month').format();
     }
+    if (graph === 'year') {
+      _date = _dayjs.add(value, 'year').format();
+    }
+    _date = _date.split('T')[0];
+    console.log(_date)
+    return _date;
   }
+
+  const onClickBefore = (e) => {
+    console.log('onClickBefore')
+    console.log(settingdate(startdate, -1))
+    setStartDate(settingdate(startdate, -1));
+  } 
+
+  const onClickAfter = (e) => {
+    console.log('onClickAfter')
+    console.log(settingdate(startdate, 1))
+    setStartDate(settingdate(startdate, 1));
+  } 
+  // 그래프를 그리기 위해 데이터 값을 받아오는 메소드
+
+  const showGraph = async(startDate) => {
+    console.log(33333)
+    await customFetch(`/api/inquiry/graph?state=${graph}&startDate=${startDate}`, {method: 'post'}).then((json)=> {
+      console.log(json.data)
+      setData(json.data);
+    })
+  }
+
+  // const showGraph = async (startDate) => {
+  //   const data = {
+  //     state: graph
+  //   }
+  //   try {
+  //     const response = await fetch(`/api/inquiry/graph?state=${graph}&startDate=${startDate}`, {
+  //       method: 'post',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //         Authorization: localStorage.getItem("token"),
+  //       }
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`${response.status} ${response.statusText}`);
+  //     }
+
+  //     const json = await response.json();
+
+  //     if (json.result !== 'success') {
+  //       throw new Error(`${json.result} ${json.message}`);
+  //     }
+  //     console.log(json.data);
+  //     setData(json.data);
+  //     setValue(0);
+  //   } catch (err) {
+  //     console.log(err.message);
+  //   }
+  // }
 
   //click 시 7일 기준으로 그래프를 보여주는 메소드
   const handleClickDay = (e) => {
+    console.log("day 실행!!")
+
+    console.log("=== dateArr in onClick!!! ==== ");
+    console.log(dateArray);
+
     setGraph('day');
-    setValue(0);
-    setStartDate(settingStartdate('day', value));
-    showGraph(startdate);
-    setSelectedBar([sum(IScountArray), sum(RVcountArray)]);
+    setStartDate(settingStartdate('day', -7));
   }
 
   //click 시 달 기준으로 12달의 그래프를 보여주는 메소드
   const handleClickMonth = (e) => {
+    console.log("month 실행!")
     setGraph('month');
-    setValue(0);
-    setStartDate(settingStartdate('month', value));
-    showGraph(startdate);
-    setSelectedBar([sum(IScountArray), sum(RVcountArray)]);
+    setStartDate(settingStartdate('month', -12));
   }
 
   //click 시 년 기준으로 5년의 그래프를 보여주는 메소드
   const handleClickYear = (e) => {
+    console.log("year 실행!")
     setGraph('year');
-    setValue(0);
-    setStartDate(settingStartdate('year'), value);
-    showGraph(startdate);
-    setSelectedBar([sum(IScountArray), sum(RVcountArray)]);
+    setStartDate(settingStartdate('year', -5));
   }
 
   // 그래프의 바를 클릭 시 Doughnut의 그래프가 보여지는 메소드
@@ -147,15 +163,31 @@ const DateGraph = ({ inquiry }) => {
 
   useEffect(() => {
     setSelectedBar([sum(IScountArray), sum(RVcountArray)]);
+    // console.log(data.filter(data => data.state === 'RV').map(data => data.date))
+    // setDateArray(data.filter(data => data.state === 'RV').map(data => data.date));
+    
   },[data]);
 
   useEffect(() => {
-    showGraph(settingStartdate(graph, value));
+    console.log("graph값", graph)
+    console.log("=== dateArr in graph, value ==== ");
+    console.log(dateArray);
+    showGraph(settingdate(startdate, 0));
     setSelectedBar([sum(IScountArray), sum(RVcountArray)]);
-  }, [graph, value]);
+  }, [startdate]);
 
-  const handleChangeDate = (value) => {
-    showGraph(settingdate(value))
+
+
+  const handleChangeDate = (date) => {
+    if(graph==='day') {
+      setStartDate(settingdate(date, -7));
+    }
+    if(graph==='month') {
+      setStartDate(settingdate(date, -12));
+    }
+    if(graph==='year') {
+      setStartDate(settingdate(date, -5));
+    }
     setSelectedBar([sum(IScountArray), sum(RVcountArray)]);
   };
 
@@ -169,7 +201,9 @@ const DateGraph = ({ inquiry }) => {
         borderWidth: 1,
         hoverBackgroundColor: "rgba(255, 99, 132, 0.4)",
         hoverBorderColor: "rgba(255, 99, 132, 0.4)",
-        data: RVcountArray
+        data: RVcountArray,
+        barThickness: 25 
+
       },
       {
         label: '출고',
@@ -178,12 +212,14 @@ const DateGraph = ({ inquiry }) => {
         borderWidth: 1,
         hoverBackgroundColor: "rgba(54, 162, 235, 0.4)",
         hoverBorderColor: "rgba(54, 162, 235, 0.4)",
-        data: IScountArray
+        data: IScountArray,
+        barThickness: 25 
+
       }
     ]
   };
 
-  const options = {
+  const barOptions = {
     legend: {
       display: true, // label 숨기기
     },
@@ -216,49 +252,67 @@ const DateGraph = ({ inquiry }) => {
     }]
   };
 
-  const options2 = {
+  const doughnutOptions = {
     type: 'doughnut',
     data: data,
+    onClick: null
   };
 
   return (
     <Box>
       <Box
         sx={{
+          height: 20,
           textAlign: 'center'
         }}>
         <Button
           sx={{
+            height: 20,
             background: graph === 'day' ? '#0671F7' : '#fff',
+            border: '1px solid #0671F7',
             borderRadius: '20px 0 0 20px',
+            ':hover' : {
+              background: graph === 'day' ? '#0671F7' : '#fff',  
+            }
           }}
           onClick={handleClickDay}>
           <Box sx={{ color: graph === 'day' ? '#fff' : '#000' }}>
-            <strong>일</strong>
+            <strong>D</strong>
           </Box>
         </Button>
 
         <Button
           sx={{
+            height: 20,
             ml: 1,
             mr: 1,
             background: graph === 'month' ? '#0671F7' : '#fff',
-            borderRadius: '0'
+            border: '1px solid #0671F7',
+            borderRadius: '0',
+            ':hover' : {
+              background: graph === 'month' ? '#0671F7' : '#fff',  
+            }
           }}
           onClick={handleClickMonth}>
           <Box sx={{ color: graph === 'month' ? '#fff' : '#000' }}>
-            <strong>월</strong>
+            <strong>M</strong>
           </Box></Button>
 
         <Button
           sx={{
+            height: 20,
             background: graph === 'year' ? '#0671F7' : '#fff',
-            borderRadius: '0 20px 20px 0'
+            border: '1px solid #0671F7',
+            borderRadius: '0 20px 20px 0',
+            ':hover' : {
+              background: graph === 'year' ? '#0671F7' : '#fff',  
+            }
           }}
           onClick={handleClickYear}>
           <Box sx={{ color: graph === 'year' ? '#fff' : '#000' }}>
-            <strong>년</strong>
-          </Box></Button>
+            <strong>Y</strong>
+          </Box>
+        </Button>
       </Box>
       <Box
         sx={{
@@ -270,33 +324,22 @@ const DateGraph = ({ inquiry }) => {
         <Box sx={{
           width: '70%'
         }}>
-          <Bar data={data1} options={options} />
+          <Bar data={data1} options={barOptions} />
         </Box>
         <Box
           sx={{
             m: 3
           }}>
-          <Doughnut data={data2} options={options} />
+          <Doughnut data={data2} options={doughnutOptions} />
         </Box>
       </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          textAlign: 'center',
-        }}>
-        <Button onClick={() => setValue(value - 1)}><ChevronLeftIcon /></Button>
-        <Box sx={{
-          display: 'flex',
-        }}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DatePicker']}>
-              <DatePicker value={dayjs(dateArray[dateArray.length - 1])} onChange={handleChangeDate} />
-            </DemoContainer>
-          </LocalizationProvider>
-        </Box>
-        <Button onClick={() => setValue(value + 1)}><ChevronRightIcon /></Button>
-      </Box>
+      {
+        page === 'inquiry' 
+        ? 
+        <DateController onClickBefore={onClickBefore} onClickAfter={onClickAfter} dateArray={dateArray} handleChangeDate={handleChangeDate}/>
+        :
+        null
+      }
     </Box>
   );
 };

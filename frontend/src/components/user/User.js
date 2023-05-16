@@ -31,14 +31,22 @@ const User = () => {
   };
 
   // product 추가
-  const itemAddHandler = async (item) => {
-    //console.log(item);
-    if (item != null) {
-      await customFetch("/api/user/data", {
-        method: "post",
-        body: JSON.stringify(item),
-      }).then((json) => setUsers([json.data, ...users]));
-    }
+  const itemAddHandler = async (obj) => {
+    await customFetch(`/api/user`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+      method: "post",
+      body: obj,
+    }).then(() => {
+      const object = {};
+      for (let [key, value] of obj.entries()) {
+        object[key] = value;
+      }
+      setUsers([...users, object]);
+      alert("회원가입 성공하셨습니다.");
+    });
   };
 
   //product 수정
@@ -64,9 +72,13 @@ const User = () => {
     await customFetch(`/api/user/delete`, {
       method: "post",
       body: JSON.stringify(data),
-    }).then((json) =>
-      setUsers(users.filter((user) => json.data.indexOf(user.code) == -1))
-    );
+    }).then((json) => {
+      if (json.data === true) {
+        setUsers(users.filter((user) => data.includes(user.id) === false));
+        setDetail([]);
+        // setItem({ id: "", name: "", phone: "", code: "" });
+      }
+    });
   };
 
   return (
@@ -86,6 +98,7 @@ const User = () => {
             itemAddHandler={itemAddHandler}
             deleteItemHandler={deleteItemHandler}
             setItem={setItem}
+            setDetail={setDetail}
           />
           <UserUpdate
             userDetail={Detail}

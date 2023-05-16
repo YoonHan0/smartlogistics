@@ -230,8 +230,10 @@ const ReceiveMaster = ({
                                 padding: 0,
                                 height: 30,
                                 width: 150,
+                                marginLeft: '10px',
                               },
                           }}
+                          value={inputMaster.date || null}
                           onAccept={handleAccept}
                           renderInput={(params) => <TextField {...params} />}
                         ></DatePicker>
@@ -255,18 +257,22 @@ const ReceiveMaster = ({
                         readOnly
                         type="text"
                         style={{
-                          marginLeft: "1px",
+                          marginLeft: "10px",
                           width: "140px",
                           height: "27px",
                           border: 0,
+                          cursor: "pointer",
                         }}
                         name="userName"
                         placeholder="담당자명"
                         value={inputMaster.userName}
                         onChange={onChangeHandler}
+                        onClick={()=> {
+                          toggleModal(openManager, 'manager');
+                        }}
                       />
                       <SearchIcon
-                        sx={{ marginLeft: "auto", marginTop: "3px" }}
+                        sx={{ marginLeft: "auto", marginTop: "3px", cursor: "pointer" }}
                         onClick={()=> {
                           toggleModal(openManager, 'manager');
                         }}
@@ -289,18 +295,22 @@ const ReceiveMaster = ({
                       <input
                         type="text"
                         style={{
-                          marginLeft: "1px",
+                          marginLeft: "10px",
                           width: "140px",
                           height: "27px",
                           border: 0,
+                          cursor: "pointer",
                         }}
                         name="businessName"
                         placeholder="거래처명"
                         value={inputMaster.businessName}
                         onChange={onChangeHandler}
+                        onClick={() => {
+                          toggleModal(openBusiness, 'business');
+                        }}
                       />
                       <SearchIcon
-                        sx={{ marginLeft: "auto", marginTop: "3px" }}
+                        sx={{ marginLeft: "auto", marginTop: "3px", cursor: "pointer" }}
                         onClick={() => {
                           toggleModal(openBusiness, 'business');
                         }}

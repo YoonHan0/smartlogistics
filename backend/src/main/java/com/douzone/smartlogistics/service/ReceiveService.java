@@ -25,6 +25,9 @@ public class ReceiveService {
 	public List<ReceiveDetailVo> findByMasterNo(String receiveCode) {
 		return receiveRepository.findByMasterNo(receiveCode);
 	}
+	public  List<ReceiveMasterVo>  findByName(String userName) {
+		return receiveRepository.findByName(userName);
+	}
 
 	public void insertMaster(ReceiveMasterVo receiveVo, DBLogVo logVO) {
 		receiveRepository.insertMaster(receiveVo, logVO);
@@ -76,4 +79,5 @@ public class ReceiveService {
 				? (isDeleteDetailSuccess && receiveRepository.deleteMasterByDetailNo(masterCode))
 				: receiveRepository.deleteDetailItem(detailNo);
 	}
+
 }

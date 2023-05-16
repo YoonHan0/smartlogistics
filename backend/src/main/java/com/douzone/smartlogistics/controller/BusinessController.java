@@ -1,8 +1,6 @@
 package com.douzone.smartlogistics.controller;
-
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,15 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.douzone.smartlogistics.annotation.DBLog;
 import com.douzone.smartlogistics.dto.JsonResult;
 import com.douzone.smartlogistics.service.BusinessService;
 import com.douzone.smartlogistics.vo.BusinessVo;
 import com.douzone.smartlogistics.vo.DBLogVo;
-
-
-
 @PreAuthorize("hasAuthority('user')")
 @RestController
 @RequestMapping("/api/business")
@@ -55,9 +49,15 @@ public class BusinessController {
 //		businessVo.setUpdateId("han0");
 //		businessVo.setUpdateIp("192.168.64.2");
 		
-		businessService.addBusinessItem(businessVo, logVo);
-		
-		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(businessVo));
+		System.out.println(businessVo);
+		Map<String, Object> map = Map.of("vo", businessVo, "state", "false");
+		// productcode 중복체크
+		System.out.println("///"+businessService.findByCode(businessVo.getCode()) );
+		if (businessService.findByCode(businessVo.getCode()) == null) {
+			businessService.addBusinessItem(businessVo, logVo);
+			map = Map.of("vo", businessVo, "state", "true");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(map));
 	}
 	
 	@GetMapping("/detail")
@@ -65,7 +65,6 @@ public class BusinessController {
 			@RequestParam(value = "bc", required = true, defaultValue = "") String businessCode) {
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(businessService.findByCode(businessCode)));
 	}
-
 	@PostMapping("/update")
 	public ResponseEntity<JsonResult> updateBusiness(
 			@RequestParam(value = "bc", required = true, defaultValue = "") String businessCode,@RequestBody BusinessVo vo, @DBLog DBLogVo logVo) {
@@ -81,6 +80,4 @@ public class BusinessController {
 		
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(businessService.deleteItem(deleteItem)));
 	}
-
-
 }

@@ -8,8 +8,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { format } from 'date-fns';
+import dayjs from 'dayjs';
 
-const SerchBar = ({ callback }) => {
+const SerchBar = ({ callback, seDate }) => {
+
+
   const [searchKw, setSearchKw] = useState({ rcode: '', bname: '', startdt: '', enddt: '' });
   const [searchChk, setSearchChk] = useState();
   const [minDate, setMindate] = useState();
@@ -27,6 +30,7 @@ const SerchBar = ({ callback }) => {
     setSearchChk(true);
   };
   const handleAcceptEnd = (date) => {
+    console.log("date====", date);
     setSearchKw({ ...searchKw, enddt: format(date.$d, 'yyyy-MM-dd') });
   };
   const submit = (e) => {
@@ -45,7 +49,9 @@ const SerchBar = ({ callback }) => {
 
   useEffect(() => {
     //callback(searchKw);
-    return () => {};
+    // return () => {};
+    console.log("searchKw 변경!");
+    console.log(searchKw);
   }, [searchKw]);
 
   return (
@@ -70,6 +76,7 @@ const SerchBar = ({ callback }) => {
           alignItems: "center",
           marginLeft: "30px",
           marginTop: "6px",
+          marginBottom: "10px",
         }}
       >
         <span
@@ -121,7 +128,7 @@ const SerchBar = ({ callback }) => {
             alignItems: "center",
           }}
         >
-          <label sx={{ fontSize: "0.5rem" }}>출고코드</label>
+          <label style={{ fontSize: "0.9rem"}}>출고코드</label>
           <TextField
             type="text"
             name="rcode"
@@ -131,7 +138,7 @@ const SerchBar = ({ callback }) => {
             InputProps={{ sx: { height: 30, width: 150 } }}
             value={searchKw.rcode}
           />
-          <label sx={{ fontSize: "0.5rem" }}>거래처</label>
+          <label style={{ fontSize: "0.9rem"}}>거래처</label>
           <TextField
             type="text"
             name="bname"
@@ -141,7 +148,7 @@ const SerchBar = ({ callback }) => {
             InputProps={{ sx: { height: 30, width: 150 } }}
             value={searchKw.bname}
           />
-          <label sx={{ fontSize: "0.5rem" }}>날짜</label>
+          <label style={{ fontSize: "0.9rem"}}>기간</label>
           <LocalizationProvider
             dateAdapter={AdapterDayjs}
             sx={{ height: "60px" }}
@@ -158,7 +165,10 @@ const SerchBar = ({ callback }) => {
               <DatePicker
                 format="YYYY-MM-DD"
                 slotProps={{
-                  textField: { size: "small" },
+                  textField: { 
+                    size: "small",
+                    style: { 'minWidth': 'unset' } 
+                  },
                 }}
                 sx={{
                   minWidth: 0,
@@ -178,7 +188,7 @@ const SerchBar = ({ callback }) => {
                     height: '35px',
                   },
                 }}
-                value={searchKw.startdt || null}
+                value={searchKw.startdt || dayjs(seDate.sDate) || null}
                 onAccept={handleAcceptStart}
               ></DatePicker>
               <span>~</span>
@@ -207,7 +217,7 @@ const SerchBar = ({ callback }) => {
                   },
                 }}
                 minDate={minDate || null}
-                value={searchKw.enddt || null}
+                value={searchKw.enddt || dayjs(seDate.eDate) || null}
                 onAccept={handleAcceptEnd}
               ></DatePicker>
             </DemoContainer>

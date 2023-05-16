@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ProductList from "./ProductList";
 import SearchBar from "./SearchBar";
 import ProductUpdate from "./ProductUpdate";
@@ -12,7 +12,8 @@ const Product = () => {
   const [Detail, setDetail] = useState([]);
 
   const [item, setItem] = useState({ code: "", name: "", size: "", unit: "" });
-
+  const rowColor = useRef();
+  const [codeChk, setCodeChk] = useState();
   useEffect(() => {
     productSearch(null);
   }, []);
@@ -27,6 +28,7 @@ const Product = () => {
     await customFetch(url, { method: "get" }).then((json) =>
       setProducts(json.data)
     );
+    setDetail([]);
   };
 
   // product 추가
@@ -36,7 +38,15 @@ const Product = () => {
       await customFetch("/api/product/data", {
         method: "post",
         body: JSON.stringify(item),
-      }).then((json) => setProducts([json.data, ...products]));
+      }).then((json) => {
+        console.log(json.data);
+        if (json.data.state === "true") {
+          setProducts((prev) => [...prev, json.data.vo]);
+          setCodeChk(true);
+        } else {
+          setCodeChk(false);
+        }
+      });
     }
   };
 
@@ -52,7 +62,10 @@ const Product = () => {
   // product 세부사항
   const productDetail = async (code) => {
     await customFetch(`/api/product/detail?pc=${code}`, { method: "get" }).then(
-      (json) => setDetail(json.data)
+      (json) => {
+        setDetail(json.data);
+        rowColor.current = code;
+      }
     );
   };
 
@@ -86,6 +99,8 @@ const Product = () => {
             itemAddHandler={itemAddHandler}
             deleteItemHandler={deleteItemHandler}
             setItem={setItem}
+            rowColor={rowColor}
+            codeChk={codeChk}
           />
           <ProductUpdate
             productDetail={Detail}

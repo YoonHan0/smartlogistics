@@ -16,7 +16,9 @@ public class FileUploadService {
 	String SAVE_PATH = "/smartlogistics-uploads/smartlogistics";
 	
 	public String restoreImage(MultipartFile file) throws RuntimeException {
-		
+		if(file==null) {
+			return "";
+		}
 		if (System.getProperty("os.name").startsWith("Mac")) {
 		    SAVE_PATH = "/Users/" + System.getProperty("user.name") + "/smartlogistics-uploads/smartlogistics";
 		}

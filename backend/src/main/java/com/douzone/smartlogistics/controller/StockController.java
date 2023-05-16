@@ -32,16 +32,17 @@ public class StockController {
 	
 	@PostMapping("search")
 	public ResponseEntity<JsonResult> search(
-			@RequestParam(value= "rdate", required = true, defaultValue="") String rdate,			
+			@RequestParam(value= "sdate", required = true, defaultValue="") String sdate,
+			@RequestParam(value= "edate", required = true, defaultValue="") String edate,			
 			@RequestParam(value= "code", required = true, defaultValue="") String code,
 			@RequestParam(value= "user_name", required = true, defaultValue="") String user_name,
 			@RequestParam(value= "business_name", required = true, defaultValue="") String business_name) {
-		System.out.println("rdate : "+rdate);
-		System.out.println("code : "+code);
-		System.out.println("user_name : "+business_name);
-		System.out.println("business_name : "+business_name);
+		
+		Map map = Map.of("sdate",sdate,"edate",edate,"code",code,"user_name",user_name,"business_name",business_name);
+		System.out.println("map : " + map);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(stockService.findAll()));
+//				.body(JsonResult.success(true));
+				.body(JsonResult.success(stockService.findByKeyword(map)));
 	}
 
 	@PostMapping("graph")

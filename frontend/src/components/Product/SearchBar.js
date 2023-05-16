@@ -1,12 +1,12 @@
-import { Button, FormControl, TextField, Box, Grid } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
+import { Button, FormControl, TextField, Box, Grid } from '@mui/material';
+import React, { useState, useEffect, useRef } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVolumeHigh } from '@fortawesome/free-solid-svg-icons';
 
 const SerchBar = ({ callback }) => {
-  const [searchKw, setSearchKw] = useState({ pkeywd: "", psize: "" });
-
+  const [searchKw, setSearchKw] = useState({ pkeywd: '', psize: '' });
+  const refForm = useRef(null);
   const changeHandler = (e) => {
     const { value, name } = e.target;
     setSearchKw((prev) => ({ ...prev, [name]: value }));
@@ -18,31 +18,33 @@ const SerchBar = ({ callback }) => {
   }, [searchKw]);
 
   return (
-    <Grid item xs={12}
+    <Grid
+      item
+      xs={12}
       sx={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
         marginBottom: 3,
-        backgroundColor: "#FFF",
-        borderRadius: "8px",
+        backgroundColor: '#FFF',
+        borderRadius: '8px',
         boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.1)',
         height: '100px',
       }}
     >
       <Box
         sx={{
-          display: "flex",
-          alignItems: "center",
-          marginLeft: "30px",
-          marginTop: "6px",
+          display: 'flex',
+          alignItems: 'center',
+          marginLeft: '30px',
+          marginTop: '6px',
         }}
       >
         <span
           style={{
-            fontSize: "23px",
+            fontSize: '23px',
             fontWeight: 800,
-            marginRight: "15px",
+            marginRight: '15px',
           }}
         >
           품목
@@ -50,16 +52,16 @@ const SerchBar = ({ callback }) => {
 
         <span
           style={{
-            backgroundColor: "#EBF2FF",
-            padding: "3px 8px",
+            backgroundColor: '#EBF2FF',
+            padding: '3px 8px',
           }}
         >
           <FontAwesomeIcon icon={faVolumeHigh} />
           <span
             style={{
-              color: "gray",
-              fontSize: "9px",
-              marginLeft: "8px",
+              color: 'gray',
+              fontSize: '9px',
+              marginLeft: '8px',
             }}
           >
             품목을 조회할 수 있습니다.
@@ -69,26 +71,28 @@ const SerchBar = ({ callback }) => {
 
       <FormControl
         component="form"
+        ref={refForm}
         onSubmit={(e) => {
           e.preventDefault();
           callback(searchKw);
+          refForm.current.reset();
         }}
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          
-          marginBottom: "5px",
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+
+          marginBottom: '5px',
         }}
       >
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
           }}
         >
-          <label sx={{ fontSize: "0.5rem" }}>검색어</label>
+          <label sx={{ fontSize: '0.5rem' }}>검색어</label>
           <TextField
             type="text"
             name="pkeywd"
@@ -97,7 +101,7 @@ const SerchBar = ({ callback }) => {
             sx={{ paddingLeft: 2, paddingRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
           />
-          <label sx={{ fontSize: "0.5rem" }}>규격</label>
+          <label sx={{ fontSize: '0.5rem' }}>규격</label>
           <TextField
             type="text"
             name="psize"

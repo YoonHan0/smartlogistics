@@ -1,5 +1,5 @@
 import { Box, Checkbox, TableCell, TableRow, Button,TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal4OutItem from './Modal4OutItem';
 import Modal4 from "./Modal4";
 const Modal4DetailItem = ({
@@ -26,7 +26,14 @@ const Modal4DetailItem = ({
   textClick,
   modal4receiveDetail,
   setreceiveDetail,
-  updateReceiveCnt 
+  updateReceiveCnt,
+  duplicate,
+  truemon,
+  isButtonDisabled,
+  setIsButtonDisabled,
+  graybutton,
+  disabled
+  // isDisabled
 }) => {
   
   const [isEditing, setIsEditing] = useState(false);
@@ -37,49 +44,44 @@ const Modal4DetailItem = ({
   const [newdata, setnewdata] = useState(null);
   const [count, setCount] = useState(stockcnt);
   const [clickedItems,setClickedItems] = useState();
+  const [disable,setDisable] = useState();
 
 
-  // const isDuplicateNo = clickedItems.some(item => item.no === no);
   
+    // const [value, setValue] = useState(0);
+    // const max = receivecnt;
   
-  // const handleDoubleClick = () => {
-  //   setIsEditing(true);
-  // };
-  // const handleInputChange = (event) => {
-  //   setEditedStockCnt(event.target.value);
-  // };
+    // const handleInputChange = (event) => {
+    //   const inputValue = count;
+    //   if (inputValue <= max) {
+    //     setValue(inputValue);
+    //   } else {
+    //     setValue(max);
+    //   }
+    // }
+    
+
+ 
+  
+// useEffect(() => {
+//   console.log("===== find 확인 ===== ");
+//   console.log(no,data)
+//   console.log(data.filter((item)=> {item.no === no}));
+  
+// }, [data]);
 
 
-    // console.log("데이따따따잇",modal4receiveDetail);
-
-  // const updateReceiveCnt = (count,no) => {
-  //   const updatedData = modal4receiveDetail.map((item) => {
-  //     if (item.no === no) {
-  //       return {
-  //         ...item,
-  //         stockcnt: count
-  //       };
-  //     }
-  //     return item;
-  //   });
-  //   setreceiveDetail(updatedData);
 
 
-  //   console.log("업데이또",updatedData)
-  //   console.log("업데이또 체크",count,no)
-  //   console.log("업데이또 데이터 체크",modal4receiveDetail)
-  // };
-
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      handleSubmit(e);
+  // const handleKeyDown = (e) => {
+  //   if (e.key === 'Enter') {
+  //     handleSubmit(e);
       
-    }
-  };
+  //   }
+  // };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+
+  const handleBlur = () => {
     updateReceiveCnt(count,no);
     console.log("테에스트",count,no);
   }
@@ -108,23 +110,28 @@ const Modal4DetailItem = ({
     return row;
   });
 
-  // const updateStockCount = (no, count) => {
-  //   const updatedData = data.map((item) => {
+  // const handleClick = (no) => {
+  //   const newData = data.map(item => {
   //     if (item.no === no) {
   //       return {
   //         ...item,
-  //         stockcnt: count
+  //         checked: true
   //       };
   //     }
   //     return item;
   //   });
-  //   setData(updatedData);
+  //   setData(newData);
+  // };
+  // const isDisabled = (no) => {
+  //   const item = data.find(item => item.no === no);
+  //   return item && item.checked;
   // };
 
 
-  
-console.log("값이여라",clickedItems);
+
+    // console.log("가가가가",updatedDetail)
   return (
+    
     <TableRow
       key={no}
       sx={{
@@ -137,8 +144,9 @@ console.log("값이여라",clickedItems);
         },
       }}
       id="searchRow"
+     
     >
-      <TableCell align="center">
+      <TableCell  sx={{ p: 0 }}>
       <Checkbox
             size="small"
             onChange={(e) => {
@@ -155,25 +163,41 @@ console.log("값이여라",clickedItems);
       <TableCell>{psize}</TableCell>
       <TableCell>{putil}</TableCell>
       <TableCell>{receivecnt}</TableCell>
-      <TableCell><TextField
-          type="number"
-          id="receivecnt"
-          name="receivecnt"
-          placeholder={stockcnt}
-          onChange={(e) => {
-            setCount(e.target.value)
-          }}
-          onKeyPress={handleKeyDown}
-          InputProps={{ sx: { height: 30 }, inputProps: { min: 0 } }}
-        ></TextField></TableCell>
-          <Button onClick={() => {
+      <TableCell>
+      <TextField
+  type="number"
+  id="stockcnt"
+  name="stockcnt"
+  placeholder={receivecnt}
+  onChange={(e) => {
+    setCount(e.target.value);
+  }}
+  onBlur={handleBlur}
+  InputProps={{
+    sx: { height: 30 },
+    inputProps: { min: 0, max: receivecnt},
+  }}
+></TextField>
+      </TableCell>
+          {/* <Button onClick={() => {
             // const isDuplicateNo = clickedItems.some(item => item.no === no);
           if ( receivecnt >= stockcnt) {
              // 중복된 no가 있거나 receivecnt가 stockcnt 이상인 경우 함수를 실행하지 않음
-          clicks({no, mcode, pcode, pname, putil,receivecnt, stockcnt, checked: false});
+          clicks({no, mcode, pcode, pname, psize, putil,receivecnt, stockcnt, checked: false});
+          // isDisabled(no);
+          // setIsButtonDisabled(true);
+          graybutton(no);
+
+          console.log("dd");
         }
-          }}>저장</Button>
+        console.log(disabled);
+        console.log(code);
+          }}
+         disabled={disabled}
+          >저장</Button> */}
+          
     </TableRow>
+  
   );
 };
 export default Modal4DetailItem;
