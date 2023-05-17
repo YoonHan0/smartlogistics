@@ -1,5 +1,5 @@
 import { Button, FormControl, TextField, Box, Grid } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVolumeHigh } from '@fortawesome/free-solid-svg-icons';
@@ -10,34 +10,49 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import dayjs from 'dayjs';
+import { format } from 'date-fns';
 
-const SearchBar = ({ state, setState, searchKeyword, sdate, setSdate, edate, setEdate, searchKw, setSearchKw }) => {
+const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearchKw }) => {
+  const [searchChk, setSearchChk] = useState();
+  const [minDate, setMindate] = useState();
+  const refForm = useRef(null);
+
   const changeHandler = (e) => {
     const { value, name } = e.target;
     setSearchKw((searchKw) => ({ ...searchKw, [name]: value }));
   };
 
-  const changeDayjsToString = (date) => {
-    const year = date.year();
-    const _date = String(date.month()+1).padStart(2, '0');
-    const day = String(date.date()).padStart(2, '0');
+  const handleAcceptStart = (date) => {
+    setMindate(date);
+    setSearchKw((prev) => ({ ...prev, startdt: format(date.$d, 'yyyy-MM-dd') }));
+    setSearchChk(true);
+  };
+  const handleAcceptEnd = (date) => {
+    setSearchKw((prev) => ({ ...prev, enddt: format(date.$d, 'yyyy-MM-dd') }));
+  };
+  const submit = (e) => {
+    e.preventDefault();
+    if (searchKw.startdt !== '') {
 
-    return `${year}-${_date}-${day}`;
-  } 
-  
-  const handleChangeDatePicker1 = (value) => {
-    const d = changeDayjsToString(value);
-      setSearchKw((searchKw) => ({ ...searchKw, 'sdate' : d }))
-      setSdate(d);
-    };
+      setSearchChk(true);
+    } else {
+      setSearchChk(false);
+    }
+    if (searchChk) {
+      console.log(searchKw)
+      searchKeyword(searchKw, 0);
+      setSearchChk();
+      setSearchKw({ user_name: '', business_name: '', code: '', startdt: '', enddt: '' });
+    }
 
-  const handleChangeDatePicker2 = (value) => {
-    const d = changeDayjsToString(value);
-    setSearchKw((searchKw) => ({ ...searchKw, 'edate' : d }))
-    setEdate(d);
-
+    console.log(searchKw)
   };
 
+
+
+  useEffect(() => {
+    setSearchKw({ ...searchKw, startdt: seDate.sDate, enddt: seDate.eDate });
+  }, [seDate]);
   return (
     <Grid
       item
@@ -99,52 +114,51 @@ const SearchBar = ({ state, setState, searchKeyword, sdate, setSdate, edate, set
             flexDirection: 'row',
             justifyContent: 'flex-end',
             marginRight: 6
-        }}>
-        <Button
-          sx={{
-            width: '100px',
-            bgcolor: state ? '#0671F7' : '#E7E6E6',
-            color: state ? '#fff' : '#000',
-            borderRadius: '20px 0 0 20px',
-            ':hover': {
+          }}>
+          <Button
+            sx={{
+              width: '100px',
               bgcolor: state ? '#0671F7' : '#E7E6E6',
-            }
-          }}
-          onClick={e => setState(true)}
-        >
-          <FormatListBulletedIcon sx={{fontSize: 20}}/>
-        </Button>
-        <Button
-          sx={{
-            width: '100px',
-          bgcolor: state ? '#E7E6E6' : '#0671F7',
-            color: state ? '#000' : '#fff',
-            borderRadius: '0 20px 20px 0',
-            ':hover': {
+              color: state ? '#fff' : '#000',
+              borderRadius: '20px 0 0 20px',
+              ':hover': {
+                bgcolor: state ? '#0671F7' : '#E7E6E6',
+              }
+            }}
+            onClick={e => setState(true)}
+          >
+            <FormatListBulletedIcon sx={{ fontSize: 20 }} />
+          </Button>
+          <Button
+            sx={{
+              width: '100px',
               bgcolor: state ? '#E7E6E6' : '#0671F7',
-            }
-          }}
-          onClick={e => setState(false)}
-        >
-          <LeaderboardIcon sx={{fontSize: 20}}/>
-        </Button>
+              color: state ? '#000' : '#fff',
+              borderRadius: '0 20px 20px 0',
+              ':hover': {
+                bgcolor: state ? '#E7E6E6' : '#0671F7',
+              }
+            }}
+            onClick={e => setState(false)}
+          >
+            <LeaderboardIcon sx={{ fontSize: 20 }} />
+          </Button>
+        </Box>
       </Box>
-      </Box>
-      
+
       {
         state ?
           <FormControl
-            component='form'
+            component="form"
+            ref={refForm}
             onSubmit={(e) => {
-              e.preventDefault();
-              searchKeyword(searchKw);
+              submit(e);
             }}
             sx={{
-              m: 1,
-              marginTop: 3,
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'flex-end',
+              marginBottom: '5px',
             }}
           >
             <Box
@@ -154,64 +168,80 @@ const SearchBar = ({ state, setState, searchKeyword, sdate, setSdate, edate, set
                 alignItems: 'center',
               }}
             >
-              <label sx={{ fontSize: '0.5rem' }}>날짜</label>
-              <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                sx={{ height: '100px'}}
-              >
+              <label sx={{ fontSize: '0.5rem' }}>기간</label>
+              <LocalizationProvider dateAdapter={AdapterDayjs} sx={{ height: '60px' }}>
                 <DemoContainer
                   components={['DatePicker']}
                   sx={{
                     p: 0,
+                    minWidth: 0,
                     '& .css-1xhypcz-MuiStack-root': {
                       padding: 0,
                     },
                   }}
                 >
-
                   <DatePicker
-                    format='YYYY-MM-DD'
-                    value={dayjs(sdate)}
-                    onChange={handleChangeDatePicker1}
-                    name='sdate'
+                    format="YYYY-MM-DD"
+                    slotProps={{
+                      textField: { size: 'small', style: { minWidth: 'unset' } },
+                    }}
+                    sx={{
+                      minWidth: 0,
+                      paddingLeft: 2,
+                      overflow: 'hidden',
+                      '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
+                        padding: 0,
+                        height: 30,
+                        width: 105,
+                        marginLeft: '10px',
+                      },
+                      '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
+                        border: searchChk === false || null ? '1px solid red' : null,
+                        width: '165px',
+                      },
+                      '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
+                        minWidth: 0,
+                        height: '35px',
+                      },
+                    }}
+                    onAccept={handleAcceptStart}
+                    value={dayjs(searchKw.startdt) || null}
+                  ></DatePicker>
+                  <span>~</span>
+                  <DatePicker
+                    readOnly={searchKw.sDate === '' || searchKw.sDate === null}
+                    style={{
+                      '& .css-3tvb69-MuiStack-root>.MuiTextField-root': {
+                        minWidth: 0,
+                        backgroundColor: '#333',
+                      },
+                    }}
+                    format="YYYY-MM-DD"
                     slotProps={{
                       textField: { size: 'small' },
                     }}
                     sx={{
-                      paddingLeft: 2,
+                      minWidth: 0,
                       paddingRight: 5,
                       overflow: 'hidden',
                       '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                         padding: 0,
                         height: 30,
-                        width: 150
+                        width: 105,
+                        marginLeft: '10px',
+                      },
+                      '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
+                        border: searchChk === false || null ? '1px solid red' : null,
+                        width: '165px',
+                      },
+                      '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
+                        minWidth: 0,
+                        height: '35px',
                       },
                     }}
-                    ></DatePicker>
-                  <Box
-                    sx={{
-                      p:0,
-                      m:0
-                    }}>~</Box>
-                  <DatePicker
-                    readOnly={searchKw.sdate === '' || searchKw.sdate === null}
-                    format='YYYY-MM-DD'
-                    value={dayjs(edate)}
-                    onChange={handleChangeDatePicker2}
-                    name='edate'
-                    slotProps={{
-                      textField: { size: 'small' },
-                    }}
-                    sx={{
-                      paddingLeft: 2,
-                      paddingRight: 5,
-                      overflow: 'hidden',
-                      '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
-                        padding: 0,
-                        height: 30,
-                        width: 150
-                      },
-                    }}
+                    minDate={minDate || null}
+                    onAccept={handleAcceptEnd}
+                    value={dayjs(searchKw.enddt) || null}
                   ></DatePicker>
                 </DemoContainer>
               </LocalizationProvider>

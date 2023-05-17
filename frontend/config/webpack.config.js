@@ -1,55 +1,54 @@
-const path = require("path");
-const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
+const path = require('path');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 module.exports = function (env) {
   return {
-    mode: "none",
+    mode: 'none',
     entry: path.resolve(`src/index.js`),
     output: {
-      path: path.resolve("../backend/src/main/resources"),
-      filename: "assets/js/main.js",
-      assetModuleFilename: "assets/images/[hash][ext]",
+      path: path.resolve('../backend/src/main/resources'),
+      filename: 'assets/js/main.js',
+      assetModuleFilename: 'assets/images/[hash][ext]',
     },
     module: {
       rules: [
         {
           test: /\.js$/i,
           exclude: /node_modules/,
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
-            configFile: path.resolve("config/babel.config.json"),
+            configFile: path.resolve('config/babel.config.json'),
           },
         },
         {
           test: /\.(c|sa|sc)ss$/i,
           use: [
-            "style-loader",
+            'style-loader',
             {
-              loader: "css-loader",
+              loader: 'css-loader',
               options: {
                 modules: {
-                  auto: (resourcePath) =>
-                    !resourcePath.includes("react-datepicker.css"),
+                  auto: (resourcePath) => !resourcePath.includes('react-datepicker.css'),
                 },
               },
             },
-            "sass-loader",
+            'sass-loader',
           ],
         },
         {
           test: /\.(png|gif|jpe?g|svg|ico|tiff?|bmp)$/i,
-          type: "asset/resource",
+          type: 'asset/resource',
         },
       ],
     },
     plugins: [new CaseSensitivePathsPlugin()],
-    devtool: "eval-source-map",
+    devtool: 'eval-source-map',
     devServer: {
-      host: "0.0.0.0",
+      host: '0.0.0.0',
       port: 9090,
       proxy: {
-        "/api": "http://localhost:8080",
-        "/assets/smartlogistics": "http://localhost:8080",
+        '/api': 'http://localhost:8080',
+        '/assets/smartlogistics': 'http://localhost:8080',
       },
       liveReload: true,
       compress: true,

@@ -1,17 +1,17 @@
 import React from 'react';
 
-const TableCell = ({ style, children }) => {
+const TableHeadCell = ({ style, children }) => {
   const updatedStyle = Object.assign({}, style, { 
     padding:'10px',
     // border: '1px solid #000',
   });
   return (
-    <td 
+    <th 
       style={updatedStyle}
       colspan="10">
       {children}
-    </td>
+    </th>
   );
 };
 
-export default TableCell;
+export default TableHeadCell;

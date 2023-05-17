@@ -32,15 +32,12 @@ const AdminRoute = ({ role, info, setUserInfo }) => {
         <Routes>
           {role === 'admin' ? (
             <>
-              <Route
-                path="/mypage"
-                element={layout(<MyPage info={info} setUserInfo={setUserInfo} />, "/mypage")}
-              />
+              <Route path="/mypage" element={layout(<MyPage info={info} setUserInfo={setUserInfo} />, '/mypage')} />
               <Route path="/" element={layout(<User />, '/register2')} />
             </>
           ) : (
             <>
-              <Route path="/" element={layout(<UserMain />)} />
+              <Route path="/" element={layout(<UserMain info={info} />)} />
               <Route path="/product" element={layout(<Product />, '/product')} />
               <Route path="/business" element={layout(<Business />, '/business')} />
               <Route path="/receive" element={layout(<Receive />, '/receive')} />

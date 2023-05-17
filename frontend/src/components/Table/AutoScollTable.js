@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   CellMeasurerCache,
   CellMeasurer,
@@ -8,12 +8,22 @@ import {
 } from "react-virtualized";
 import Table from './Table';
 import TableBody from './TableBody';
-const AutoScollTable = ({w, h, list, loading, isRowLoaded, rowRenderer, hasNextPage, setHasNextPage, children}) => {
+const AutoScollTable = ({
+  w, 
+  h, 
+  searchKw, 
+  list, 
+  loading, 
+  searchKeyword, 
+  isRowLoaded, 
+  rowRenderer, 
+  hasNextPage, 
+  setHasNextPage, 
+  children}) => {
   const loadMoreRows = ({ startIndex, stopIndex }) => {
     console.log("loadMoreRows:", startIndex, stopIndex);
     if (!loading && hasNextPage) {
-      //   setStartIndex(startIndex);
-      // searchKWDfetch(startIndex, stopIndex);
+      searchKeyword(searchKw,0);
     }
   };
 
@@ -21,10 +31,6 @@ const AutoScollTable = ({w, h, list, loading, isRowLoaded, rowRenderer, hasNextP
     fixedWidth: true,
     defaultHeight: 50,
   });
-
-  useEffect(() => {
-    setHasNextPage(list.length === 10);
-  },[list])
   return (
     <AutoSizer>
       {({ width, height }) => (

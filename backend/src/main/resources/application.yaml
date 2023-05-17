@@ -65,7 +65,7 @@ spring:
          on-profile: development-window
    web:
       resources:
-         static-locations: classpath:/assets/, file:/smartlogistics-uploads/
+         static-locations: classpath:/assets/, file:./smartlogistics-uploads/
    # devtools - live reload
    devtools:
       livereload:
@@ -116,7 +116,7 @@ spring:
          on-profile: production
    web:
       resources:
-         static-locations: classpath:/assets/, file:/smartlogistics-uploads/
+         static-locations: classpath:/assets/, file:./smartlogistics-uploads/
    datasource:
       driver-class-name: org.mariadb.jdbc.Driver
       url: jdbc:mariadb://34.64.53.57:3306/smartlogistics?characterEncoding=utf8

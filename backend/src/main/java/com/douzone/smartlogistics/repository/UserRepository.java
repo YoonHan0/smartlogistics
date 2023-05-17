@@ -33,7 +33,7 @@ public class UserRepository {
 	}
 
 	public Boolean findUser(UserVo userVo) {
-		return sqlSession.selectOne("user.findUser",userVo)!=null?true:false;
+		return sqlSession.selectOne("user.findUser",userVo)!=null;
 	}
 
 	public UserVo getUserLogin(UserVo vo) {

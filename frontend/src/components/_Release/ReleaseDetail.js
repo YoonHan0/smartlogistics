@@ -158,6 +158,9 @@ const ReleaseDetail = ({
                       순번
                     </TableCell>
                     <TableCell sx={{ width: "15%", backgroundColor: "#F6F7F9" }}>
+                      입고번호
+                    </TableCell>
+                    <TableCell sx={{ width: "15%", backgroundColor: "#F6F7F9" }}>
                       품번
                     </TableCell>
                     <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
@@ -180,8 +183,9 @@ const ReleaseDetail = ({
                     <TableRow>
                       <TableStickyTypeCell></TableStickyTypeCell>
                       <TableStickyTypeCell></TableStickyTypeCell>
+                      <TableStickyTypeCell></TableStickyTypeCell>
                       <TableStickyTypeCell>
-                        <Box
+                      <Box
                           sx={{
                             p: 0,
                             border: "1px solid #C4C4C4",
@@ -219,7 +223,6 @@ const ReleaseDetail = ({
                       <TableStickyTypeCell></TableStickyTypeCell>
                       <TableStickyTypeCell></TableStickyTypeCell>
                       <TableStickyTypeCell></TableStickyTypeCell>
-                      <TableStickyTypeCell></TableStickyTypeCell>
                     </TableRow>
                   ) : null}
                 </TableHead>
@@ -230,6 +233,7 @@ const ReleaseDetail = ({
                         key={index}
                         no={index}
                         code={detail.no}
+                        rvCode={detail.receiveCode}
                         mcode={detail.masterCode}
                         pcode={detail.productCode}
                         pname={detail.productName}

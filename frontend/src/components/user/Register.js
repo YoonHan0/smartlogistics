@@ -17,6 +17,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [onSubmit, setOnSubmit] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const onClickHandler = () => {
     setId("");
@@ -25,6 +26,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
     setName("");
     setPhone("");
     setOnSubmit(false);
+    setHasError(false);
     onClose();
   };
 
@@ -49,7 +51,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
   //   console.log(e.target.files[0]);
   //  }
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     const file = e.target["file"].files[0];
 
@@ -67,7 +69,11 @@ const Register = ({ open, onClose, itemAddHandler }) => {
     }
     setOnSubmit(false);
     console.log("file:" + file);
-    registerUser(file);
+    if (!(await registerUser(file))) {
+      document.getElementById("id").focus();
+      setHasError(true);
+      return;
+    }
     onClickHandler();
   };
 
@@ -83,7 +89,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
     formData.append("role", "user");
     formData.append("file", file);
 
-    itemAddHandler(formData);
+    return await itemAddHandler(formData);
   };
   return (
     <Box>
@@ -119,6 +125,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
               onChange={(e) =>
                 setId(e.target.value.replace(/[^0-9a-zA-Z]/g, ""))
               }
+              error={hasError}
             />
             <Typography
               sx={{ color: "red" }}

@@ -4,7 +4,8 @@ const Table = ({ style, children }) => {
   const updatedStyle = Object.assign({}, style, { 
     padding: '5px',
     borderCollapse: 'collapse',
-    tableLayout: 'fixed'
+    tableLayout: 'fixed',
+    overflowY: 'hidden'
   });
   return (
     <table style={updatedStyle}>

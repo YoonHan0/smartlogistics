@@ -27,6 +27,7 @@ function List({
   fetchBusinessList,
   businessDetail,
   setItem,
+  searchEvent,
 }) {
   // const [newDatas, setNewDats] = useState({code: '', name:'', phone:''});
   /** fetch, 즉 list를 출력하기 위한 state */
@@ -56,16 +57,19 @@ function List({
   // =================================== DELETE =======================================
   /** delete 체크박스 Handler  */
   const changeHandler = (checked, code) => {
-    console.log(`checked: ${checked}, code: ${code}`);
+    checked
+      ? setCheckedButtons([...checkedButtons, code])
+      : // 클릭된 'code'랑 같으면 제거해서 새로운 배열을 만듬
+        setCheckedButtons(checkedButtons.filter((el) => el !== code));
+    if (isChecked) {
+      setIsChecked(false);
+    }
     if (checked) {
-      setCheckedButtons([...checkedButtons, code]);
-      console.log("체크 반영 완료");
-      console.log(checkedButtons);
-      console.log(checkedButtons.length);
-    } else {
-      // 클릭된 'code'랑 같으면 제거해서 새로운 배열을 만듬
-      setCheckedButtons(checkedButtons.filter((el) => el !== code));
-      console.log("체크 해제 반영 완료");
+      if (!isChecked) {
+        businesses.length === checkedButtons.length + 1
+          ? setIsChecked((prev) => !prev)
+          : null;
+      }
     }
   };
 
@@ -103,6 +107,10 @@ function List({
   useEffect(() => {
     fetchBusinessList();
   }, []);
+
+  useEffect(() => {
+    refForm.current.reset();
+  }, [searchEvent]);
 
   useEffect(() => {
     if (codeChk) {
@@ -165,6 +173,10 @@ function List({
     }
   };
   // ================================================================================
+  const handleCheckboxClick = (event) => {
+    event.stopPropagation();
+    setItem({ code: "", name: "", phone: "" });
+  };
 
   return (
     <Grid
@@ -301,6 +313,7 @@ function List({
                       businessDetail={businessDetail}
                       checkedButtons={checkedButtons}
                       changeHandler={changeHandler}
+                      handleCheckboxClick={handleCheckboxClick}
                     />
                   ))
                 ) : (

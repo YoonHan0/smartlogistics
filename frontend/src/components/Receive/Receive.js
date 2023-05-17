@@ -20,6 +20,8 @@ const Receive = () => {
   const [masterCode, setMasterCode] = useState();
   /* date값을 가지고 있는 */
   const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
+  // receive Master 수량 미입력
+  const [disable, setDisable] = useState({});
   // Modal
   const [openManager, setOpenManager] = useState(false);
   const [openBusiness, setOpenBusiness] = useState(false);
@@ -27,6 +29,8 @@ const Receive = () => {
   const [openDeleteModalInMaster, setOpenDeleteModalInMaster] = useState(false); // 삭제할 것인지 확인하는 모달창
   const [openDeleteModalInDetail, setOpenDeleteModalInDetail] = useState(false); // 삭제할 것인지 확인하는 모달창
   const [openNullModal, setOpenNullModal] = useState(false); // 삭제할 것인지 확인하는 모달창
+  // 진행상태 체크 (비고: "수량체크")
+  const [countCheck, setCountCheck] = useState([]);
 
   // ReceiveMaster data(date,business,manager)
   const [inputMaster, setInputMaster] = useState({
@@ -105,8 +109,10 @@ const Receive = () => {
     }
     await customFetch(url, { method: 'get' }).then((json) => {
       const { dataList, sDate, eDate } = json.data; // dataList: 기존에 불러오던 data, sDate, eDate: 오늘 날짜를 기준으로 -7, +7일 date 값
+      // console.log(dataList);
       setreceiveMaster(dataList);
       setSeDate({ sDate: sDate, eDate: eDate });
+      setDisable(dataList.map(({ code, disable }) => ({ code, disable })));
       // 넘어온 데이터의 master code 값 담기
       setCheckedRow(
         dataList.map((item) => ({
@@ -123,7 +129,20 @@ const Receive = () => {
     setMasterCode(code);
 
     await customFetch(`/api/receive/detail?rc=${code}`, { method: 'get' }).then((json) => {
+      console.log(json.data);
       setreceiveDetail(json.data);
+
+      const isAnyNull = json.data.some((item) => item.state === null); // status 배열에서 하나라도 null이 있는지 확인합니다.
+      console.log(isAnyNull);
+      setreceiveMaster((prevDataList) => {
+        return prevDataList.map((item) => {
+          if (item.code === code) {
+            return { ...item, disable: isAnyNull ? 'true' : 'false' }; // disable 값을 isAnyNull에 따라 설정합니다.
+          }
+          return item;
+        });
+      });
+
       rowColor.current = code;
       const data = addDetailArrayHandler(json.data);
       const filteredCheckedRow = data.map((row) => {
@@ -131,6 +150,7 @@ const Receive = () => {
         const filteredDetail = row.detail.filter((detail) => detail.no !== '');
         return { ...row, detail: filteredDetail };
       });
+
       setCheckedRow(filteredCheckedRow);
     });
   };
@@ -202,6 +222,7 @@ const Receive = () => {
             userName: json.data.userName,
             date: json.data.date,
             state: '대기',
+            disable: 'true',
           },
           ...DetailList,
         ]);
@@ -233,6 +254,14 @@ const Receive = () => {
         });
 
         setCheckedRow(updatedCheckedRow);
+        setreceiveMaster((prevDataList) => {
+          return prevDataList.map((item) => {
+            if (item.code === masterCode) {
+              return { ...item, disable: 'true' }; // disable 값을 isAnyNull에 따라 설정합니다.
+            }
+            return item;
+          });
+        });
       }
       setInputMaster({ date: '', businessCode: '', businessName: '', userId: '', userName: '' });
     });
@@ -368,6 +397,7 @@ const Receive = () => {
           openDeleteModalInDetail={openDeleteModalInDetail}
           openNullModal={openNullModal}
           detailInput={detailInput}
+          setCountCheck={setCountCheck}
         />
       </Grid>
     </Box>

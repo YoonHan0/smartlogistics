@@ -6,6 +6,7 @@
 		<![CDATA[
 			SELECT code, name, phone, insert_ip, date_format(insert_dt, '%Y-%m-%d') AS insertDate
 			FROM business
+			ORDER BY code ASC
 		]]>
 	</select>
 	
@@ -30,7 +31,7 @@
 			</otherwise>
 		</choose>
 		<![CDATA[
-			ORDER BY code DESC
+			ORDER BY code ASC
 		]]>	
 		<if test='limit > 0'>
 		<![CDATA[

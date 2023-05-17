@@ -9,18 +9,15 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ReceiveMasterVo {
+public class ModalReleaseMasterVo {
     private String code;
     private String date;
     private String userName;
     private String userId;
     private String businessCode;
     private String businessName;
-    private String state;
-    private String disable;
     
-    private List<ReceiveDetailVo> receiveDetails;
-    
+    private List<ReleaseDetailVo> modalreleaseDetails;
     
     
 }

@@ -7,6 +7,11 @@ import { customFetch } from '../custom/customFetch';
 const Inquiry = () => {
   const [state, setState] = useState(true);
   const [list, setList] = useState([]);
+  const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [searchChk, setSearchChk] = useState();
+
   const currentDate = (value) => {
     const current = new Date();
 
@@ -17,26 +22,29 @@ const Inquiry = () => {
     return `${year}-${month}-${day}`;
   }
 
-  const [sdate, setSdate] = useState();
-  const [edate, setEdate] = useState();
-  const [searchKw, setSearchKw] = useState({});
+  const [searchKw, setSearchKw] = useState({ user_name: '', business_name: '',code: '', startdt: '', enddt: '' });
 
-  const searchKeyword = async (keyword) => {
-    console.log(keyword)
-    await customFetch(`/api/inquiry/search?sdate=${keyword.sdate}&edate=${keyword.edate}&code=${keyword.code}&user_name=${keyword.user_name}&business_name=${keyword.business_name}`, {
-      method: "post",
-    }).then((json) => setList(json.data));
+  const searchKeyword = async (searchKw, startIndex) => {
+    const limit = 10;
+    setLoading(true);
+    console.log(startIndex)
+    var url = `/api/inquiry/list?offset=${startIndex}&limit=${limit}`;
+    if (searchKw) {
+      url = `/api/inquiry/list?offset=${startIndex}&limit=${limit}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}&user_name=${searchKw.user_name}&business_name=${searchKw.business_name}&code=${searchKw.code}`;
+    }
+    console.log(url)
+    await customFetch(url, {
+      method: "get",
+    }).then((json) => {
+      console.log(json.data);
+      const { dataList, sDate, eDate } = json.data;
+      setList(dataList);
+      setSeDate({ sDate: sDate, eDate: eDate });
+      setHasNextPage(json.data.length === 10);
+    }).finally(()=>{
+      setLoading(false);
+    });
   }
-
-  useEffect(() =>{
-    setSearchKw({ sdate: currentDate(-7), edate: currentDate(7), code: '', user_name: '', business_name: '' });
-    setSdate(currentDate(-7));
-    setEdate(currentDate(7));
-  },[]);
-
-  useEffect(() =>{
-    searchKeyword(searchKw);
-  },[searchKw])
 
   return (
     <Box>
@@ -45,13 +53,10 @@ const Inquiry = () => {
           <SearchBar
             item
             xs={12}
+            seDate={seDate}
             state={state}
             setState={setState}
             searchKeyword={searchKeyword}
-            sdate={sdate}
-            setSdate={setSdate}
-            edate={edate}
-            setEdate={setEdate}
             searchKw={searchKw}
             setSearchKw={setSearchKw}
              />
@@ -61,7 +66,14 @@ const Inquiry = () => {
               <List
                 list={list}
                 searchKw={searchKw}
-                searchKeyword={searchKeyword} />
+                searchKeyword={searchKeyword} 
+                setSearchKw={setSearchKw}
+                setSearchChk={setSearchChk}
+                searchChk={searchChk}
+                hasNextPage={hasNextPage}
+                setHasNextPage={setHasNextPage}
+                loading={loading}
+                />
               :
               <Graph/>
           }

@@ -20,11 +20,14 @@
 	
 	<select id="findByMasterNo" resultType="releasedetailvo" parameterType="string">
 		<![CDATA[
-			SELECT r.no, r.master_code, r.product_code, p.name AS 'product_name', p.size AS 'product_size', p.unit AS 'product_unit', r.count
+			SELECT r.no, r.master_code, r.product_code, p.name AS 'product_name', p.size AS 'product_size', p.unit AS 'product_unit', r.count, r.receive_code
 			FROM release_detail r
 			INNER JOIN product p
 			ON r.product_code=p.code
+			INNER JOIN receive_detail rv
+			ON r.receive_detail_no = rv.no
 			WHERE r.master_code=#{rcode }
+			AND (rv.receive_count - rv.release_count) > 0;
 		]]>
 	</select>
 	
@@ -102,6 +105,14 @@
 	  
 	</insert>
 	
+	<update id="updateReceiveCount" parameterType="map">
+		<![CDATA[
+			UPDATE receive_detail
+			SET release_count = #{count}
+			WHERE no = #{no}
+		]]>
+	</update>
+	
 	<insert id="insertSeq" parameterType="map" >
 		<![CDATA[
 			INSERT INTO sequence
@@ -127,6 +138,21 @@
 		ORDER BY r.insert_dt
         OFFSET 0 ROWS 
 		FETCH NEXT 5 ROWS ONLY
+		]]>
+	</select>
+	<select id="findByUserId" resultType="statisticsvo" parameterType="string">
+		<![CDATA[	
+			SELECT 
+			    COUNT(*) AS total_count,
+			    SUM(DATE(date) = CURDATE()) AS today_count,
+			    MIN(code) AS oldest_code,
+			    MIN(date) AS oldest_date,
+			    MAX(code) AS latest_code,
+			    MAX(date) AS latest_date
+			FROM
+			    release_master
+			WHERE
+			    user_id = #{id}
 		]]>
 	</select>
 	

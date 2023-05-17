@@ -1,5 +1,6 @@
+import { ControlPointDuplicateRounded } from '@mui/icons-material';
 import { Box, Checkbox, TableCell, TableRow, TextField } from '@mui/material';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 const DetailItem = ({
   index,
@@ -15,6 +16,7 @@ const DetailItem = ({
   state,
   checkedRow,
   setCheckedRow,
+  setCountCheck,
 }) => {
   const [count, setCount] = useState(receivecnt);
 

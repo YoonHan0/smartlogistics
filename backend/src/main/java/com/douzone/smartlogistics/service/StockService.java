@@ -23,17 +23,13 @@ public class StockService {
 
 	DateUtil dateUtil = new DateUtil();
 
-	public List<StockVo> findAll() {
-		return stockRepository.findAll();
-	}
-
 	public List<StockGraphVo> getGraphData(String state, String startDate) {
 		
 		return stockRepository.getData(state,startDate);
 
 	}
 
-	public Object findByKeyword(Map map) {
-		return stockRepository.findByKeyword(map);
+	public List<StockVo> findByKeyword(Long offset, Long limit, String user_name, String business_name, String code, String startDate, String endDate) {
+		return stockRepository.findByKeyword(offset, limit, user_name, business_name, code, startDate, endDate);
 	}
 }

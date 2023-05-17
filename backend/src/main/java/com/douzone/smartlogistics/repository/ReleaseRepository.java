@@ -12,6 +12,7 @@ import com.douzone.smartlogistics.vo.ReceiveDetailVo;
 import com.douzone.smartlogistics.vo.ReceiveMasterVo;
 import com.douzone.smartlogistics.vo.ReleaseDetailVo;
 import com.douzone.smartlogistics.vo.ReleaseMasterVo;
+import com.douzone.smartlogistics.vo.StatisticsVo;
 
 
 
@@ -61,6 +62,11 @@ public class ReleaseRepository {
 		sqlSession.insert("release.insertDetail", vo);
 		
 	}
+	/* updateReceiveCount: Receive detail table의 receive count Update */
+	public void updateReceiveCount(String no, int count) {
+		Map<String, Object> map = Map.of("no", no, "count", count);
+		sqlSession.update("release.updateReceiveCount", map);
+	}
 
 	public void insertStock(ReleaseDetailVo vo) {
 		sqlSession.insert("release.insertStock", vo);
@@ -80,5 +86,8 @@ public class ReleaseRepository {
 		return sqlSession.selectList("release.findByName", userName);
 	}
 	
+	public StatisticsVo findByUserId(String userId) {
+		return sqlSession.selectOne("release.findByUserId", userId);
+	}
 
 }

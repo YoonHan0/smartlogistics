@@ -59,6 +59,8 @@ public class UserController {
 	@PostMapping("/update")
 	public ResponseEntity<JsonResult> updateUser(
 			@RequestParam(value = "uc", required = true, defaultValue = "") String userCode,@RequestBody UserVo vo,@DBLog DBLogVo logVO) {
+		System.out.println("vo출력");
+		System.out.println(vo.getPassword());
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(userService.updateByCode(userCode,vo,logVO)));
 	}
 
@@ -87,8 +89,12 @@ public class UserController {
 		userVo.setInsert_dt(authUser.getDt());
 		userVo.setProfile(FileUploadService.restoreImage(file));
 
-		userService.addUser(userVo);
+		if(userService.getUserfindById(userVo.getId())!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success("중복된 아이디입니다."));
+		}
 		
+		userService.addUser(userVo);
+		userVo.setPassword(null);
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(userVo));
 	}
 	

@@ -66,22 +66,26 @@ public class ReleaseController {
 	
 	// release detail list
 	@GetMapping("/detail")
-	public ResponseEntity<JsonResult> readRelease(
+	public ResponseEntity<JsonResult> readReleaseDetail(
 			@RequestParam(value = "ic", required = true, defaultValue = "") String releaseCode) {
+		
+		System.out.println("===== release Detail ===== ");
+		System.out.println(releaseService.findByMasterNo(releaseCode));
+		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(releaseService.findByMasterNo(releaseCode)));
 	}
 	
 	// releae master item delete
 	@PostMapping("/deleteMaster")
-	public ResponseEntity<JsonResult> readRelease(@RequestBody List<String> masterNo) {
+	public ResponseEntity<JsonResult> deleteReleaseMaster(@RequestBody List<String> masterNo) {
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(JsonResult.success(releaseService.deleteMasterItem(masterNo)));
 	}
 	
 	// releae master item delete
 	@GetMapping("/deleteDetail")
-	public ResponseEntity<JsonResult> readRelease(
+	public ResponseEntity<JsonResult> deleteReleaseDetail(
 			@RequestParam (value = "no", required = true, defaultValue = "") List<Integer> no, 
 			@RequestParam (value = "masterCode", required = true, defaultValue = "") String masterCode, 
 			@RequestParam (value = "length", required = true, defaultValue = "") int length) {
@@ -93,7 +97,7 @@ public class ReleaseController {
 	// release master,detail insert
 	@PostMapping("/insert")
 	@Transactional
-	public ResponseEntity<JsonResult> insertRelease(@RequestBody ReleaseMasterVo releaseVo, @DBLog DBLogVo logVO) {
+	public ResponseEntity<JsonResult> insertReleaseMaster(@RequestBody ReleaseMasterVo releaseVo, @DBLog DBLogVo logVO) {
 		
 		// 출고 번호 생성(RV2305000001)
 		String date = new DateUtil().getCode((releaseVo.getDate()));
@@ -113,7 +117,7 @@ public class ReleaseController {
 		
 	// release detail insert
 	@PostMapping("/insertdetail")
-	public ResponseEntity<JsonResult> insertReceive(@RequestBody List<ReleaseDetailVo> releaseDetailVo, @DBLog DBLogVo logVO) {
+	public ResponseEntity<JsonResult> insertReleaseDetail(@RequestBody List<ReleaseDetailVo> releaseDetailVo, @DBLog DBLogVo logVO) {
 
 		releaseService.insertDetail(releaseDetailVo, logVO);
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(releaseDetailVo));
@@ -125,6 +129,13 @@ public class ReleaseController {
 			@RequestParam(value = "u", required = true, defaultValue = "") String userName) {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(releaseService.findByName(userName)));
+	}
+	// my release master statistics
+	@GetMapping("/mystatistics")
+	public ResponseEntity<JsonResult> readMyReceiveStatistics(
+			@RequestParam(value = "u", required = true, defaultValue = "") String userId) {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(JsonResult.success(releaseService.findByUserId(userId)));
 	}
 
 }

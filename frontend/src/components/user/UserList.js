@@ -55,7 +55,7 @@ const UserList = ({
     checked
       ? setCheckedButtons((prev) => [...prev, id])
       : setCheckedButtons((prev) => prev.filter((el) => el !== id));
-    if (!checked) {
+    if (isChecked) {
       setIsChecked(false);
     }
     if (checked) {

@@ -1,8 +1,7 @@
 import { Button, FormControl, TextField, Box, Grid } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeHigh } from '@fortawesome/free-solid-svg-icons';
+
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -87,7 +86,6 @@ const SerchBar = ({ callback, seDate }) => {
             padding: '3px 8px',
           }}
         >
-          <FontAwesomeIcon icon={faVolumeHigh} />
           <span
             style={{
               color: 'gray',
@@ -120,7 +118,7 @@ const SerchBar = ({ callback, seDate }) => {
             alignItems: 'center',
           }}
         >
-          <label sx={{ fontSize: '0.5rem' }}>입고코드</label>
+          <label style={{ fontSize: '0.9rem' }}>입고코드</label>
           <TextField
             type="text"
             name="rcode"
@@ -130,7 +128,7 @@ const SerchBar = ({ callback, seDate }) => {
             InputProps={{ sx: { height: 30, width: 150 } }}
             value={searchKw.rcode}
           />
-          <label sx={{ fontSize: '0.5rem' }}>거래처</label>
+          <label style={{ fontSize: '0.9rem' }}>거래처</label>
           <TextField
             type="text"
             name="bname"
@@ -140,7 +138,7 @@ const SerchBar = ({ callback, seDate }) => {
             InputProps={{ sx: { height: 30, width: 150 } }}
             value={searchKw.bname}
           />
-          <label sx={{ fontSize: '0.5rem' }}>날짜</label>
+          <label style={{ fontSize: '0.9rem' }}>기간</label>
           <LocalizationProvider dateAdapter={AdapterDayjs} sx={{ height: '60px' }}>
             <DemoContainer
               components={['DatePicker']}

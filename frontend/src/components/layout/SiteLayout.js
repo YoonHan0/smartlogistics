@@ -4,20 +4,22 @@ import Navigation from "./Navigation";
 import Container from "./Container";
 const SiteLayout = ({ role, children, page, info }) => {
   return (
-    <Box 
+    <Box
       sx={{
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
+        position: "absolute",
+        width: "100%",
+        height: "100%",
         display: "flex",
-        backgroundColor: '#F6F6F6',
-         }}>
+        backgroundColor: "#F6F6F6",
+      }}
+    >
       {/* <Header /> */}
       {/* {
         role === 'admin' ? null : <Navigation />
       } */}
-      <Navigation role={role} page={page}/>
-      <Container children={children} info={info} /> {/* 여기서 margin 0px를 하면 각각의 Component에서 안 건드려도 될 거 같은데여*/}
+      <Navigation role={role} page={page} />
+      <Container children={children} info={info} />{" "}
+      {/* 여기서 margin 0px를 하면 각각의 Component에서 안 건드려도 될 거 같은데여*/}
     </Box>
   );
 };

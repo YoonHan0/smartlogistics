@@ -1,27 +1,22 @@
 import {
   Box,
-  Checkbox,
-  FormControl,
   Grid,
-  NativeSelect,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
 } from "@mui/material";
 import React, { useEffect } from 'react';
 import checkImg from "../../assets/img/checkmark.png";
-import StockTable from "./StockTable";
 import StockTable1 from "./StockTable1";
+import StockTable2 from "./StockTable2";
 
-const InquiryList = ({list, searchKw, searchKeyword}) => {
-  useEffect(() => {
-    searchKeyword(searchKw);
-  },[]);
+const InquiryList = ({
+  list,
+  searchKw,
+  searchKeyword,
+  setSearchKw,
+  searchChk,
+  setSearchChk,
+  hasNextPage,
+  setHasNextPage,
+  loading }) => {
   return (
     <Grid
       item
@@ -67,9 +62,19 @@ const InquiryList = ({list, searchKw, searchKeyword}) => {
             width: "100%",
           }}
         >
-            {/* <StockTable list={list}/> */}
-            <StockTable1 list={list}/>
-            
+          {/* <StockTable list={list}/> */}
+          <StockTable1
+            list={list}
+            searchKw={searchKw}
+            searchKeyword={searchKeyword}
+            setSearchKw={setSearchKw}
+            searchChk={searchChk}
+            setSearchChk={setSearchChk}
+            hasNextPage={hasNextPage}
+            setHasNextPage={setHasNextPage}
+            loading={loading}
+          />
+
         </Box>
       </Box>
     </Grid>

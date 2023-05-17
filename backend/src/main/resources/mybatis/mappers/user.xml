@@ -57,6 +57,14 @@
 		<![CDATA[
 			UPDATE user
 			SET id=#{vo.id},name=#{vo.name},phone=#{vo.phone}
+		]]>
+		<if test='vo.password!="" and vo.password!=null'>
+                <![CDATA[
+                    ,password=#{vo.password}
+                ]]>
+            </if>
+		
+		<![CDATA[
 			WHERE id=#{ucode}
 		]]>
 	</update>

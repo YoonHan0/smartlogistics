@@ -7,6 +7,7 @@ import {
   Grid,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import sha256 from "sha256";
 
 export default function UserUpdate({
   itemUpdateHandler,
@@ -28,12 +29,25 @@ export default function UserUpdate({
   }, [userDetail]);
 
   const changeHandler = (e) => {
-    const { value, name } = e.target;
+    let { value, name } = e.target;
+    if (name === "phone") {
+      if (value.length > 13) {
+        return;
+      }
+      value = value
+        .replace(/[^0-9]/g, "")
+        .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
+        .replace(/(\-{1,2})$/g, "");
+    }
     setItem({ ...item, [name]: value });
   };
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    itemUpdateHandler(item, target);
+    const obj = { ...item };
+    if (obj.password !== undefined) {
+      obj.password = sha256(obj.password);
+    }
+    itemUpdateHandler(obj, target);
     setItem({ code: "", name: "", phone: "" }); // update form data 초기화
   };
   return (
@@ -152,8 +166,8 @@ export default function UserUpdate({
           </Grid>
           <Grid item xs={8} sm={8} md={8}>
             <TextField
-              type="text"
-              name="phone"
+              type="password"
+              name="password"
               value={item.password || ""}
               onChange={changeHandler}
               size="small"

@@ -18,7 +18,7 @@ const Business = () => {
   });
   const [Detail, setDetail] = useState([]);
   const [item, setItem] = useState({ code: "", name: "", phone: "" });
-  const [codeChk, setCodeChk] = useState();
+  const [searchEvent, setSearchEvent] = useState(false);
 
   // const fileInputRef = useRef(null);
 
@@ -63,6 +63,7 @@ const Business = () => {
       method: "post",
       body: JSON.stringify(datas),
     }).then((json) => setBusinesses(json.data));
+    setSearchEvent((prev) => !prev);
     setDetail([]);
   };
 
@@ -79,12 +80,14 @@ const Business = () => {
       method: "post",
       body: JSON.stringify(item),
     }).then(fetchBusinessList);
+    setSearchEvent((prev) => !prev);
   };
 
   const businessDetail = async (code) => {
     await customFetch(`/api/business/detail?bc=${code}`, {
       method: "get",
     }).then((json) => setDetail(json.data));
+    setSearchEvent((prev) => !prev);
   };
 
   return (
@@ -104,6 +107,7 @@ const Business = () => {
             fetchBusinessList={fetchBusinessList}
             businessDetail={businessDetail}
             setItem={setItem}
+            searchEvent={searchEvent}
           />
           <BusinessUpdate
             businessDetail={Detail}

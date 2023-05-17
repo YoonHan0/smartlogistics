@@ -1,11 +1,12 @@
-import { Button, FormControl, TextField, Box, Grid } from '@mui/material';
-import React, { useState, useEffect, useRef } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeHigh } from '@fortawesome/free-solid-svg-icons';
+
+import { Button, FormControl, TextField, Box, Grid } from "@mui/material";
+import React, { useState, useEffect, useRef } from "react";
+import SearchIcon from "@mui/icons-material/Search";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 
 const SerchBar = ({ callback }) => {
-  const [searchKw, setSearchKw] = useState({ pkeywd: '', psize: '' });
+  const [searchKw, setSearchKw] = useState({ pkeywd: "", psize: "" });
   const refForm = useRef(null);
   const changeHandler = (e) => {
     const { value, name } = e.target;
@@ -22,29 +23,29 @@ const SerchBar = ({ callback }) => {
       item
       xs={12}
       sx={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
         marginBottom: 3,
-        backgroundColor: '#FFF',
-        borderRadius: '8px',
-        boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.1)',
-        height: '100px',
+        backgroundColor: "#FFF",
+        borderRadius: "8px",
+        boxShadow: "5px 5px 5px rgba(0, 0, 0, 0.1)",
+        height: "100px",
       }}
     >
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          marginLeft: '30px',
-          marginTop: '6px',
+          display: "flex",
+          alignItems: "center",
+          marginLeft: "30px",
+          marginTop: "6px",
         }}
       >
         <span
           style={{
-            fontSize: '23px',
+            fontSize: "23px",
             fontWeight: 800,
-            marginRight: '15px',
+            marginRight: "15px",
           }}
         >
           품목
@@ -52,16 +53,15 @@ const SerchBar = ({ callback }) => {
 
         <span
           style={{
-            backgroundColor: '#EBF2FF',
-            padding: '3px 8px',
+            backgroundColor: "#EBF2FF",
+            padding: "3px 8px",
           }}
         >
-          <FontAwesomeIcon icon={faVolumeHigh} />
           <span
             style={{
-              color: 'gray',
-              fontSize: '9px',
-              marginLeft: '8px',
+              color: "gray",
+              fontSize: "9px",
+              marginLeft: "8px",
             }}
           >
             품목을 조회할 수 있습니다.
@@ -75,24 +75,24 @@ const SerchBar = ({ callback }) => {
         onSubmit={(e) => {
           e.preventDefault();
           callback(searchKw);
-          refForm.current.reset();
+          setSearchKw({ pkeywd: "", psize: "" });
         }}
         sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'flex-end',
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "flex-end",
 
-          marginBottom: '5px',
+          marginBottom: "5px",
         }}
       >
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
           }}
         >
-          <label sx={{ fontSize: '0.5rem' }}>검색어</label>
+          <label style={{ fontSize: '0.9rem' }}>검색어</label>
           <TextField
             type="text"
             name="pkeywd"
@@ -100,8 +100,9 @@ const SerchBar = ({ callback }) => {
             size="small"
             sx={{ paddingLeft: 2, paddingRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
+            value={searchKw.pkeywd}
           />
-          <label sx={{ fontSize: '0.5rem' }}>규격</label>
+          <label style={{ fontSize: '0.9rem' }}>규격</label>
           <TextField
             type="text"
             name="psize"
@@ -109,6 +110,7 @@ const SerchBar = ({ callback }) => {
             size="small"
             sx={{ paddingLeft: 2, paddingRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
+            value={searchKw.psize}
           />
         </Box>
         <Button type="submit" variant="outlined" sx={{ marginRight: 6 }}>
