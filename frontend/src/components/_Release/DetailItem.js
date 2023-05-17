@@ -4,6 +4,7 @@ import React from "react";
 const DetailItem = ({
   no,
   code, // release_datail 테이블의 no 값
+  rvCode,
   mcode,
   pcode,
   pname,
@@ -67,6 +68,7 @@ const DetailItem = ({
         />
       </TableCell>
       <TableCell>{no + 1}</TableCell>
+      <TableCell>{rvCode}</TableCell>
       <TableCell>{pcode}</TableCell>
       <TableCell>{pname}</TableCell>
       <TableCell>{psize}</TableCell>

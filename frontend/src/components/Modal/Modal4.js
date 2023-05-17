@@ -175,9 +175,9 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
   }, []);
   // ReceiveMaster검색
   const modal4receiveMasterSearch = async (searchKw) => {
-    var url = `/api/receive/list`;
+    var url = `/api/receive/list1`;
     if (searchKw) {
-      url = `/api/receive/list?rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
+      url = `/api/receive/list1?rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
     }
     try {
       const response = await fetch(url, {

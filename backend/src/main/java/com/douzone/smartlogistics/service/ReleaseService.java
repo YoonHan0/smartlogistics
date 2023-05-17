@@ -12,6 +12,7 @@ import com.douzone.smartlogistics.vo.ReceiveDetailVo;
 import com.douzone.smartlogistics.vo.ReceiveMasterVo;
 import com.douzone.smartlogistics.vo.ReleaseDetailVo;
 import com.douzone.smartlogistics.vo.ReleaseMasterVo;
+import com.douzone.smartlogistics.vo.StatisticsVo;
 
 
 @Service
@@ -50,8 +51,11 @@ public class ReleaseService {
 	@Transactional
 	public void insertDetail(List<ReleaseDetailVo> releaseDetailVo, DBLogVo logVO) {
 		for (ReleaseDetailVo vo : releaseDetailVo) {
+			System.out.println("===== Count ==== ");
+			System.out.println(vo.getCount());
 			vo.setLog(logVO);
 			releaseRepository.insertDetail(vo);
+			releaseRepository.updateReceiveCount(vo.getReceiveDetailNo(), vo.getCount());
 			releaseRepository.insertStock(vo);
 		}
 	}
@@ -66,6 +70,10 @@ public class ReleaseService {
 
 	public List<ReleaseMasterVo> findByName(String userName) {
 		return releaseRepository.findByName(userName);
+	}
+
+	public StatisticsVo findByUserId(String userId) {
+		return releaseRepository.findByUserId(userId);
 	}
 
 

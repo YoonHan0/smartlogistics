@@ -32,21 +32,24 @@ const User = () => {
 
   // product 추가
   const itemAddHandler = async (obj) => {
-    await customFetch(`/api/user`, {
+    const json = await customFetch(`/api/user`, {
       headers: {
         Accept: "application/json",
         Authorization: localStorage.getItem("token"),
       },
       method: "post",
       body: obj,
-    }).then(() => {
-      const object = {};
-      for (let [key, value] of obj.entries()) {
-        object[key] = value;
-      }
-      setUsers([...users, object]);
-      alert("회원가입 성공하셨습니다.");
     });
+
+    if (json.result === "fail") {
+      return false;
+    }
+    let object = {};
+    const { id, name, phone } = json.data;
+    object = { id, name, phone };
+    setUsers([...users, object]);
+    alert(name + " 유저 회원가입 성공");
+    return true;
   };
 
   //product 수정

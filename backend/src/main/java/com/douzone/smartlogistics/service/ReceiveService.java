@@ -10,6 +10,7 @@ import com.douzone.smartlogistics.repository.ReceiveRepository;
 import com.douzone.smartlogistics.vo.DBLogVo;
 import com.douzone.smartlogistics.vo.ReceiveDetailVo;
 import com.douzone.smartlogistics.vo.ReceiveMasterVo;
+import com.douzone.smartlogistics.vo.StatisticsVo;
 
 @Service
 @Transactional
@@ -27,6 +28,9 @@ public class ReceiveService {
 	}
 	public  List<ReceiveMasterVo>  findByName(String userName) {
 		return receiveRepository.findByName(userName);
+	}
+	public StatisticsVo findByUserId(String userId) {
+		return receiveRepository.findByUserId(userId);
 	}
 
 	public void insertMaster(ReceiveMasterVo receiveVo, DBLogVo logVO) {
@@ -79,5 +83,6 @@ public class ReceiveService {
 				? (isDeleteDetailSuccess && receiveRepository.deleteMasterByDetailNo(masterCode))
 				: receiveRepository.deleteDetailItem(detailNo);
 	}
+
 
 }

@@ -10,7 +10,7 @@ const Product = () => {
   const [products, setProducts] = useState([]);
   // productdetail
   const [Detail, setDetail] = useState([]);
-
+  const [searchEvent, setSearchEvent] = useState(false);
   const [item, setItem] = useState({ code: "", name: "", size: "", unit: "" });
   const rowColor = useRef();
   const [codeChk, setCodeChk] = useState();
@@ -28,6 +28,7 @@ const Product = () => {
     await customFetch(url, { method: "get" }).then((json) =>
       setProducts(json.data)
     );
+    setSearchEvent((prev) => !prev);
     setDetail([]);
   };
 
@@ -57,6 +58,7 @@ const Product = () => {
       method: "post",
       body: JSON.stringify(item),
     }).then(() => productSearch(null));
+    setSearchEvent((prev) => !prev);
   };
 
   // product 세부사항
@@ -67,6 +69,7 @@ const Product = () => {
         rowColor.current = code;
       }
     );
+    setSearchEvent((prev) => !prev);
   };
 
   // product 삭제
@@ -81,6 +84,7 @@ const Product = () => {
         products.filter((product) => json.data.indexOf(product.code) == -1)
       )
     );
+    setSearchEvent((prev) => !prev);
   };
 
   return (
@@ -101,6 +105,7 @@ const Product = () => {
             setItem={setItem}
             rowColor={rowColor}
             codeChk={codeChk}
+            searchEvent={searchEvent}
           />
           <ProductUpdate
             productDetail={Detail}

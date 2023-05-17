@@ -10,6 +10,7 @@ function BusinessItem({
   businessDetail,
   checkedButtons,
   changeHandler,
+  handleCheckboxClick,
 }) {
   const refCode = useRef(null);
 
@@ -34,6 +35,7 @@ function BusinessItem({
             changeHandler(e.currentTarget.checked, code);
           }}
           checked={checkedButtons.includes(code) ? true : false}
+          onClick={handleCheckboxClick}
         />
       </TableCell>
       <TableCell>{no + 1}</TableCell>

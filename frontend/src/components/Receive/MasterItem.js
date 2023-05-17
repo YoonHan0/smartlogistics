@@ -1,5 +1,5 @@
 import { Box, Checkbox, TableCell, TableRow } from '@mui/material';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const MasterItem = ({
   no,
@@ -7,6 +7,7 @@ const MasterItem = ({
   date,
   username,
   businessname,
+  disable,
   receiveDetail,
   rowColor,
   state,
@@ -25,6 +26,9 @@ const MasterItem = ({
   } else if (state === '진행') {
     bgcolor.current = '#B3BFF7';
   }
+  useEffect(() => {
+    console.log(`disable****${disable}`);
+  }, []);
   return (
     <TableRow
       key={no}
@@ -80,7 +84,9 @@ const MasterItem = ({
           <span style={{ fontWeight: 450, margin: '3px' }}>{state}</span>
         </Box>
       </TableCell>
-      <TableCell></TableCell>
+      <TableCell>
+        <span style={{ fontWeight: 450, margin: '3px', color: 'red' }}>{disable === 'true' ? '수량 미입력' : ''}</span>
+      </TableCell>
     </TableRow>
   );
 };

@@ -310,6 +310,7 @@ const ReceiveMaster = ({
                         date={master.date}
                         username={master.userName}
                         businessname={master.businessName}
+                        disable={master.disable}
                         receiveDetail={receiveDetail}
                         rowColor={rowColor}
                         state={master.state}

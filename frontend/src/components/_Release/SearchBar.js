@@ -54,6 +54,10 @@ const SerchBar = ({ callback, seDate }) => {
     console.log(searchKw);
   }, [searchKw]);
 
+  useEffect(() => {
+    setSearchKw({ ...searchKw, startdt: seDate.sDate, enddt: seDate.eDate });
+  }, [seDate]);
+
   return (
     <Grid
       item
@@ -188,7 +192,7 @@ const SerchBar = ({ callback, seDate }) => {
                     height: '35px',
                   },
                 }}
-                value={searchKw.startdt || dayjs(seDate.sDate) || null}
+                value={dayjs(searchKw.startdt) || null}
                 onAccept={handleAcceptStart}
               ></DatePicker>
               <span>~</span>
@@ -217,7 +221,7 @@ const SerchBar = ({ callback, seDate }) => {
                   },
                 }}
                 minDate={minDate || null}
-                value={searchKw.enddt || dayjs(seDate.eDate) || null}
+                value={dayjs(searchKw.enddt) || null}
                 onAccept={handleAcceptEnd}
               ></DatePicker>
             </DemoContainer>

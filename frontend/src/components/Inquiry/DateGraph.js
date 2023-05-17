@@ -46,11 +46,7 @@ const DateGraph = ({ inquiry, page }) => {
     return `${year}-${month}-${day}`;
   }
 
-  const [startdate, setStartDate] = useState();
-
-  useEffect(() => {
-    setStartDate(settingStartdate('day', -7));
-  },[])
+  const [startdate, setStartDate] = useState(settingStartdate('day', -7));
 
   // DatePicker의 값을 저장하는 메소드
   const settingdate = (date,value) => {
@@ -169,9 +165,6 @@ const DateGraph = ({ inquiry, page }) => {
   },[data]);
 
   useEffect(() => {
-    console.log("graph값", graph)
-    console.log("=== dateArr in graph, value ==== ");
-    console.log(dateArray);
     showGraph(settingdate(startdate, 0));
     setSelectedBar([sum(IScountArray), sum(RVcountArray)]);
   }, [startdate]);

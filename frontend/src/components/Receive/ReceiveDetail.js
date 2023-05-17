@@ -41,7 +41,22 @@ const ReceiveDetail = ({
   openDeleteModalInDetail,
   openNullModal,
   detailInput,
+  setCountCheck,
 }) => {
+
+  // const detailTextFieldRef = useRef(null);      // Product Modal이 끝난 후에 focus 맞추길 위한 state
+
+  // useImperativeHandle(ref, () => ({
+  //   setFocus: () => {
+      
+  //     if (detailTextFieldRef.current) {
+  //       console.log("Receive detail들어옴");
+  //       console.log(detailTextFieldRef.current);
+  //       detailTextFieldRef.current.setFocus1();
+  //     }
+  //   },
+  // }));
+
   /** 모두 선택해주는 체크박스 (detail header부분의 체크박스) */
   const detailAllCheckBox = (checked) => {
     const updatedCheckedRow = checkedRow.map((row) => {
@@ -239,6 +254,7 @@ const ReceiveDetail = ({
                         state={detail.state}
                         checkedRow={checkedRow}
                         setCheckedRow={setCheckedRow}
+                        setCountCheck={setCountCheck}
                       />
                     );
                   })

@@ -73,6 +73,7 @@ const UserSerchBar = ({ callback }) => {
         onSubmit={(e) => {
           e.preventDefault();
           callback(searchKw);
+          setSearchKw({ ukeywd: "", usize: "" });
         }}
         sx={{
           display: "flex",
@@ -97,6 +98,7 @@ const UserSerchBar = ({ callback }) => {
             size="small"
             sx={{ marginLeft: 2, marginRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
+            value={searchKw.ukeywd}
           />
           <label sx={{ fontSize: "0.5rem" }}>연락처</label>
           <TextField
@@ -106,6 +108,7 @@ const UserSerchBar = ({ callback }) => {
             size="small"
             sx={{ marginLeft: 2, marginRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
+            value={searchKw.usize}
           />
         </Box>
         <Button type="submit" variant="outlined" sx={{ marginRight: 6 }}>

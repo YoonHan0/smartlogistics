@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.douzone.smartlogistics.vo.DBLogVo;
 import com.douzone.smartlogistics.vo.ReceiveDetailVo;
 import com.douzone.smartlogistics.vo.ReceiveMasterVo;
+import com.douzone.smartlogistics.vo.StatisticsVo;
 
 @Repository
 public class ReceiveRepository {
@@ -67,6 +68,10 @@ public class ReceiveRepository {
 
 	public int findSeqByDateAndState(String date) {
 		return sqlSession.selectOne("receive.findSeqByDateAndState", date);
+	}
+	
+	public StatisticsVo findByUserId(String userId) {
+		return sqlSession.selectOne("receive.findByUserId", userId);
 	}
 
 	/* Master Item 삭제 */
