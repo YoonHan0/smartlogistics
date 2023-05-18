@@ -16,9 +16,6 @@ import {
 } from "@mui/material";
 import StockItem from './StockItem';
 
-
-
-
 const StockTable = ({ list }) => {
 
   return (

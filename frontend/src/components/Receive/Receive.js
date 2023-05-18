@@ -20,8 +20,8 @@ const Receive = () => {
   const [masterCode, setMasterCode] = useState();
   /* date값을 가지고 있는 */
   const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
-  // receive Master 수량 미입력
-  const [disable, setDisable] = useState({});
+
+  const [loading, setLoading] = useState(true);
   // Modal
   const [openManager, setOpenManager] = useState(false);
   const [openBusiness, setOpenBusiness] = useState(false);
@@ -103,6 +103,7 @@ const Receive = () => {
 
   // ReceiveMaster검색
   const receiveMasterSearch = async (searchKw) => {
+    setLoading(true);
     var url = `/api/receive/list`;
     if (searchKw) {
       url = `/api/receive/list?rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
@@ -112,7 +113,6 @@ const Receive = () => {
       // console.log(dataList);
       setreceiveMaster(dataList);
       setSeDate({ sDate: sDate, eDate: eDate });
-      setDisable(dataList.map(({ code, disable }) => ({ code, disable })));
       // 넘어온 데이터의 master code 값 담기
       setCheckedRow(
         dataList.map((item) => ({
@@ -121,6 +121,7 @@ const Receive = () => {
           detail: [{ no: '', state: 'f' }],
         }))
       );
+      setLoading(false);
     });
   };
   // ReceiveDetail
@@ -368,7 +369,7 @@ const Receive = () => {
       />
       <NullModal open={openNullModal} onClose={() => setOpenNullModal(false)} />
       <Grid container spacing={2} style={{ marginLeft: '0px' }}>
-        <SearchBar callback={receiveMasterSearch} seDate={seDate} />
+        <SearchBar callback={receiveMasterSearch} seDate={seDate} loading={loading} />
         <ReceiveMaster
           masters={receiveMaster}
           receiveDetail={receiveDetailSearch}
@@ -384,6 +385,7 @@ const Receive = () => {
           openDeleteModalInMaster={openDeleteModalInMaster}
           openNullModal={openNullModal}
           masterStateT={masterStateT}
+          loading={loading}
         />
         <ReceiveDetail
           details={receiveDetail}

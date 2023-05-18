@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { customFetch } from '../custom/customFetch';
 import checkImg from '../../assets/img/checkmark.png';
-
+import jwt_decode from 'jwt-decode';
 import {
   Box,
   Checkbox,
@@ -22,21 +22,21 @@ const MyReceive = ({ info }) => {
   // ReceiveMaster
   const [receiveMaster, setreceiveMaster] = useState([]);
   useEffect(() => {
-    receiveMasterSearch(null);
-    console.log(info);
+    receiveMasterSearch();
+    //console.log(info);
   }, []);
 
   // ReceiveMaster검색
   const receiveMasterSearch = async () => {
-    var url = `/api/receive/mylist?u=${info.name}`;
+    var url = `/api/receive/mylist?u=${localStorage.getItem('name')}`;
 
     await customFetch(url, { method: 'get' }).then((json) => {
       setreceiveMaster(json.data);
     });
   };
   return (
-    <Grid container spacing={2} style={{ marginLeft: '350px', marginTop: '30px', width: '550px' }}>
-      <Box sx={{ display: 'flex', paddingLeft: 3 }}>
+    <Grid container spacing={2} style={{ marginLeft: '350px', marginTop: '30px', width: '50%' }}>
+      <Box sx={{ display: 'flex', paddingLeft: 2.5 }}>
         <Box
           component="img"
           src={checkImg}
@@ -53,7 +53,6 @@ const MyReceive = ({ info }) => {
             fontWeight: 800,
             marginRight: '15px',
             marginTop: '5px',
-            marginLeft: '10px',
           }}
         >
           입고리스트
@@ -69,8 +68,8 @@ const MyReceive = ({ info }) => {
         <TableContainer
           component={Paper}
           sx={{
-            width: '550px',
-            paddingLeft: 3,
+            width: '96%',
+            paddingLeft: 2.5,
             paddingTop: 0,
             boxShadow: 'none',
             height: 200,

@@ -90,7 +90,7 @@ spring:
          on-profile: development-mac
    web:
       resources:
-         static-locations: classpath:/assets/, file:/Users/yoon/smartlogistics-uploads/
+         static-locations: classpath:/assets/, file:./Users/yoon/smartlogistics-uploads/
    # devtools - live reload
    devtools:
       livereload:

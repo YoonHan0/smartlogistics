@@ -23,7 +23,7 @@ const StockTable1 = ({
   loading,
 }) => {
   const isRowLoaded = ({ index }) => !hasNextPage || index < list.length;
-  const Width = ['100px', '120px', '100px', '100px', '100px', '100px', '100px', '80px', '80px', '60px', '60px', '80px'];
+  const Width = ['120px', '140px', '120px', '120px', '120px', '120px', '120px', '100px', '100px', '80px', '80px', '100px'];
   // const Width = [9,3,3,3,3,3,3,3,3,3,3,3];
   // const Width =['10%','13%','10%','10%','10%','10%','10%','8%','8%','6%','6%','10%'];
   const cellMeasurerCache = new CellMeasurerCache({
@@ -31,16 +31,26 @@ const StockTable1 = ({
     defaultHeight: 50,
   });
 
-  const rowRenderer = ({ index, parent }) => {
-
+  const rowRenderer = ({ index, parent, style }) => {
+    const item = list[index];
     console.log(list)
     if (!isRowLoaded({ index })) {
       return (
-        <td key={index}>
+        <td key={index} style={style}>
           Loading...
         </td>
       );
     }
+
+    const updatedStyleCell = (w) => Object.assign({}, style, { 
+      width: w,
+      padding: 0,
+      height: '50px'
+    });
+
+    const updatedStyleRow = Object.assign({}, style, { 
+      backgroundColor: item.state==='RV' ? 'rgba(255, 99, 132, 0.1)':'rgba(54, 162, 235, 0.1)',
+    });
     return (
       <CellMeasurer
         key={index}
@@ -50,46 +60,55 @@ const StockTable1 = ({
         rowIndex={index}
       >
         {({ measure }) => (
-          <TableRow key={index} style={ {
-            backgroundColor: list[index].state==='RV' ? 'rgba(255, 99, 132, 0.1)':'rgba(54, 162, 235, 0.1)',
-            borderRadius: '10px',
-          }} >
+          <TableRow key={index} style={updatedStyleRow} >
             {/*스타일 넣어줘야 virtual render 적용됨*/}
-            <TableCell style={{  width: Width[0] }}>
-              {list[index].date}</TableCell>
-            <TableCell style={{  width: Width[1] }}>
-              {list[index].code}</TableCell>
-            <TableCell style={{  width: Width[2] }}>
-              {list[index].userName}</TableCell>
-            <TableCell style={{  width: Width[3] }}>
-              {list[index].businessName.length > 5 ? list[index].businessName.substr(0, 5) + '...' : list[index].businessName}</TableCell>
-            <TableCell style={{  width: Width[4] }}>
-              {list[index].productCode}</TableCell>
-            <TableCell style={{  width: Width[5] }}>
-              {list[index].productName.length > 5 ? list[index].productName.substr(0, 5) + '...' : list[index].productName}</TableCell>
-            <TableCell style={{  width: Width[6] }}>
-              {list[index].size}</TableCell>
-            <TableCell style={{  width: Width[7] }}>
-              {list[index].unit}</TableCell>
-            <TableCell style={{  width: Width[8] }}>
-              {list[index].beginningStock}</TableCell>
+            <TableCell style={  updatedStyleCell(Width[0]) }>
+              {item.date}
+              </TableCell>
+              <TableCell style={  updatedStyleCell(Width[1]) }>
+              {item.code}
+              </TableCell>
+              <TableCell style={  updatedStyleCell(Width[2]) }>
+              {item.userName}
+              </TableCell>
+              <TableCell style={  updatedStyleCell(Width[3]) }>
+              {item.businessName.length > 5 ? item.businessName.substr(0, 5) + '...' : item.businessName}
+              </TableCell>
+              <TableCell style={  updatedStyleCell(Width[4]) }>
+              {item.productCode}
+              </TableCell>
+              <TableCell style={  updatedStyleCell(Width[5]) }>
+              {item.productName.length > 5 ? item.productName.substr(0, 5) + '...' : item.productName}
+              </TableCell>
+              <TableCell style={  updatedStyleCell(Width[6]) }>
+              {item.size}
+              </TableCell>
+              <TableCell style={  updatedStyleCell(Width[7]) }>
+              {item.unit}
+              </TableCell>
+              <TableCell style={  updatedStyleCell(Width[8]) }>
+              {item.beginningStock}
+              </TableCell>
             {
-              list[index].state === 'RV' ?
+              item.state === 'RV' ?
                 <>
-                  <TableCell style={{  width: Width[9] }}>
-                    {list[index].count}</TableCell>
-                  <TableCell style={{  width: Width[10] }}>
+            <TableCell style={  updatedStyleCell(Width[9]) }>
+                    {item.count}
+                    </TableCell>
+                    <TableCell style={  updatedStyleCell(Width[10]) }>
                   </TableCell>
                 </> :
                 <>
-                  <TableCell style={{  width: Width[9] }}>
+            <TableCell style={  updatedStyleCell(Width[9]) }>
                   </TableCell>
-                  <TableCell style={{  width: Width[10] }}>
-                    {list[index].count}</TableCell>
+                  <TableCell style={  updatedStyleCell(Width[10]) }>
+                    {item.count}
+                    </TableCell>
                 </>
             }
-            <TableCell style={{  width: Width[11] }}>
-              {list[index].endingStock}</TableCell>
+            <TableCell style={  updatedStyleCell(Width[11]) }>
+              {item.endingStock}
+              </TableCell>
           </TableRow>
         )}
       </CellMeasurer>

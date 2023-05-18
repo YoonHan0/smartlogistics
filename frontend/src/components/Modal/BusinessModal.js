@@ -1,5 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Button, Modal, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  Modal,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { customFetch } from '../custom/customFetch';
 
@@ -131,46 +143,38 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
                 mt: 1,
                 display: 'flex',
                 float: 'right',
+                flexDirection: 'row',
+                alignItems: 'center',
               }}
             >
-              <Box
-                sx={{
-                  lineHeight: '40px',
-                  pl: 1,
-                }}
-              >
-                검색어
-              </Box>
+              <label style={{ fontSize: '0.9rem' }}>검색어</label>
               <TextField
                 size="small"
                 sx={{
-                  pl: 1,
+                  paddingLeft: '15px',
+                  paddingRight: '40px',
                 }}
                 onChange={onChangeHandler}
                 onKeyUp={onEnterHandler}
                 value={searchKWD.code}
                 name="code"
+                InputProps={{ sx: { height: 30, width: 150 } }}
               ></TextField>
-              <Box
-                sx={{
-                  lineHeight: '40px',
-                  pl: 1,
-                }}
-              >
-                전화번호
-              </Box>
+              <label style={{ fontSize: '0.9rem' }}>전화번호</label>
               <TextField
                 size="small"
                 sx={{
-                  pl: 1,
+                  paddingLeft: '15px',
+                  paddingRight: '40px',
                 }}
                 onChange={onChangeHandler}
                 onKeyUp={onEnterHandler}
                 value={searchKWD.phone}
                 name="phone"
+                InputProps={{ sx: { height: 30, width: 150 } }}
               ></TextField>
-              <Button>
-                <SearchIcon onClick={onClickHandler} />
+              <Button type="submit" variant="outlined" sx={{ marginRight: 'auto' }} onClick={onClickHandler}>
+                <SearchIcon />
               </Button>
             </Box>
           </Box>
@@ -197,12 +201,22 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
           >
             <Table stickyHeader size="small">
               <TableHead>
-                <TableRow sx={{ background: '#F6F7F9' }}>
-                  <TableCell align="center">순번</TableCell>
-                  <TableCell align="center">거래처코드</TableCell>
-                  <TableCell align="center">거래처명</TableCell>
-                  <TableCell align="center">전화번호</TableCell>
-                  <TableCell align="center">선택</TableCell>
+                <TableRow>
+                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
+                    순번
+                  </TableCell>
+                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
+                    거래처코드
+                  </TableCell>
+                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
+                    거래처명
+                  </TableCell>
+                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
+                    전화번호
+                  </TableCell>
+                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
+                    선택
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

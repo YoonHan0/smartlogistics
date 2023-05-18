@@ -81,7 +81,7 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
                 alignItems: 'center',
               }}
             >
-              <label sx={{ fontSize: '0.5rem' }}>이름</label>
+              <label style={{ fontSize: '0.9rem' }}>이름</label>
               <TextField
                 size="small"
                 sx={{
@@ -92,7 +92,7 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
                 name="keywd"
                 InputProps={{ sx: { height: 30, width: 150 } }}
               ></TextField>
-              <label sx={{ fontSize: '0.5rem' }}>전화번호</label>
+              <label style={{ fontSize: '0.9rem' }}>전화번호</label>
               <TextField
                 size="small"
                 sx={{

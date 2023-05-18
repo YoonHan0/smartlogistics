@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import styled from 'styled-components';
-import { Box, Checkbox, FormControl, Grid, NativeSelect, Paper, TextField } from '@mui/material';
+import { Box, Checkbox, CircularProgress, FormControl, Grid, NativeSelect, Paper, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 /** 테이블 Header 고정을 위한 styled component 사용 */
@@ -26,6 +26,7 @@ const ProductList = ({
   rowColor,
   codeChk,
   searchEvent,
+  loading,
 }) => {
   /** fetch, 즉 list를 출력하기 위한 state */
   const refForm = useRef(null);
@@ -98,9 +99,7 @@ const ProductList = ({
     console.log(checkedButtons.length);
     if (checked) {
       if (!isChecked) {
-        products.length === checkedButtons.length + 1
-          ? setIsChecked((prev) => !prev)
-          : null;
+        products.length === checkedButtons.length + 1 ? setIsChecked((prev) => !prev) : null;
       }
     }
   };
@@ -121,7 +120,7 @@ const ProductList = ({
 
   const handleCheckboxClick = (event) => {
     event.stopPropagation();
-    setItem({ code: "", name: "", phone: "" });
+    setItem({ code: '', name: '', phone: '' });
   };
 
   return (
@@ -245,7 +244,11 @@ const ProductList = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {products.length > 0 ? (
+                {loading ? (
+                  <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                    <CircularProgress />
+                  </Box>
+                ) : products.length > 0 ? (
                   products.map((product, index) => (
                     <ProductItem
                       key={index}

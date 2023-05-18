@@ -58,11 +58,9 @@ public class ReceiveController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(responseData));
 	}
-	
-	
-	
+	//모달 receive select masterList
 	@GetMapping("/list1")
-	public ResponseEntity<JsonResult> readmodalReceive(
+	public ResponseEntity<JsonResult> modaleadReceive(
 			@RequestParam(value = "rc", required = true, defaultValue = "") String receiveCode,
 			@RequestParam(value = "bn", required = true, defaultValue = "") String businessName,
 			@RequestParam(value = "sdt", required = true, defaultValue = "") String startDate,
@@ -77,11 +75,18 @@ public class ReceiveController {
 			endDate = DateUtil.addDays(6);
 		}
 		System.out.println(startDate+"///"+endDate);
+		List<ReceiveMasterVo> dataList = receiveService.findByKeyword(receiveCode, businessName, startDate, endDate);
+		String sDate = startDate;
+		String eDate = endDate;
+
+		Map<String, Object> responseData = new HashMap<>();
+		responseData.put("dataList", dataList);
+		responseData.put("sDate", sDate);
+		responseData.put("eDate", eDate);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(receiveService.findByKeyword(receiveCode, businessName, startDate, endDate)));
+				.body(JsonResult.success(responseData));
 	}
-		
-		
+
 
 	// receive select detailList
 	@GetMapping("/detail")
@@ -94,10 +99,28 @@ public class ReceiveController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(receiveService.findByMasterNo(receiveCode)));
 	}
+	
+	
+	
+	
+	// 모달 receive select detailList
+		@GetMapping("/detail1")
+		public ResponseEntity<JsonResult> modalreadReceive(
+				@RequestParam(value = "rc", required = true, defaultValue = "") String receiveCode) {
+			System.out.println("detail" + receiveCode);
+			for (ReceiveDetailVo vo : receiveService.findByMasterNo(receiveCode)) {
+				System.out.println("detail: " + vo);
+			}
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(JsonResult.success(receiveService.modalfindByMasterNo(receiveCode)));
+		}
+		
+		
 	// my receive master list
 	@GetMapping("/mylist")
 	public ResponseEntity<JsonResult> readMyReceive(
 			@RequestParam(value = "u", required = true, defaultValue = "") String userName) {
+		System.out.println("--------------------------"+userName);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(receiveService.findByName(userName)));
 	}

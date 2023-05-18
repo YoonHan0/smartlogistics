@@ -22,10 +22,19 @@ public class ReceiveService {
 	public List<ReceiveMasterVo> findByKeyword(String receiveCode, String businessName,String startDate, String endDate) {
 		return receiveRepository.findByKeyword(receiveCode, businessName,startDate, endDate);
 	}
+	
+	public List<ReceiveMasterVo> modalfindByKeyword(String receiveCode, String businessName,String startDate, String endDate) {
+		return receiveRepository.modalfindByKeyword(receiveCode, businessName,startDate, endDate);
+	}
 
 	public List<ReceiveDetailVo> findByMasterNo(String receiveCode) {
 		return receiveRepository.findByMasterNo(receiveCode);
 	}
+	
+	public List<ReceiveDetailVo> modalfindByMasterNo(String receiveCode) {
+		return receiveRepository.modalfindByMasterNo(receiveCode);
+	}
+	
 	public  List<ReceiveMasterVo>  findByName(String userName) {
 		return receiveRepository.findByName(userName);
 	}

@@ -24,13 +24,14 @@ import Modal4MasterItem from "./Modal4MasterItem";
 import Modal4ReceiveDetail from "./Modal4ReceiveDetail";
 import Modal4Outlist from "./Modal4Outlist";
 import Modal4DetailItem from "./Modal4DetailItem";
+import { customFetch } from '../custom/customFetch';
 const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [checkedRow, setCheckedRow] = useState([{master: "", state:"f",detail: [{no:"",state:"f"}]}]);
   const rowColor = useRef();
   const[data,setData] = useState([]);     // 추기된 출고 리스트 관리하는 state
-
+  const [masterCode, setMasterCode] = useState();
   // ReceiveMaster
   const [modal4receiveMaster, setreceiveMaster] = useState([]);
   // ReceiveDetail
@@ -44,8 +45,11 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
   const[nocheck,setNocheck] = useState([]);
   // const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+ /* date값을 가지고 있는 */
+ const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
 
-
+ // receive Master 수량 미입력
+ const [disable, setDisable] = useState({});
   
   
   const graybutton = (no) => {
@@ -97,20 +101,21 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
   
 
   /* detail item에서 잔량 수정후 Enter */
-  const updateReceiveCnt = (count,no) => {
-    const updatedData = modal4receiveDetail.map((item) => {
-      if (item.no === no) {
-        return {
-          ...item,
-          stockCount: count
-        };
-      }
-      return item;
-    });
-    setreceiveDetail(updatedData);
+  // const updateReceiveCnt = (count,no) => {
+  //   const updatedData = modal4receiveDetail.map((item) => {
+  //     if (item.no === no) {
+  //       return {
+
+  //         ...item,
+  //         stockCount: count
+  //       };
+  //     }
+  //     return item;
+  //   });
+  //   setreceiveDetail(updatedData);
 
     
-  };
+  // };
   
 
   
@@ -173,68 +178,158 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
   useEffect(() => {
     modal4receiveMasterSearch(null);
   }, []);
+
+
+
+
   // ReceiveMaster검색
+  // const modal4receiveMasterSearch = async (searchKw) => {
+  //   var url = `/api/receive/list1`;
+  //   if (searchKw) {
+  //     url = `/api/receive/list1?rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
+  //   }
+  //   try {
+  //     const response = await fetch(url, {
+  //       method: "get",
+  //       headers: {
+  //         Accept: "application/json",
+  //         Authorization: localStorage.getItem("token"),
+  //       },
+  //     });
+  //     if (!response.ok) {
+  //       throw new Error(`${response.status} ${response.statusText}`);
+  //     }
+  //     const json = await response.json();
+  //     if (json.result !== "success") {
+  //       throw new Error(`${json.result} ${json.message}`);
+  //     }
+  //     //console.log(json.data);
+  //     setreceiveMaster(json.data);
+      
+
+  //     setCheckedRow(json.data.map(item => ({master: item.code, state: 'f', detail: [{no: '', state: 'f'}]})));
+  //     console.log("체크체크",checkedRow)
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
   const modal4receiveMasterSearch = async (searchKw) => {
     var url = `/api/receive/list1`;
     if (searchKw) {
       url = `/api/receive/list1?rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
     }
-    try {
-      const response = await fetch(url, {
-        method: "get",
-        headers: {
-          Accept: "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-      const json = await response.json();
-      if (json.result !== "success") {
-        throw new Error(`${json.result} ${json.message}`);
-      }
-      //console.log(json.data);
-      setreceiveMaster(json.data);
-      
-
-      setCheckedRow(json.data.map(item => ({master: item.code, state: 'f', detail: [{no: '', state: 'f'}]})));
-      console.log("체크체크",checkedRow)
-    } catch (err) {
-      console.log(err);
-    }
+    await customFetch(url, { method: 'get' }).then((json) => {
+      const { dataList, sDate, eDate } = json.data; // dataList: 기존에 불러오던 data, sDate, eDate: 오늘 날짜를 기준으로 -7, +7일 date 값
+      // console.log(dataList);
+      setreceiveMaster(dataList);
+      setSeDate({ sDate: sDate, eDate: eDate });
+      setDisable(dataList.map(({ code, disable }) => ({ code, disable })));
+      // 넘어온 데이터의 master code 값 담기
+      setCheckedRow(
+        dataList.map((item) => ({
+          master: item.code,
+          state: 'f',
+          detail: [{ no: '', state: 'f' }],
+        }))
+      );
+    });
   };
 
   
   // ReceiveDetail
+  // const modal4receiveDetailSearch = async (code) => {
+  //   try {
+  //     const response = await fetch(`/api/receive/detail?rc=${code}`, {
+  //       method: "get",
+  //       headers: {
+  //         Accept: "application/json",
+  //         Authorization: localStorage.getItem("token"),
+  //       },
+  //     });
+  //     if (!response.ok) {
+  //       throw new Error(`${response.status} ${response.statusText}`);
+  //     }
+  //     const json = await response.json();
+  //     if (json.result !== "success") {
+  //       throw new Error(`${json.result} ${json.message}`);
+  //     }
+  //     //console.log(json.data);
+  //     setreceiveDetail(json.data);
+  //     rowColor.current = code;    // 선택된 행 background 색상 변경
+  //     const data = addDetailArrayHandler(json.data);
+  //     const filteredCheckedRow = data.map((row) => {    // detail [] 배열 중 no가 빈 값인 거 제외
+  //       const filteredDetail = row.detail.filter((detail) => detail.no !== '');
+  //       return { ...row, detail: filteredDetail };
+  //     });
+  //     setCheckedRow(filteredCheckedRow);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
   const modal4receiveDetailSearch = async (code) => {
-    try {
-      const response = await fetch(`/api/receive/detail?rc=${code}`, {
-        method: "get",
-        headers: {
-          Accept: "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-      const json = await response.json();
-      if (json.result !== "success") {
-        throw new Error(`${json.result} ${json.message}`);
-      }
-      //console.log(json.data);
+    //선택한 입고의 입고번호 저장
+    setMasterCode(code);
+
+    await customFetch(`/api/receive/detail1?rc=${code}`, { method: 'get' }).then((json) => {
+      console.log(json.data);
       setreceiveDetail(json.data);
-      rowColor.current = code;    // 선택된 행 background 색상 변경
+
+      const isAnyNull = json.data.some((item) => item.state === null); // status 배열에서 하나라도 null이 있는지 확인합니다.
+      console.log(isAnyNull);
+      setreceiveMaster((prevDataList) => {
+        return prevDataList.map((item) => {
+          if (item.code === code) {
+            return { ...item, disable: isAnyNull ? 'true' : 'false' }; // disable 값을 isAnyNull에 따라 설정합니다.
+          }
+          return item;
+        });
+      });
+
+      rowColor.current = code;
       const data = addDetailArrayHandler(json.data);
-      const filteredCheckedRow = data.map((row) => {    // detail [] 배열 중 no가 빈 값인 거 제외
+      const filteredCheckedRow = data.map((row) => {
+        // detail [] 배열 중 no가 빈 값인 거 제외
         const filteredDetail = row.detail.filter((detail) => detail.no !== '');
         return { ...row, detail: filteredDetail };
       });
+
       setCheckedRow(filteredCheckedRow);
-    } catch (err) {
-      console.log(err);
+    });
+  };
+
+
+
+  // receiveMater nullchk
+  const nullChkHandler = (inputMaster) => {
+    console.log(inputMaster);
+    // 아래의 값이 모두 있을경우
+    if (
+      inputMaster.date !== '' &&
+      inputMaster.businessCode !== '' &&
+      inputMaster.businessName !== '' &&
+      inputMaster.userId !== '' &&
+      inputMaster.userName !== ''
+    ) {
+      setInputMaster(inputMaster);
+      // 새로운 product를 추가 하기 전에 reset
+      setreceiveDetail([]);
+      setMasterCode('');
+      // productModal open
+      toggleModal(openProduct, 'product');
+      setDetailInput(true);
     }
+  };
+
+  // ReceiveCntUpdate
+  const updateReceiveCnt = async (receiveCnt, no, mcode) => {
+    await customFetch('/api/receive/updatedetail', {
+      method: 'post',
+      body: JSON.stringify({ no: no, receiveCount: receiveCnt }),
+    }).then((json) => {
+      receiveDetailSearch(mcode);
+    });
   };
 
 
@@ -272,7 +367,7 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
             }}
           >
           <Grid >
-            <Modal4Search callback={modal4receiveMasterSearch} />
+            <Modal4Search callback={modal4receiveMasterSearch} seDate={seDate} />
             <Modal4ReceiveMaster
               masters={modal4receiveMaster}
               modal4receiveDetail={modal4receiveDetailSearch}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { customFetch } from '../custom/customFetch';
 import checkImg from '../../assets/img/checkmark.png';
-
+import jwt_decode from 'jwt-decode';
 import {
   Box,
   Checkbox,
@@ -23,12 +23,11 @@ const MyRelease = ({ info }) => {
   const [receiveMaster, setreceiveMaster] = useState([]);
   useEffect(() => {
     receiveMasterSearch();
-    console.log(info);
   }, []);
 
   // ReceiveMaster검색
   const receiveMasterSearch = async () => {
-    var url = `/api/release/mylist?u=${info.name}`;
+    var url = `/api/release/mylist?u=${localStorage.getItem('name')}`;
 
     await customFetch(url, { method: 'get' }).then((json) => {
       if (json.data != '' || !json.data) {
@@ -37,8 +36,8 @@ const MyRelease = ({ info }) => {
     });
   };
   return (
-    <Grid container spacing={2} style={{ marginLeft: '50px', marginTop: '30px', width: '550px' }}>
-      <Box sx={{ display: 'flex', paddingLeft: 3 }}>
+    <Grid container spacing={2} style={{ marginLeft: '30px', marginTop: '30px', width: '50%' }}>
+      <Box sx={{ display: 'flex' }}>
         <Box
           component="img"
           src={checkImg}
@@ -71,8 +70,8 @@ const MyRelease = ({ info }) => {
         <TableContainer
           component={Paper}
           sx={{
-            width: '550px',
-            paddingLeft: 3,
+            width: '95%',
+
             paddingTop: 0,
             boxShadow: 'none',
             height: 200,

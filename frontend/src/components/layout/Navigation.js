@@ -202,7 +202,7 @@ const Navigation = ({ role, page }) => {
             <MenuItem text={"출고 관리"} url={"/release"}>
               <OutputIcon />
             </MenuItem>
-            <MenuItem text={"일일 현황"} url={"/productmodal"}>
+            <MenuItem text={"일일 현황"} url={"/inquiry"}>
               <CalendarTodayIcon />
             </MenuItem>
           </Box>

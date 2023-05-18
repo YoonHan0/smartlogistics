@@ -24,8 +24,8 @@ const Inquiry = () => {
 
   const [searchKw, setSearchKw] = useState({ user_name: '', business_name: '',code: '', startdt: '', enddt: '' });
 
-  const searchKeyword = async (searchKw, startIndex) => {
-    const limit = 10;
+  const searchKeyword = async (searchKw, startIndex,limit) => {
+    limit === null ? 10 : limit;
     setLoading(true);
     console.log(startIndex)
     var url = `/api/inquiry/list?offset=${startIndex}&limit=${limit}`;
@@ -46,6 +46,10 @@ const Inquiry = () => {
     });
   }
 
+
+  useEffect(() => {
+    searchKeyword(searchKw, 0,0);
+  },[])
   return (
     <Box>
       <Grid container sx={{ marginLeft: "0px" }}>

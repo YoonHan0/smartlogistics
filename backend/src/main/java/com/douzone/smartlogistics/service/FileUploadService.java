@@ -20,7 +20,7 @@ public class FileUploadService {
 			return "";
 		}
 		if (System.getProperty("os.name").startsWith("Mac")) {
-		    SAVE_PATH = "/Users/" + System.getProperty("user.name") + "/smartlogistics-uploads/smartlogistics";
+		    SAVE_PATH = "./Users/" + System.getProperty("user.name") + "/smartlogistics-uploads/smartlogistics";
 		}
 		
 		try {

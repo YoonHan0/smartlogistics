@@ -99,7 +99,7 @@ const MyPage = ({ info, setUserInfo }) => {
           >
             나의활동
           </span>
-          <Box sx={{ display: 'flex' }}>
+          <Box sx={{ display: 'flex', width: '100%' }}>
             <MyReceive info={info} />
             <MyRelease info={info} />
           </Box>

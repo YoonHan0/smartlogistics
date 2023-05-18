@@ -18,6 +18,7 @@ import {
 import { customFetch } from '../custom/customFetch';
 import updateprofileImg from '../../assets/img/updateprofile.png';
 import sha256 from 'sha256';
+import jwt_decode from 'jwt-decode';
 
 const MyData = ({ info, setUserInfo }) => {
   const [pwdchk, setPwdchk] = useState('');
@@ -28,17 +29,17 @@ const MyData = ({ info, setUserInfo }) => {
   const submitChk = useRef(false);
 
   useEffect(() => {
-    console.log(previewImage !== '' && previewImage !== null);
-    userDetail(info.user.sub);
+    // console.log(previewImage !== '' && previewImage !== null);
+    const data = info.user || jwt_decode(localStorage.getItem('token'));
+    userDetail(data);
   }, []);
-  const userDetail = async (id) => {
-    await customFetch(`/api/user/detail?uc=${id}`, { method: 'get' }).then((json) => {
+  const userDetail = async (data) => {
+    await customFetch(`/api/user/detail?uc=${data.sub}`, { method: 'get' }).then((json) => {
       const { id, name, password, phone, profile } = json.data;
       setUserData({ id, name, password, phone, profile });
       console.log(json.data);
     });
   };
-
   const autoHyphen = (target) => {
     return target
       .replace(/[^0-9]/g, '')
@@ -198,9 +199,10 @@ const MyData = ({ info, setUserInfo }) => {
         marginTop: '5px',
         height: '300px',
         padding: '1%',
+        width: '95%',
       }}
     >
-      <Box sx={{ marginr: '3%', width: '15%', height: '95%', display: 'flex' }}>
+      <Box sx={{ width: '100%', height: '95%', display: 'flex' }}>
         <Box
           sx={{
             display: 'flex',
@@ -210,11 +212,15 @@ const MyData = ({ info, setUserInfo }) => {
             position: 'relative',
           }}
         >
-          <Avatar
-            alt="img"
-            src={(previewImage !== '' && previewImage !== null) || previewImage ? previewImage : userData.profile}
-            sx={{ marginTop: '50px', marginLeft: '15px', height: '160px', width: '160px' }}
-          />
+          {info.user && (
+            <Avatar
+              alt="img"
+              src={
+                (previewImage !== '' && previewImage !== null) || previewImage ? previewImage : localStorage.getItem('profile')
+              }
+              sx={{ marginTop: '50px', marginLeft: '15px', height: '160px', width: '160px' }}
+            />
+          )}
           <label>{info.name} </label>
           <Box
             sx={{
@@ -255,9 +261,9 @@ const MyData = ({ info, setUserInfo }) => {
             />
           </Box>
         </Box>
-        <Box sx={{ marginLeft: '5%', marginTop: '15px', flex: 1, marginLeft: '140px', width: '1150px' }}>
+        <Box sx={{ marginLeft: '5%', marginTop: '15px', flex: 1, marginLeft: '140px', width: '100%' }}>
           <TableContainer>
-            <Table size="small" sx={{ width: '1150px' }}>
+            <Table size="small" sx={{ width: '100%' }}>
               <TableBody>
                 <TableRow>
                   <TableCell component="th" scope="row" sx={{ backgroundColor: '#F6F7F9' }}>
@@ -365,7 +371,7 @@ const MyData = ({ info, setUserInfo }) => {
           <Button
             type="submit"
             variant="outlined"
-            sx={{ width: 100, marginLeft: '1050px', marginTop: '10px' }}
+            sx={{ width: 100, marginLeft: '90%', marginTop: '10px' }}
             onClick={validateForm}
           >
             수정

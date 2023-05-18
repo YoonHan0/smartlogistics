@@ -47,6 +47,53 @@
 		]]>
 	</select>
 	
+	<select id="modalfindByKeyword" resultType="receivemastervo" parameterType="map">
+		<![CDATA[	
+  SELECT r.code, LEFT(r.date,10) AS 'date', u.name AS 'user_name', u.id AS 'user_id',
+    b.code AS 'business_code', b.name AS 'business_name',
+    CASE 
+        WHEN tmp.total_cnt = tmp.대기 THEN '대기'
+        WHEN tmp.total_cnt = tmp.완료 THEN '완료'
+        ELSE '진행'
+    END AS state,
+    CASE 
+        WHEN tmp.수량미입력 > 0 THEN 'true'
+        ELSE 'false'
+    END AS disable
+FROM receive_master r
+INNER JOIN (
+    SELECT master_code, 
+        COUNT(*) AS total_cnt,
+        SUM(CASE 
+                WHEN (receive_count - release_count > 0 AND release_count > 0) THEN 1
+                ELSE 0 
+            END) AS "진행",
+        SUM(CASE 
+                WHEN (receive_count - release_count = 0 AND receive_count > 0) THEN 1
+                ELSE 0 
+            END) AS "완료",
+        SUM(CASE 
+                WHEN (receive_count >= 0 AND release_count = 0) THEN 1
+                ELSE 0 
+            END) AS "대기",
+        SUM(CASE 
+                WHEN (receive_count = 0 AND release_count = 0) THEN 1
+                ELSE 0 
+            END) AS "수량미입력"
+    FROM receive_detail 
+    GROUP BY master_code) tmp
+    ON r.code = tmp.master_code 
+INNER JOIN business b ON r.business_code=b.code
+INNER JOIN user u ON r.user_id = u.id 				
+WHERE (b.name LIKE CONCAT('%',#{bname},'%') AND r.code LIKE CONCAT('%',#{rcode},'%')) 
+    AND DATE_FORMAT(r.date, '%Y-%m-%d') BETWEEN #{startdt} AND #{enddt}
+HAVING state != '완료'
+ORDER BY r.code
+
+
+		]]>
+	</select>
+	
 	<select id="findByMasterNo" resultType="receivedetailvo" parameterType="string">
 		<![CDATA[	
 			SELECT r.no,r.master_code,r.product_code,p.name AS 'product_name',p.size AS 'product_size',p.unit AS 'product_unit',r.receive_count,r.release_count,(r.receive_count-r.release_count)as stock_count,
@@ -61,6 +108,25 @@
 			WHERE r.master_code=#{rcode }
 		]]>
 	</select>
+	
+	<select id="modalfindByMasterNo" resultType="receivedetailvo" parameterType="string">
+		<![CDATA[	
+			SELECT r.no, r.master_code, r.product_code, p.name AS 'product_name', p.size AS 'product_size', p.unit AS 'product_unit',
+       r.receive_count, r.release_count, (r.receive_count-r.release_count) AS stock_count,
+       CASE 
+           WHEN (receive_count - release_count > 0 AND release_count > 0) THEN "진행" 
+           WHEN (receive_count - release_count = 0 AND receive_count > 0) THEN "완료"
+           WHEN (receive_count > 0 AND release_count = 0) THEN "대기"
+       END AS state
+FROM receive_detail r
+INNER JOIN product p ON r.product_code = p.code
+WHERE r.master_code = #{rcode} AND r.release_count < r.receive_count;
+
+		]]>
+	</select>
+	
+	
+	
 	<select id="findByName" resultType="receivemastervo" parameterType="string">
 		<![CDATA[	
 		SELECT  r.code,LEFT(r.date,10) AS 'date',u.name AS 'user_name',u.id AS 'user_id',b.code AS 'business_code', b.name AS 'business_name',

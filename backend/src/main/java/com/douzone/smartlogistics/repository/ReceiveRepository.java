@@ -23,9 +23,20 @@ public class ReceiveRepository {
 		return sqlSession.selectList("receive.findByKeyword", map);
 	}
 
+	public List<ReceiveMasterVo> modalfindByKeyword(String receiveCode, String businessName, String startDate,String endDate) {
+		Map<String, Object> map = Map.of("rcode", receiveCode, "bname", businessName, "startdt", startDate, "enddt",endDate);
+		return sqlSession.selectList("receive.modalfindByKeyword", map);
+	}
+	
+	public List<ReceiveDetailVo> modalfindByMasterNo(String receiveCode) {
+		return sqlSession.selectList("receive.modalfindByMasterNo", receiveCode);
+	}
+	
 	public List<ReceiveDetailVo> findByMasterNo(String receiveCode) {
 		return sqlSession.selectList("receive.findByMasterNo", receiveCode);
 	}
+	
+	
 	public List<ReceiveMasterVo> findByName(String userName) {
 		return sqlSession.selectList("receive.findByName", userName);
 	}
