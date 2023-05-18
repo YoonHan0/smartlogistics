@@ -1,18 +1,16 @@
-import { Button, FormControl, TextField, Box, Grid } from "@mui/material";
-import React, { useState, useEffect, useRef } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Button, FormControl, TextField, Box, Grid } from '@mui/material';
+import React, { useState, useEffect, useRef } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVolumeHigh } from '@fortawesome/free-solid-svg-icons';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
 
 const SerchBar = ({ callback, seDate }) => {
-
-
   const [searchKw, setSearchKw] = useState({ rcode: '', bname: '', startdt: '', enddt: '' });
   const [searchChk, setSearchChk] = useState();
   const [minDate, setMindate] = useState();
@@ -30,7 +28,7 @@ const SerchBar = ({ callback, seDate }) => {
     setSearchChk(true);
   };
   const handleAcceptEnd = (date) => {
-    console.log("date====", date);
+    console.log('date====', date);
     setSearchKw({ ...searchKw, enddt: format(date.$d, 'yyyy-MM-dd') });
   };
   const submit = (e) => {
@@ -50,7 +48,7 @@ const SerchBar = ({ callback, seDate }) => {
   useEffect(() => {
     //callback(searchKw);
     // return () => {};
-    console.log("searchKw 변경!");
+    console.log('searchKw 변경!');
     console.log(searchKw);
   }, [searchKw]);
 
@@ -64,30 +62,30 @@ const SerchBar = ({ callback, seDate }) => {
       xs={12}
       md={12}
       sx={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
         marginBottom: 3,
-        backgroundColor: "#FFF",
-        borderRadius: "8px",
-        boxShadow: "5px 5px 5px rgba(0, 0, 0, 0.1)",
-        height: "100px",
+        backgroundColor: '#FFF',
+        borderRadius: '8px',
+        boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.1)',
+        height: '100px',
       }}
     >
       <Box
         sx={{
-          display: "flex",
-          alignItems: "center",
-          marginLeft: "30px",
-          marginTop: "6px",
-          marginBottom: "10px",
+          display: 'flex',
+          alignItems: 'center',
+          marginLeft: '30px',
+          marginTop: '6px',
+          marginBottom: '10px',
         }}
       >
         <span
           style={{
-            fontSize: "23px",
+            fontSize: '23px',
             fontWeight: 800,
-            marginRight: "15px",
+            marginRight: '15px',
           }}
         >
           출고
@@ -95,16 +93,15 @@ const SerchBar = ({ callback, seDate }) => {
 
         <span
           style={{
-            backgroundColor: "#EBF2FF",
-            padding: "3px 8px",
+            backgroundColor: '#EBF2FF',
+            padding: '3px 8px',
           }}
         >
-          <FontAwesomeIcon icon={faVolumeHigh} />
           <span
             style={{
-              color: "gray",
-              fontSize: "9px",
-              marginLeft: "8px",
+              color: 'gray',
+              fontSize: '9px',
+              marginLeft: '8px',
             }}
           >
             출고를 조회할 수 있습니다.
@@ -119,20 +116,20 @@ const SerchBar = ({ callback, seDate }) => {
           submit(e);
         }}
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          marginBottom: "5px",
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+          marginBottom: '5px',
         }}
       >
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
           }}
         >
-          <label style={{ fontSize: "0.9rem"}}>출고코드</label>
+          <label style={{ fontSize: '0.9rem' }}>출고코드</label>
           <TextField
             type="text"
             name="rcode"
@@ -142,7 +139,7 @@ const SerchBar = ({ callback, seDate }) => {
             InputProps={{ sx: { height: 30, width: 150 } }}
             value={searchKw.rcode}
           />
-          <label style={{ fontSize: "0.9rem"}}>거래처</label>
+          <label style={{ fontSize: '0.9rem' }}>거래처</label>
           <TextField
             type="text"
             name="bname"
@@ -152,16 +149,13 @@ const SerchBar = ({ callback, seDate }) => {
             InputProps={{ sx: { height: 30, width: 150 } }}
             value={searchKw.bname}
           />
-          <label style={{ fontSize: "0.9rem"}}>기간</label>
-          <LocalizationProvider
-            dateAdapter={AdapterDayjs}
-            sx={{ height: "60px" }}
-          >
+          <label style={{ fontSize: '0.9rem' }}>기간</label>
+          <LocalizationProvider dateAdapter={AdapterDayjs} sx={{ height: '60px' }}>
             <DemoContainer
-              components={["DatePicker"]}
+              components={['DatePicker']}
               sx={{
                 p: 0,
-                "& .css-1xhypcz-MuiStack-root": {
+                '& .css-1xhypcz-MuiStack-root': {
                   padding: 0,
                 },
               }}
@@ -169,9 +163,9 @@ const SerchBar = ({ callback, seDate }) => {
               <DatePicker
                 format="YYYY-MM-DD"
                 slotProps={{
-                  textField: { 
-                    size: "small",
-                    style: { 'minWidth': 'unset' } 
+                  textField: {
+                    size: 'small',
+                    style: { minWidth: 'unset' },
                   },
                 }}
                 sx={{
@@ -192,7 +186,7 @@ const SerchBar = ({ callback, seDate }) => {
                     height: '35px',
                   },
                 }}
-                value={dayjs(searchKw.startdt) || null}
+                value={searchKw.startdt || dayjs(seDate.sDate) || null}
                 onAccept={handleAcceptStart}
               ></DatePicker>
               <span>~</span>
@@ -200,7 +194,7 @@ const SerchBar = ({ callback, seDate }) => {
                 readOnly={searchKw.startdt === '' || searchKw.startdt === null}
                 format="YYYY-MM-DD"
                 slotProps={{
-                  textField: { size: "small" },
+                  textField: { size: 'small' },
                 }}
                 sx={{
                   minWidth: 0,
@@ -221,7 +215,7 @@ const SerchBar = ({ callback, seDate }) => {
                   },
                 }}
                 minDate={minDate || null}
-                value={dayjs(searchKw.enddt) || null}
+                value={searchKw.enddt || dayjs(seDate.eDate) || null}
                 onAccept={handleAcceptEnd}
               ></DatePicker>
             </DemoContainer>

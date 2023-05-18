@@ -9,7 +9,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
-const SerchBar = ({ callback, seDate }) => {
+const SerchBar = ({ callback }) => {
   const [searchKw, setSearchKw] = useState({ rcode: '', bname: '', startdt: '', enddt: '' });
   const [searchChk, setSearchChk] = useState();
   const [minDate, setMindate] = useState();
@@ -39,13 +39,14 @@ const SerchBar = ({ callback, seDate }) => {
       // setSearchKw({ ...searchKw, startdt: formattedDate });
       callback(searchKw);
       setSearchChk();
-      setSearchKw({ rcode: '', bname: '', startdt: '', enddt: '' });
+      setSearchKw({ ...searchKw, rcode: '', bname: '' });
     }
   };
 
   useEffect(() => {
     return () => {};
   }, [searchKw]);
+
   return (
     <Grid
       item
@@ -175,7 +176,7 @@ const SerchBar = ({ callback, seDate }) => {
                   },
                 }}
                 onAccept={handleAcceptStart}
-                value={searchKw.startdt || dayjs(seDate.sDate) || null}
+                value={searchKw.startdt === '' ? dayjs().subtract(6, 'day') : dayjs(searchKw.startdt)}
               ></DatePicker>
               <span>~</span>
               <DatePicker
@@ -201,7 +202,6 @@ const SerchBar = ({ callback, seDate }) => {
                     marginLeft: '10px',
                   },
                   '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
-                    border: searchChk === false || null ? '1px solid red' : null,
                     width: '165px',
                   },
                   '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
@@ -211,7 +211,7 @@ const SerchBar = ({ callback, seDate }) => {
                 }}
                 minDate={minDate || null}
                 onAccept={handleAcceptEnd}
-                value={searchKw.enddt || dayjs(seDate.eDate) || null}
+                value={searchKw.enddt === '' ? dayjs().add(6, 'day') : dayjs(searchKw.enddt)}
               ></DatePicker>
             </DemoContainer>
           </LocalizationProvider>

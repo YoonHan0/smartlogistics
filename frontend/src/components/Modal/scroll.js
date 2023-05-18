@@ -115,19 +115,19 @@ export default function Modal3({ open, onClose }) {
         rowIndex={index}
       >
         {({ measure }) => (
-          <TableRow style={style} key={person[index].code}>
+          <tr style={style} key={person[index].code}>
             {/*스타일 넣어줘야 virtual render 적용됨*/}
-            <TableCell style={{ border: '1px solid #000' }}>
-              {index + 1}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              {person[index].code}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              {person[index].name}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              {person[index].phone}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              선택</TableCell>
-          </TableRow>
+            <td style={{ border: '1px solid #000' }}>
+              {index + 1}</td>
+            <td style={{ border: '1px solid #000' }}>
+              {person[index].code}</td>
+            <td style={{ border: '1px solid #000' }}>
+              {person[index].name}</td>
+            <td style={{ border: '1px solid #000' }}>
+              {person[index].phone}</td>
+            <td style={{ border: '1px solid #000' }}>
+              선택</td>
+          </tr>
         )}
       </CellMeasurer>
     );
@@ -228,24 +228,24 @@ export default function Modal3({ open, onClose }) {
               >
                 {({ onRowsRendered, registerChild }) => (
                   <>
-                    <Table>
-                      <TableHead style={{
+                    <table>
+                      <thead style={{
                         background: '#F6F7F9'
                       }}>
-                        <TableRow>
-                          <TableCell style={{ border: '1px solid #000' }}>
-                            순번</TableCell>
-                          <TableCell style={{ border: '1px solid #000' }}>
-                            아이디</TableCell>
-                          <TableCell style={{ border: '1px solid #000' }}>
-                            이름</TableCell>
-                          <TableCell style={{ border: '1px solid #000' }}>
-                            전화번호</TableCell>
-                          <TableCell style={{ border: '1px solid #000' }}>
-                            선택</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
+                        <tr>
+                          <td style={{ border: '1px solid #000' }}>
+                            순번</td>
+                          <td style={{ border: '1px solid #000' }}>
+                            아이디</td>
+                          <td style={{ border: '1px solid #000' }}>
+                            이름</td>
+                          <td style={{ border: '1px solid #000' }}>
+                            전화번호</td>
+                          <td style={{ border: '1px solid #000' }}>
+                            선택</td>
+                        </tr>
+                      </thead>
+                      <tbody>
                         <List
                           width={width}
                           height={150}
@@ -257,8 +257,8 @@ export default function Modal3({ open, onClose }) {
                           onRowsRendered={onRowsRendered}
                           ref={registerChild}
                         />
-                      </TableBody>
-                    </Table>
+                      </tbody>
+                    </table>
                   </>
                 )}
               </InfiniteLoader>

@@ -95,7 +95,6 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
               padding: '3px 8px',
             }}
           >
-            <FontAwesomeIcon icon={faVolumeHigh} />
             <span
               style={{
                 color: 'gray',

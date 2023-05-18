@@ -12,6 +12,8 @@ import {
   TableHead,
   TableRow,
   TextField,
+  LoadingSpinner,
+  CircularProgress,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import styled from 'styled-components';
@@ -47,6 +49,7 @@ const ReceiveMaster = ({
   openDeleteModalInMaster,
   openNullModal,
   masterStateT,
+  loading,
 }) => {
   useEffect(() => {
     nullChkHandler(inputMaster);
@@ -300,26 +303,28 @@ const ReceiveMaster = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {masters.length > 0 ? (
-                  masters.map((master, index) => {
-                    return (
-                      <MasterItem
-                        key={index}
-                        no={index}
-                        code={master.code}
-                        date={master.date}
-                        username={master.userName}
-                        businessname={master.businessName}
-                        disable={master.disable}
-                        receiveDetail={receiveDetail}
-                        rowColor={rowColor}
-                        state={master.state}
-                        checkedRow={checkedRow}
-                        setCheckedRow={setCheckedRow}
-                        masterStateUpdate={masterStateUpdate}
-                      />
-                    );
-                  })
+                {loading ? (
+                  <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                    <CircularProgress />
+                  </Box>
+                ) : masters.length > 0 ? (
+                  masters.map((master, index) => (
+                    <MasterItem
+                      key={index}
+                      no={index}
+                      code={master.code}
+                      date={master.date}
+                      username={master.userName}
+                      businessname={master.businessName}
+                      disable={master.disable}
+                      receiveDetail={receiveDetail}
+                      rowColor={rowColor}
+                      state={master.state}
+                      checkedRow={checkedRow}
+                      setCheckedRow={setCheckedRow}
+                      masterStateUpdate={masterStateUpdate}
+                    />
+                  ))
                 ) : (
                   <TableRow>
                     <TableCell colSpan={7} sx={{ textAlign: 'center' }}>

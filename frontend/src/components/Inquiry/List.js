@@ -4,6 +4,7 @@ import {
 } from "@mui/material";
 import React, { useEffect } from 'react';
 import checkImg from "../../assets/img/checkmark.png";
+import StockTable from "./StockTable";
 import StockTable1 from "./StockTable1";
 import StockTable2 from "./StockTable2";
 
@@ -62,8 +63,8 @@ const InquiryList = ({
             width: "100%",
           }}
         >
-          {/* <StockTable list={list}/> */}
-          <StockTable1
+          <StockTable list={list}/>
+          {/* <StockTable1
             list={list}
             searchKw={searchKw}
             searchKeyword={searchKeyword}
@@ -73,8 +74,12 @@ const InquiryList = ({
             hasNextPage={hasNextPage}
             setHasNextPage={setHasNextPage}
             loading={loading}
-          />
-
+          /> */}
+          {/* <StockTable2 
+            list={list}
+            searchKw={searchKw}
+            searchKeyword={searchKeyword}
+          /> */}
         </Box>
       </Box>
     </Grid>

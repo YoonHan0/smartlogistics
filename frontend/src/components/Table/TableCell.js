@@ -2,13 +2,15 @@ import React from 'react';
 
 const TableCell = ({ style, children }) => {
   const updatedStyle = Object.assign({}, style, { 
-    padding:'10px',
+    position: 'static',
+    marginLeft: 'auto',
+    marginRigth: 'auto',
+    lineHeight: '50px'
     // border: '1px solid #000',
   });
   return (
     <td 
-      style={updatedStyle}
-      colspan="10">
+      style={updatedStyle}>
       {children}
     </td>
   );

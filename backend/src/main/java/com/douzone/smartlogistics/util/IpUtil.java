@@ -13,6 +13,8 @@ public class IpUtil {
 	
 	
 	public String getClientIp(HttpServletRequest request) {
+		System.out.println("request.getRemoteAddr()");
+		System.out.println(request.getRemoteAddr());
 	    boolean isIpInHeader = false;
 
 	    List<String> headerList = new ArrayList<>();

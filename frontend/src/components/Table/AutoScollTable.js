@@ -23,7 +23,8 @@ const AutoScollTable = ({
   const loadMoreRows = ({ startIndex, stopIndex }) => {
     console.log("loadMoreRows:", startIndex, stopIndex);
     if (!loading && hasNextPage) {
-      searchKeyword(searchKw,0);
+      console.log(1111111111111)
+      searchKeyword(searchKw,startIndex);
     }
   };
 

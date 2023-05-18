@@ -10,7 +10,7 @@ const Container = ({ children, info }) => {
         sx={{
           position: "absolute",
           width: "83%",
-          
+
           marginLeft: "190px",
           marginRight: "100px",
           maxWidth: "100%",

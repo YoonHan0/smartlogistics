@@ -1,149 +1,171 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AutoScollTable from '../Table/AutoScollTable';
-import TableHead from '../Table/TableHead';
-import TableRow from '../Table/TableRow';
-import TableCell from '../Table/TableCell';
+import AutoScollTable2 from '../Table/AutoScollTable2';
 
-import { CellMeasurer, CellMeasurerCache } from 'react-virtualized';
-import { Box } from '@mui/material';
-import TableBody from '../Table/TableBody';
+
+import { CellMeasurer, CellMeasurerCache, List } from 'react-virtualized';
+import { Box, TableCell, TableHead, TableRow } from '@mui/material';
 
 
 
-const StockTable1 = ({ list }) => {
-  const [loading, setLoading] = useState(false);
-  const [hasNextPage, setHasNextPage] = useState(true);
-  const isRowLoaded = ({ index }) => !hasNextPage || index < list.length;
 
-  const cellMeasurerCache = new CellMeasurerCache({
-    fixedWidth: true,
-    defaultHeight: 50,
-  });
+const StockTable2 = ({ list, searchKw, searchKeyword }) => {
+  const Width = ['120px', '140px', '120px', '120px', '120px', '120px', '120px', '100px', '100px', '80px', '80px', '100px'];
+  const [items, setItems] = useState(list);
+  const [hasMore, setHasMore] = useState(true);
+  let startIndex=0;
+  const fetchMoreData = () => {
+    // a fake async api call like which sends
+    // 20 more records in .5 secs
+    // setTimeout(() => {
+    //   const nextItems = items.concat(Array.from({ length: 20 }));
+    //   setItems(nextItems);
+    // }, 500);
+      // const nextItems = list.concat();
+    searchKeyword(searchKw,startIndex,0);
+    const NextItems = items.concat(list);
+    setItems(NextItems);
+    startIndex +=1;
+  };
 
-  const rowRenderer = ({ index, key, parent, style }) => {
-
-    console.log(list)
-    if (!isRowLoaded({ index })) {
-      return (
-        <div key={key} style={style}>
-          Loading...
-        </div>
-      );
+  useEffect(() => {
+    if (list.length >= 100) {
+      setHasMore(false);
     }
-    const updatedStyle = Object.assign({}, style, {
-      // bgcolor: state==='RV' ? 'rgba(255, 99, 132, 0.1)':'rgba(54, 162, 235, 0.1)',
-      borderRadius: '10px'
-    });
+  }, [list.length]);
+
+  const rowRenderer = ({ index, key, style }) => {
+    const item = list[index];
+
+    const styled ={
+      width: '100px',
+      top: style.top,
+      position: 'static',
+    };
+
+    console.log(style);
     return (
-      <CellMeasurer
-        key={key}
-        cache={cellMeasurerCache}
-        parent={parent}
-        columnIndex={0}
-        rowIndex={index}
-      >
-        {({ measure }) => (
-          <TableRow style={updatedStyle} key={list[index].code}>
-            {/*스타일 넣어줘야 virtual render 적용됨*/}
-            <TableCell style={{ border: '1px solid #000' }}>
-              {list[index].date}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              {list[index].code}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              {list[index].userName}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              {list[index].businessName.length > 5 ? list[index].businessName.substr(0, 5) + '...' : list[index].businessName}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              {list[index].productCode}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              {list[index].productName.length > 5 ? list[index].productName.substr(0, 5) + '...' : list[index].productName}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              {list[index].size}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              {list[index].unit}</TableCell>
-            <TableCell style={{ border: '1px solid #000' }}>
-              {list[index].beginningStock}</TableCell>
-            {
-              list[index].state === 'RV' ?
-                <>
-                  <TableCell style={{ border: '1px solid #000' }}>
-                    {list[index].count}</TableCell>
-                  <TableCell style={{ border: '1px solid #000' }}>
-                  </TableCell>
-                </> :
-                <>
-                  <TableCell style={{ border: '1px solid #000' }}>
-                  </TableCell>
-                  <TableCell style={{ border: '1px solid #000' }}>
-                    {list[index].count}</TableCell>
-                </>
-            }
-            <TableCell style={{ border: '1px solid #000' }}>
-              {list[index].endingStock}</TableCell>
-          </TableRow>
-        )}
-      </CellMeasurer>
+      <TableRow 
+        key={key} 
+        sx={{
+          backgroundColor: item.state==='RV' ? 'rgba(255, 99, 132, 0.1)':'rgba(54, 162, 235, 0.1)',
+        }}>
+        {/*스타일 넣어줘야 virtual render 적용됨*/}
+        <TableCell sx={styled}>
+          {item.date}
+        </TableCell>
+        <TableCell sx={styled}>
+          {item.code}
+        </TableCell>
+        <TableCell sx={styled}>
+          {item.userName}
+        </TableCell>
+        <TableCell sx={styled}>
+          {item.businessName.length > 5 ? item.businessName.substr(0, 5) + '...' : item.businessName}
+        </TableCell>
+        <TableCell sx={styled}>
+          {item.productCode}
+        </TableCell>
+        <TableCell sx={styled}>
+          {item.productName.length > 5 ? item.productName.substr(0, 5) + '...' : item.productName}
+        </TableCell>
+        <TableCell sx={styled}>
+          {item.size}
+        </TableCell>
+        <TableCell sx={styled}>
+          {item.unit}
+        </TableCell>
+        <TableCell sx={styled}>
+          {item.beginningStock}
+        </TableCell>
+        {
+          item.state === 'RV' ?
+            <>
+        <TableCell sx={styled}>
+                {item.count}
+              </TableCell>
+              <TableCell sx={styled}>
+              </TableCell>
+            </> :
+            <>
+        <TableCell sx={styled}>
+              </TableCell>
+              <TableCell sx={styled}>
+                {item.count}
+              </TableCell>
+            </>
+        }
+        <TableCell sx={styled}>
+          {item.endingStock}
+        </TableCell>
+      </TableRow>
     );
-  }
+  };
 
   const tableHeadStyle = {
     backgroundColor: "#F6F7F9", fontWeight: 800, border: '1px solid #000'
   }
   return (
-    <Box>
-      <AutoScollTable
-        w={1500}
-        h={500}
-        list={list}
-        loading={loading}
-        isRowLoaded={isRowLoaded}
-        rowRenderer={rowRenderer}
-        hasNextPage={hasNextPage}
-        setHasNextPage={setHasNextPage}>
-        <TableHead>
-          <TableRow>
-            <TableCell style={tableHeadStyle}>
-              입출고일
-            </TableCell>
-            <TableCell style={tableHeadStyle}>
-              코드
-            </TableCell>
-            <TableCell style={tableHeadStyle}>
-              담당자
-            </TableCell>
-            <TableCell style={tableHeadStyle}>
-              거래처
-            </TableCell>
-            <TableCell style={tableHeadStyle}>
-              품번
-            </TableCell>
-            <TableCell style={tableHeadStyle}>
-              품명
-            </TableCell>
-            <TableCell style={tableHeadStyle}>
-              규격
-            </TableCell>
-            <TableCell style={tableHeadStyle}>
-              단위
-            </TableCell>
-            <TableCell style={tableHeadStyle}>
-              기초재고
-            </TableCell>
-            <TableCell style={tableHeadStyle}>
-              입고
-            </TableCell>
-            <TableCell style={tableHeadStyle}>
-              출고
-            </TableCell>
-            <TableCell style={tableHeadStyle}>
-              기말재고
-            </TableCell>
-          </TableRow>
-        </TableHead>
-
-      </AutoScollTable>
-    </Box>
+    <AutoScollTable2
+      list={list}
+      hasMore={hasMore}
+      next={fetchMoreData}
+      loader={
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          loading...
+        </div>
+      }
+      height={400}
+      elementHeight={70} // 새로 추가
+      rowRenderer={rowRenderer}
+      >
+      <TableHead>
+        <TableRow>
+          <TableCell>
+            입출고일
+          </TableCell>
+          <TableCell>
+            코드
+          </TableCell>
+          <TableCell>
+            담당자
+          </TableCell>
+          <TableCell>
+            거래처
+          </TableCell>
+          <TableCell>
+            품번
+          </TableCell>
+          <TableCell>
+            품명
+          </TableCell>
+          <TableCell>
+            규격
+          </TableCell>
+          <TableCell>
+            단위
+          </TableCell>
+          <TableCell>
+            기초재고
+          </TableCell>
+          <TableCell>
+            입고
+          </TableCell>
+          <TableCell>
+            출고
+          </TableCell>
+          <TableCell>
+            기말재고
+          </TableCell>
+        </TableRow>
+      </TableHead>
+    </AutoScollTable2>
   );
 };
-
-export default StockTable1;
+export default StockTable2;

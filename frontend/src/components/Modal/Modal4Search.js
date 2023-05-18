@@ -7,13 +7,14 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
+import dayjs from 'dayjs';
 import { format } from 'date-fns';
-const Modal4SearchBar = ({ callback }) => {
+const Modal4SearchBar = ({ callback,seDate }) => {
   const [searchKw, setSearchKw] = useState({ rcode: '', bname: '', startdt: '', enddt: '' });
   const [searchChk, setSearchChk] = useState();
   const [minDate, setMindate] = useState();
 
+  const refForm = useRef(null);
   const changeHandler = (e) => {
     const { value, name } = e.target;
     setSearchKw((prev) => ({ ...prev, [name]: value }));
@@ -83,6 +84,7 @@ const Modal4SearchBar = ({ callback }) => {
 
       <FormControl
         component="form"
+        ref={refForm}
         onSubmit={(e) => {
           submit(e);
         }}
@@ -90,6 +92,7 @@ const Modal4SearchBar = ({ callback }) => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'flex-end',
+          marginBottom: '5px',
          
         }}
       >
@@ -136,7 +139,7 @@ const Modal4SearchBar = ({ callback }) => {
               <DatePicker
                 format="YYYY-MM-DD"
                 slotProps={{
-                  textField: { size: 'small' },
+                  textField: { size: 'small', style: { minWidth: 'unset' } },
                 }}
                 sx={{
                   minWidth: 0,
@@ -158,7 +161,7 @@ const Modal4SearchBar = ({ callback }) => {
                   },
                 }}
                 onAccept={handleAcceptStart}
-                value={searchKw.startdt || null}
+                value={searchKw.startdt || dayjs(seDate.sDate) || null}
               ></DatePicker>
               <span>~</span>
               <DatePicker
@@ -166,8 +169,8 @@ const Modal4SearchBar = ({ callback }) => {
                 style={{
                   '& .css-3tvb69-MuiStack-root>.MuiTextField-root': {
                     minWidth: 0,
-                    backgroundColor: '#333'
-                  }
+                    backgroundColor: '#333',
+                  },
                 }}
                 format="YYYY-MM-DD"
                 slotProps={{
@@ -194,7 +197,7 @@ const Modal4SearchBar = ({ callback }) => {
                 }}
                 minDate={minDate || null}
                 onAccept={handleAcceptEnd}
-                value={searchKw.enddt || null}
+                value={searchKw.enddt || dayjs(seDate.eDate) || null}
               ></DatePicker>
             </DemoContainer>
           </LocalizationProvider>

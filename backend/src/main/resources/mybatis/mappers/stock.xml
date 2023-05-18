@@ -67,8 +67,6 @@
               AND b.name LIKE CONCAT('%',#{business_name},'%')
               AND master_code LIKE CONCAT('%',#{code},'%'))
 		ORDER BY master.date DESC
-		OFFSET #{offset} ROWS 
-		FETCH NEXT #{limit} ROWS ONLY
 	]]>
 	</select>
 	<select id="stock.getdata" parameterType="map" resultType="stockgraphvo">

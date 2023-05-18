@@ -178,7 +178,7 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
                   alignItems: 'center',
                 }}
               >
-                <label sx={{ fontSize: '0.5rem' }}>검색어</label>
+                <label style={{ fontSize: '0.9rem' }}>검색어</label>
                 <TextField
                   size="small"
                   sx={{
@@ -189,7 +189,7 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
                   name="keywd"
                   InputProps={{ sx: { height: 30, width: 150 } }}
                 ></TextField>
-                <label sx={{ fontSize: '0.5rem' }}>규격</label>
+                <label style={{ fontSize: '0.9rem' }}>규격</label>
                 <TextField
                   size="small"
                   sx={{
