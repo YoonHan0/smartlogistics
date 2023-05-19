@@ -25,6 +25,7 @@ function Search({ textHandleChanges }) {
           alignItems: 'center',
           marginLeft: '30px',
           marginTop: '6px',
+          marginBottom: '10px',
         }}
       >
         <span

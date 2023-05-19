@@ -8,7 +8,7 @@ import {
 } from "react-virtualized";
 import Table from './Table';
 import TableBody from './TableBody';
-const AutoScollTable = ({
+const AutoScrollTable = ({
   w, 
   h, 
   searchKw, 
@@ -70,4 +70,4 @@ const AutoScollTable = ({
   );
 };
 
-export default AutoScollTable;
+export default AutoScrollTable;

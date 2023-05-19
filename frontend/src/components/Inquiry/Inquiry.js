@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SearchBar from './SearchBar';
 import { Box, Grid } from '@mui/material';
 import List from './List';
@@ -8,48 +8,42 @@ const Inquiry = () => {
   const [state, setState] = useState(true);
   const [list, setList] = useState([]);
   const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
-  const [hasNextPage, setHasNextPage] = useState(true);
   const [loading, setLoading] = useState(false);
   const [searchChk, setSearchChk] = useState();
+  const [searchKw, setSearchKw] = useState({ user_name: '', business_name: '', code: '', startdt: '', enddt: '' });
+  const [isFetching, setIsFetching] = useState(false);
+  const startIndex = useRef(0);
 
-  const currentDate = (value) => {
-    const current = new Date();
 
-    const year = current.getFullYear();
-    const month = String(current.getMonth() + 1).padStart(2, '0');
-    const day = String(current.getDate()+value).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }
-
-  const [searchKw, setSearchKw] = useState({ user_name: '', business_name: '',code: '', startdt: '', enddt: '' });
-
-  const searchKeyword = async (searchKw, startIndex,limit) => {
-    limit === null ? 10 : limit;
+  const searchKeyword = async () => {
+    if (isFetching) {
+      return;
+    }
+    setIsFetching(true);
+    const limit = 10;
     setLoading(true);
-    console.log(startIndex)
-    var url = `/api/inquiry/list?offset=${startIndex}&limit=${limit}`;
+    console.log('startIndex', startIndex.current)
+    console.log('limit', limit)
+    var url = `/api/inquiry/list?offset=${startIndex.current}&limit=${limit}`;
     if (searchKw) {
-      url = `/api/inquiry/list?offset=${startIndex}&limit=${limit}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}&user_name=${searchKw.user_name}&business_name=${searchKw.business_name}&code=${searchKw.code}`;
+      url = `/api/inquiry/list?offset=${startIndex.current}&limit=${limit}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}&user_name=${searchKw.user_name}&business_name=${searchKw.business_name}&code=${searchKw.code}`;
     }
     console.log(url)
     await customFetch(url, {
       method: "get",
     }).then((json) => {
-      console.log(json.data);
       const { dataList, sDate, eDate } = json.data;
-      setList(dataList);
+      console.log('dataList', dataList)
+      setList(pre =>[...pre, ...dataList]);
       setSeDate({ sDate: sDate, eDate: eDate });
-      setHasNextPage(json.data.length === 10);
-    }).finally(()=>{
-      setLoading(false);
+    }).finally(() => {
+      startIndex.current += 10;
+      setIsFetching(false);
+      console.log('list',list)
     });
   }
 
 
-  useEffect(() => {
-    searchKeyword(searchKw, 0,0);
-  },[])
   return (
     <Box>
       <Grid container sx={{ marginLeft: "0px" }}>
@@ -63,23 +57,22 @@ const Inquiry = () => {
             searchKeyword={searchKeyword}
             searchKw={searchKw}
             setSearchKw={setSearchKw}
-             />
+          />
           {
             state
               ?
               <List
                 list={list}
+                setList={setList}
                 searchKw={searchKw}
-                searchKeyword={searchKeyword} 
+                searchKeyword={searchKeyword}
                 setSearchKw={setSearchKw}
                 setSearchChk={setSearchChk}
                 searchChk={searchChk}
-                hasNextPage={hasNextPage}
-                setHasNextPage={setHasNextPage}
                 loading={loading}
-                />
+              />
               :
-              <Graph/>
+              <Graph />
           }
         </Grid>
       </Grid>

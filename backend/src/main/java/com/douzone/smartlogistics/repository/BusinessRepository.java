@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import com.douzone.smartlogistics.vo.BusinessVo;
 import com.douzone.smartlogistics.vo.DBLogVo;
+import com.douzone.smartlogistics.vo.ReceiveDetailVo;
+import com.douzone.smartlogistics.vo.ReleaseDetailVo;
 
 @Repository
 public class BusinessRepository {
@@ -41,5 +43,12 @@ public class BusinessRepository {
 		return 1 == sqlSession.delete("business.delete", deleteItem);
 	}
 
+	public List<ReceiveDetailVo> checkInReceive(List<String> deleteItem) {
+		return sqlSession.selectList("business.checkInReceive",deleteItem);
+	}
+	public List<ReleaseDetailVo> checkInRelease(List<String> deleteItem) {
+		return sqlSession.selectList("business.checkInRelease",deleteItem);
+	}
+	
 
 }

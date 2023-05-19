@@ -72,11 +72,7 @@ public class ProductController {
 	// product delete
 	@PostMapping("/delete")
 	public ResponseEntity<JsonResult> deleteBusiness(@RequestBody List<String> deleteItem) {
-		for (String item : deleteItem) {
-			// System.out.println(item);
-		}
 		boolean result = productService.deleteByCode(deleteItem);
-		System.out.println(result);
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(result ? deleteItem : null));
 	}
 

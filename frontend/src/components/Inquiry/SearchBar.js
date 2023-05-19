@@ -1,8 +1,6 @@
 import { Button, FormControl, TextField, Box, Grid } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeHigh } from '@fortawesome/free-solid-svg-icons';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -157,7 +155,7 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'flex-end',
-              marginBottom: '5px',
+              marginTop: 2.5
             }}
           >
             <Box

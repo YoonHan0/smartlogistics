@@ -6,6 +6,7 @@
 		<![CDATA[
 			SELECT code, name, phone, insert_ip, date_format(insert_dt, '%Y-%m-%d') AS insertDate
 			FROM business
+			WHERE state=true
 			ORDER BY code ASC
 		]]>
 	</select>
@@ -21,12 +22,14 @@
 				WHERE (code LIKE CONCAT('%',#{vo.code },'%')
 				OR name LIKE CONCAT('%',#{vo.code },'%'))
 				AND phone LIKE CONCAT('%',#{vo.phone },'%')
+				AND state=true
 			]]>
 			</when>
 			<otherwise>
 				<![CDATA[
-					WHERE code LIKE CONCAT('%',#{vo.code },'%')
-					OR name LIKE CONCAT('%',#{vo.code },'%')
+					WHERE (code LIKE CONCAT('%',#{vo.code },'%')
+					OR name LIKE CONCAT('%',#{vo.code },'%'))
+					AND state=true
 				]]>
 			</otherwise>
 		</choose>
@@ -43,7 +46,7 @@
 	<insert id="insert" parameterType="map">
 		<![CDATA[
 			INSERT INTO business
-			VALUES (#{vo.code}, #{vo.name }, #{vo.phone }, #{log.id }, #{log.ip}, #{log.dt}, #{log.id }, #{log.ip}, #{log.dt})	
+			VALUES (#{vo.code}, #{vo.name }, #{vo.phone }, true, #{log.id }, #{log.ip}, #{log.dt}, #{log.id }, #{log.ip}, #{log.dt})	
 	  	]]>	  		
 	</insert>
 	
@@ -65,8 +68,8 @@
 	
 	<delete id="delete" parameterType="java.util.List">
 		<![CDATA[
-			DELETE
-			FROM business
+			UPDATE business
+			SET state=false
 			WHERE code IN
 		]]>
 			<foreach item="item" collection="list" open="(" separator="," close=")">
@@ -75,5 +78,34 @@
 				]]>
 			</foreach>
 	</delete>
+	
+	
+	<select id="checkInReceive" resultType="receivemastervo" parameterType="java.util.List">
+		<![CDATA[
+			SELECT business_code
+			FROM receive_master
+			WHERE business_code IN
+		]]>
+		<foreach item="item" collection="list" open="(" separator=","
+			close=")">
+				<![CDATA[
+					#{item}
+				]]>
+		</foreach>
+	</select>
+	
+	<select id="checkInRelease" resultType="releasemastervo" parameterType="java.util.List">
+		<![CDATA[
+			SELECT business_code
+			FROM receive_master
+			WHERE business_code IN
+		]]>
+		<foreach item="item" collection="list" open="(" separator=","
+			close=")">
+				<![CDATA[
+					#{item}
+				]]>
+		</foreach>
+	</select>
 	
 </mapper>

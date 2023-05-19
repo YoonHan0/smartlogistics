@@ -50,6 +50,7 @@ const ReceiveMaster = ({
   openNullModal,
   masterStateT,
   loading,
+  receiveMasterSearch,
 }) => {
   useEffect(() => {
     nullChkHandler(inputMaster);
@@ -92,6 +93,21 @@ const ReceiveMaster = ({
       })
     );
   };
+  const handleWindowScroll = (event) => {
+    const { scrollTop, clientHeight, scrollHeight } = event.target;
+
+    if (clientHeight + scrollTop + 10 > scrollHeight) {
+      receiveMasterSearch(null);
+    }
+  };
+
+  useEffect(() => {
+    const tablePro = document.getElementById('table');
+    tablePro.addEventListener('scroll', handleWindowScroll);
+    return () => {
+      tablePro.removeEventListener('scroll', handleWindowScroll);
+    };
+  }, []);
   return (
     <Grid
       item
@@ -145,7 +161,7 @@ const ReceiveMaster = ({
           width: '100%',
         }}
       >
-        <FormControl component="form">
+        <FormControl component="form" id="table">
           <TableContainer
             component={Paper}
             sx={{
@@ -156,7 +172,7 @@ const ReceiveMaster = ({
               height: 300,
               // marginLeft: "40px",
             }}
-            // onScroll={handleScroll}
+            onScroll={handleWindowScroll}
           >
             <Table stickyHeader size="small">
               <TableHead>
@@ -174,7 +190,7 @@ const ReceiveMaster = ({
                       onChange={(e) => {
                         masterAllCheckBox(e.currentTarget.checked);
                       }}
-                      checked={checkedRow.every((row) => row.state === 't')}
+                      checked={checkedRow.length !== 0 && checkedRow.every((row) => row.state === 't')}
                     />
                   </TableCell>
                   <TableCell sx={{ width: '18%', backgroundColor: '#F6F7F9' }}>입고번호</TableCell>
@@ -214,7 +230,7 @@ const ReceiveMaster = ({
                             height: '35px',
                             '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                               padding: 0,
-                              height: 30,
+                              height: '30px',
                               width: 150,
                               marginLeft: '10px',
                             },
@@ -237,6 +253,9 @@ const ReceiveMaster = ({
                         borderRadius: '4px',
                         paddingRight: '8px',
                       }}
+                      onClick={() => {
+                        toggleModal(openManager, 'manager');
+                      }}
                     >
                       <input
                         readOnly
@@ -254,12 +273,7 @@ const ReceiveMaster = ({
                         value={inputMaster.userName}
                         onChange={onChangeHandler}
                       />
-                      <SearchIcon
-                        sx={{ marginLeft: 'auto', marginTop: '3px', cursor: 'pointer' }}
-                        onClick={() => {
-                          toggleModal(openManager, 'manager');
-                        }}
-                      />
+                      <SearchIcon sx={{ marginLeft: 'auto', marginTop: '3px', cursor: 'pointer' }} />
                     </Box>
                   </TableStickyTypeCell>
                   <TableStickyTypeCell>
@@ -273,6 +287,9 @@ const ReceiveMaster = ({
                         marginRight: '5px',
                         borderRadius: '4px',
                         paddingRight: '8px',
+                      }}
+                      onClick={() => {
+                        toggleModal(openBusiness, 'business');
                       }}
                     >
                       <input
@@ -290,12 +307,7 @@ const ReceiveMaster = ({
                         value={inputMaster.businessName}
                         onChange={onChangeHandler}
                       />
-                      <SearchIcon
-                        sx={{ marginLeft: 'auto', marginTop: '3px', cursor: 'pointer' }}
-                        onClick={() => {
-                          toggleModal(openBusiness, 'business');
-                        }}
-                      />
+                      <SearchIcon sx={{ marginLeft: 'auto', marginTop: '3px', cursor: 'pointer' }} />
                     </Box>
                   </TableStickyTypeCell>
                   <TableStickyTypeCell></TableStickyTypeCell>
@@ -304,7 +316,14 @@ const ReceiveMaster = ({
               </TableHead>
               <TableBody>
                 {loading ? (
-                  <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                    }}
+                  >
                     <CircularProgress />
                   </Box>
                 ) : masters.length > 0 ? (
@@ -317,6 +336,7 @@ const ReceiveMaster = ({
                       username={master.userName}
                       businessname={master.businessName}
                       disable={master.disable}
+                      exit={master.userExit}
                       receiveDetail={receiveDetail}
                       rowColor={rowColor}
                       state={master.state}

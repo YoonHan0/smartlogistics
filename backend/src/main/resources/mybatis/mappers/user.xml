@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="user">
-
-	<select id="findAll" resultType="uservo">
-		<![CDATA[
-			SELECT id, password, name, phone, role, insert_ip, insert_dt 
-			FROM user
-		]]>
-	</select>
 	
 	<insert id="insert" parameterType="uservo">
 		<![CDATA[
 			INSERT INTO user 
-			VALUES(#{id},#{password},#{name},#{profile},#{phone},#{role},#{insert_id},#{insert_ip},#{insert_dt},#{insert_id},#{insert_ip},#{insert_dt});
+			VALUES(#{id},#{password},#{name},#{profile},#{phone},#{role}, true, #{insert_id},#{insert_ip},#{insert_dt},#{insert_id},#{insert_ip},#{insert_dt});
 	  	]]>
 	</insert>
 	
@@ -30,8 +23,9 @@
                 </when>
                 <otherwise>
                     <![CDATA[
-                        id LIKE CONCAT('%',#{ukeywd },'%')
-                        OR name LIKE CONCAT('%',#{ukeywd },'%')
+                        (id LIKE CONCAT('%',#{ukeywd },'%')
+                        OR name LIKE CONCAT('%',#{ukeywd },'%'))
+                        AND state=true
                     ]]>
                 </otherwise>
             </choose>
@@ -39,6 +33,7 @@
                 <![CDATA[
                     AND (id LIKE CONCAT('%',#{ukeywd },'%')
                     OR name LIKE CONCAT('%',#{ukeywd },'%'))
+                    AND state=true
                 ]]>
             </if>
         </where>
@@ -114,7 +109,7 @@
 		<![CDATA[
 			SELECT id,password, role
 		    FROM user
-		    WHERE id=#{value} 
+		    WHERE id=#{value} AND state=true
 		]]>
 	</select>
 	
@@ -128,9 +123,9 @@
 	
 	<delete id="deleteUsers" parameterType="String" >
 		<![CDATA[
-			DELETE
-			FROM user
-		    WHERE id=#{value}
+		    UPDATE user
+			SET state=false
+			WHERE id=#{value}
 		]]>
 	</delete>
 	

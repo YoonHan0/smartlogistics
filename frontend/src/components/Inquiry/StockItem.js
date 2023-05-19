@@ -2,46 +2,51 @@ import { TableCell, TableRow } from '@mui/material';
 import React from 'react';
 
 const StockItem = ({
+  index,
   code,
   date,
   state,
-  user_name,
-  business_name,
-  product_code,
-  product_name,
+  userName,
+  businessName,
+  productCode,
+  productName,
   size,
   unit,
   count,
-  beginning_stock,
-  ending_stock
+  beginningStock,
+  endingStock
 }) => {
   return (
-    <TableRow sx={{
-      bgcolor: state==='RV' ? 'rgba(255, 99, 132, 0.1)':'rgba(54, 162, 235, 0.1)',
+    <TableRow key={index} sx={{
+      bgcolor: state === 'RV' ? 'rgba(255, 99, 132, 0.1)' : 'rgba(54, 162, 235, 0.1)',
       border: '1px solid #000',
       borderRadius: '10px'
     }}>
       <TableCell>{date}</TableCell>
       <TableCell>{code}</TableCell>
-      <TableCell>{user_name}</TableCell>
-      <TableCell>{business_name}</TableCell>
-      <TableCell>{product_code}</TableCell>
-      <TableCell>{product_name}</TableCell>
+      <TableCell>{userName}</TableCell>
+      <TableCell>
+        {businessName.length > 5 ? businessName.substr(0, 5) + '...' : businessName}
+      </TableCell>
+      <TableCell>{productCode}</TableCell>
+      <TableCell>
+        {productName.length > 5 ? productName.substr(0, 5) + '...' : productName}
+      </TableCell>
       <TableCell>{size}</TableCell>
       <TableCell>{unit}</TableCell>
-      <TableCell>{beginning_stock}</TableCell>
+      <TableCell>{beginningStock}</TableCell>
       {
-        state ==='RV' ?
-        <>
-          <TableCell>{count}</TableCell>
-          <TableCell> </TableCell>
-        </> :
-        <>
-        <TableCell> </TableCell>
-        <TableCell>{count}</TableCell>
-      </>        
+        state === 'RV' ?
+          <>
+            <TableCell>{count}</TableCell>
+            <TableCell> </TableCell>
+          </> :
+          <>
+            <TableCell> </TableCell>
+            <TableCell>{count}</TableCell>
+          </>
       }
-      <TableCell>{ending_stock}</TableCell>
+      <TableCell>{endingStock}</TableCell>
     </TableRow>
   );
 };

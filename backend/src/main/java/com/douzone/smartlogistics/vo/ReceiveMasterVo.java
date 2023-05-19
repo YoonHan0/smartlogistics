@@ -14,6 +14,7 @@ public class ReceiveMasterVo {
     private String date;
     private String userName;
     private String userId;
+    private String userExit;
     private String businessCode;
     private String businessName;
     private String state;

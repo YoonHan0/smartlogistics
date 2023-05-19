@@ -1,106 +1,112 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Checkbox,
-  FormControl,
-  Grid,
-  NativeSelect,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-} from "@mui/material";
+import React, { useEffect } from 'react';
+import { Table, TableHead, TableRow, TableCell, TableBody, FormControl, TableContainer, Paper } from '@mui/material';
 import StockItem from './StockItem';
 
-const StockTable = ({ list }) => {
+const StockTable = ({ list, searchKeyword }) => {
+  const handleWindowScroll = (event) => {
+    const { scrollTop, clientHeight, scrollHeight } = event.target;
+    // console.log('scrollTop', scrollTop)
+    // console.log('clientHeight', clientHeight)
+    // console.log('scrollHeight', scrollHeight)
 
+    if (clientHeight + scrollTop + 10 > scrollHeight) {
+      searchKeyword.call(this);
+    }
+  }
+
+  useEffect(() => {
+    const tablePro = document.getElementById('table');
+    tablePro.addEventListener('scroll', handleWindowScroll);
+    searchKeyword.call(this);
+
+    return () => {
+      tablePro.removeEventListener('scroll', handleWindowScroll);
+    }
+  }, []);
+
+
+  const TableHeadStyle = {
+    backgroundColor: "#F6F7F9",
+    fontWeight: 800
+  }
   return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        mt: 4,
-        width: "94%",
-        paddingLeft: 3,
-        paddingTop: 0,
-        boxShadow: "none",
-        height: 600,
-      }}
-    // onScroll={handleScroll}
-    >
-      <Table stickyHeader size="small">
-        <TableHead>
-          <TableRow sx={{ height: 3 }}>
-            <TableCell sx={{ width: "18%", backgroundColor: "#F6F7F9", fontWeight: 800 }}>
-              입출고일
-            </TableCell>
-            <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: 800 }}>
-              코드
-            </TableCell>
-            <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: 800 }}>
-              담당자
-            </TableCell>
-            <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: 800 }}>
-              거래처
-            </TableCell>
-            <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: 800 }}>
-              품번
-            </TableCell>
-            <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: 800 }}>
-              품명
-            </TableCell>
-            <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: 800 }}>
-              규격
-            </TableCell>
-            <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: 800 }}>
-              단위
-            </TableCell>
-            <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: 800 }}>
-              기초재고
-            </TableCell>
-            <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: 800 }}>
-              입고
-            </TableCell>
-            <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: 800 }}>
-              출고
-            </TableCell>
-            <TableCell
-              sx={{ width: "10%", backgroundColor: "#F6F7F9", p: 0, fontWeight: 800 }}
-            >
-              기말재고
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {
-            list.length > 0 ? (
+    <FormControl component="form" id='table' sx={{ h: 300 }}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          width: "94%",
+          
+          paddingTop: 0,
+          boxShadow: "none",
+          height: 550,
+        }}
+        onScroll={handleWindowScroll}
+      >
+        <Table stickyHeader size="small" >
+          <TableHead>
+            <TableRow key='head'>
+              <TableCell sx={TableHeadStyle}>
+                입출고일
+              </TableCell>
+              <TableCell sx={TableHeadStyle}>
+                코드
+              </TableCell>
+              <TableCell sx={TableHeadStyle}>
+                담당자
+              </TableCell>
+              <TableCell sx={TableHeadStyle}>
+                거래처
+              </TableCell>
+              <TableCell sx={TableHeadStyle}>
+                품번
+              </TableCell>
+              <TableCell sx={TableHeadStyle}>
+                품명
+              </TableCell>
+              <TableCell sx={TableHeadStyle}>
+                규격
+              </TableCell>
+              <TableCell sx={TableHeadStyle}>
+                단위
+              </TableCell>
+              <TableCell sx={TableHeadStyle}>
+                기초재고
+              </TableCell>
+              <TableCell sx={TableHeadStyle}>
+                입고
+              </TableCell>
+              <TableCell sx={TableHeadStyle}>
+                출고
+              </TableCell>
+              <TableCell sx={TableHeadStyle}>
+                기말재고
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {
               list.map((item, index) =>
                 <StockItem
-                  key={index}
-                  code={item.code}
-                  date={item.date}
+                  index={index}
                   state={item.state}
-                  user_name={item.userName}
-                  business_name={item.businessName}
-                  product_code={item.productCode}
-                  product_name={item.productName}
+                  date={item.date}
+                  code={item.code}
+                  userName={item.userName}
+                  businessName={item.businessName}
+                  productCode={item.productCode}
+                  productName={item.productName}
                   size={item.size}
                   unit={item.unit}
+                  beginningStock={item.beginningStock}
                   count={item.count}
-                  beginning_stock={item.beginningStock}
-                  ending_stock={item.endingStock}
-                />)
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5} sx={{ textAlign: 'center' }}>등록된 거래처가 없습니다.</TableCell>
-              </TableRow>
-            )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                  endingStock={item.endingStock}
+                />
+              )
+            }
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </FormControl>
   );
 };
 

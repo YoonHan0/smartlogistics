@@ -1,12 +1,9 @@
-
-import { Button, FormControl, TextField, Box, Grid } from "@mui/material";
-import React, { useState, useEffect, useRef } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
+import { Button, FormControl, TextField, Box, Grid } from '@mui/material';
+import React, { useState, useEffect, useRef } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
 
 const SerchBar = ({ callback }) => {
-  const [searchKw, setSearchKw] = useState({ pkeywd: "", psize: "" });
+  const [searchKw, setSearchKw] = useState({ pkeywd: '', psize: '' });
   const refForm = useRef(null);
   const changeHandler = (e) => {
     const { value, name } = e.target;
@@ -23,29 +20,30 @@ const SerchBar = ({ callback }) => {
       item
       xs={12}
       sx={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
         marginBottom: 3,
-        backgroundColor: "#FFF",
-        borderRadius: "8px",
-        boxShadow: "5px 5px 5px rgba(0, 0, 0, 0.1)",
-        height: "100px",
+        backgroundColor: '#FFF',
+        borderRadius: '8px',
+        boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.1)',
+        height: '100px',
       }}
     >
       <Box
         sx={{
-          display: "flex",
-          alignItems: "center",
-          marginLeft: "30px",
-          marginTop: "6px",
+          display: 'flex',
+          alignItems: 'center',
+          marginLeft: '30px',
+          marginTop: '6px',
+          marginBottom: '10px',
         }}
       >
         <span
           style={{
-            fontSize: "23px",
+            fontSize: '23px',
             fontWeight: 800,
-            marginRight: "15px",
+            marginRight: '15px',
           }}
         >
           품목
@@ -53,15 +51,15 @@ const SerchBar = ({ callback }) => {
 
         <span
           style={{
-            backgroundColor: "#EBF2FF",
-            padding: "3px 8px",
+            backgroundColor: '#EBF2FF',
+            padding: '3px 8px',
           }}
         >
           <span
             style={{
-              color: "gray",
-              fontSize: "9px",
-              marginLeft: "8px",
+              color: 'gray',
+              fontSize: '9px',
+              marginLeft: '8px',
             }}
           >
             품목을 조회할 수 있습니다.
@@ -75,21 +73,21 @@ const SerchBar = ({ callback }) => {
         onSubmit={(e) => {
           e.preventDefault();
           callback(searchKw);
-          setSearchKw({ pkeywd: "", psize: "" });
+          setSearchKw({ pkeywd: '', psize: '' });
         }}
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-end",
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
 
-          marginBottom: "5px",
+          marginBottom: '5px',
         }}
       >
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
           }}
         >
           <label style={{ fontSize: '0.9rem' }}>검색어</label>

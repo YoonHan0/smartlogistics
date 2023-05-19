@@ -5,19 +5,11 @@ import {
 import React, { useEffect } from 'react';
 import checkImg from "../../assets/img/checkmark.png";
 import StockTable from "./StockTable";
-import StockTable1 from "./StockTable1";
-import StockTable2 from "./StockTable2";
 
 const InquiryList = ({
   list,
-  searchKw,
   searchKeyword,
-  setSearchKw,
-  searchChk,
-  setSearchChk,
-  hasNextPage,
-  setHasNextPage,
-  loading }) => {
+}) => {
   return (
     <Grid
       item
@@ -63,23 +55,8 @@ const InquiryList = ({
             width: "100%",
           }}
         >
-          <StockTable list={list}/>
-          {/* <StockTable1
-            list={list}
-            searchKw={searchKw}
-            searchKeyword={searchKeyword}
-            setSearchKw={setSearchKw}
-            searchChk={searchChk}
-            setSearchChk={setSearchChk}
-            hasNextPage={hasNextPage}
-            setHasNextPage={setHasNextPage}
-            loading={loading}
-          /> */}
-          {/* <StockTable2 
-            list={list}
-            searchKw={searchKw}
-            searchKeyword={searchKeyword}
-          /> */}
+          <StockTable list={list} searchKeyword={searchKeyword}/>
+
         </Box>
       </Box>
     </Grid>

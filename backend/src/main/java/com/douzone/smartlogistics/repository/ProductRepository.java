@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import com.douzone.smartlogistics.vo.DBLogVo;
 import com.douzone.smartlogistics.vo.ProductVo;
-import com.douzone.smartlogistics.vo.UserVo;
-
+import com.douzone.smartlogistics.vo.ReceiveDetailVo;
+import com.douzone.smartlogistics.vo.ReleaseDetailVo;
 
 @Repository
 public class ProductRepository {
@@ -35,6 +35,12 @@ public class ProductRepository {
 	}
 	public boolean deleteByCode(List<String> deleteItem) {
 		return 1<=sqlSession.delete("product.deleteByCode",deleteItem);
+	}
+	public List<ReceiveDetailVo> checkInReceive(List<String> deleteItem) {
+		return sqlSession.selectList("product.checkInReceive",deleteItem);
+	}
+	public List<ReleaseDetailVo> checkInRelease(List<String> deleteItem) {
+		return sqlSession.selectList("product.checkInRelease",deleteItem);
 	}
 
 

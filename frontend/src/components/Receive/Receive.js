@@ -10,6 +10,9 @@ import { customFetch } from '../custom/customFetch';
 import NullModal from '../Modal/NullModal';
 import DeleteMasterModal from '../Modal/DeleteMasterModal';
 import DeleteDetailModal from '../Modal/DeleteDetailModal';
+import { format } from 'date-fns';
+import dayjs from 'dayjs';
+import { end } from '@popperjs/core';
 
 const Receive = () => {
   // ReceiveMaster
@@ -18,8 +21,6 @@ const Receive = () => {
   const [receiveDetail, setreceiveDetail] = useState([]);
   // productAdd masterCode
   const [masterCode, setMasterCode] = useState();
-  /* date값을 가지고 있는 */
-  const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
 
   const [loading, setLoading] = useState(true);
   // Modal
@@ -59,9 +60,14 @@ const Receive = () => {
   const deleteObj = {
     no: filteredDetails, // checkedRow의 detail 프로퍼티에서 state값이 "t"인 데이터의 no값
     masterCode: masterCode, // 화면에 표시되는 detail List들의 공통된 master code값
-    length: receiveDetail.length, // 화면에 표시되는 detail List들의 길이
+    length: receiveDetail.length === null ? 0 : receiveDetail.length, // 화면에 표시되는 detail List들의 길이
   };
-
+  const [isFetchingMaster, setIsFetchingMaster] = useState(false);
+  const startIndexMaster = useRef(0);
+  const [isFetchingDetail, setIsFetchingDetail] = useState(false);
+  const startIndexDetail = useRef(0);
+  const limit = 10;
+  const [scrollend, setScrollend] = useState(false);
   useEffect(() => {
     receiveMasterSearch(null);
   }, []);
@@ -103,57 +109,104 @@ const Receive = () => {
 
   // ReceiveMaster검색
   const receiveMasterSearch = async (searchKw) => {
-    setLoading(true);
-    var url = `/api/receive/list`;
-    if (searchKw) {
-      url = `/api/receive/list?rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
+    if (isFetchingMaster) {
+      return;
     }
-    await customFetch(url, { method: 'get' }).then((json) => {
-      const { dataList, sDate, eDate } = json.data; // dataList: 기존에 불러오던 data, sDate, eDate: 오늘 날짜를 기준으로 -7, +7일 date 값
-      // console.log(dataList);
-      setreceiveMaster(dataList);
-      setSeDate({ sDate: sDate, eDate: eDate });
-      // 넘어온 데이터의 master code 값 담기
-      setCheckedRow(
-        dataList.map((item) => ({
-          master: item.code,
-          state: 'f',
-          detail: [{ no: '', state: 'f' }],
-        }))
-      );
-      setLoading(false);
-    });
+    setIsFetchingMaster(true);
+    let startdt = '';
+    let enddt = '';
+    if (searchKw && searchKw.startdt === '' && searchKw.enddt !== '') {
+      startdt = format(dayjs().subtract(6, 'day').$d, 'yyyy-MM-dd');
+      enddt = format(searchKw.enddt.$d, 'yyyy-MM-dd');
+    } else if (searchKw && searchKw.enddt === '' && searchKw.startdt !== '') {
+      startdt = format(searchKw.startdt.$d, 'yyyy-MM-dd');
+      enddt = format(dayjs().add(6, 'day').$d, 'yyyy-MM-dd');
+    } else if (searchKw && searchKw.startdt !== '' && searchKw.enddt !== '') {
+      startdt = format(searchKw.startdt.$d, 'yyyy-MM-dd');
+      enddt = format(searchKw.enddt.$d, 'yyyy-MM-dd');
+    } else if ((searchKw != null && searchKw.startdt === '' && searchKw.enddt === '') || searchKw === null) {
+      console.log('여기');
+      startdt = format(dayjs().subtract(6, 'day').$d, 'yyyy-MM-dd');
+      enddt = format(dayjs().add(6, 'day').$d, 'yyyy-MM-dd');
+    }
+    console.log(startdt, enddt);
+    console.log(searchKw);
+    console.log(scrollend);
+    //console.log(format(searchKw.startdt.$d, 'yyyy-MM-dd'), format(searchKw.enddt.$d, 'yyyy-MM-dd'));
+    var url = `/api/receive/list?o=${startIndexMaster.current}&l=${limit}`;
+    if (searchKw) {
+      url = `/api/receive/list?o=${startIndexMaster.current}&l=${limit}&rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${startdt}&edt=${enddt}`;
+    }
+    if (scrollend === true) return;
+    await customFetch(url, { method: 'get' })
+      .then((json) => {
+        setreceiveMaster((pre) => [...pre, ...json.data]);
+        // 넘어온 데이터의 master code 값 담기
+        setCheckedRow(
+          json.data.map((item) => ({
+            master: item.code,
+            state: 'f',
+            detail: [{ no: '', state: 'f' }],
+          }))
+        );
+        if (json.data !== null) {
+          setLoading(false);
+        }
+        console.log(json.data);
+        console.log(json.data.length);
+        if (json.data.length === 0) {
+          setScrollend(true);
+        }
+
+        rowColor.current = '';
+        setreceiveDetail([{}]);
+      })
+      .finally(() => {
+        startIndexMaster.current += 10;
+        setIsFetchingMaster(false);
+      });
+
   };
   // ReceiveDetail
   const receiveDetailSearch = async (code) => {
+    if (masterCode != code) {
+      startIndexDetail.current = -1;
+    }
     //선택한 입고의 입고번호 저장
-    setMasterCode(code);
-
-    await customFetch(`/api/receive/detail?rc=${code}`, { method: 'get' }).then((json) => {
-      console.log(json.data);
-      setreceiveDetail(json.data);
-
-      const isAnyNull = json.data.some((item) => item.state === null); // status 배열에서 하나라도 null이 있는지 확인합니다.
-      console.log(isAnyNull);
-      setreceiveMaster((prevDataList) => {
-        return prevDataList.map((item) => {
-          if (item.code === code) {
-            return { ...item, disable: isAnyNull ? 'true' : 'false' }; // disable 값을 isAnyNull에 따라 설정합니다.
-          }
-          return item;
+    if (isFetchingDetail) {
+      return;
+    }
+    setIsFetchingDetail(true);
+    await customFetch(`/api/receive/detail?rc=${code}&o=${startIndexDetail.current - 10}&l=${limit}`, { method: 'get' })
+      .then((json) => {
+        console.log(json.data);
+        setreceiveDetail(json.data);
+        const isAnyNull = json.data.some((item) => item.state === null); // status 배열에서 하나라도 null이 있는지 확인합니다.
+        console.log(isAnyNull);
+        setreceiveMaster((prevDataList) => {
+          return prevDataList.map((item) => {
+            if (item.code === code) {
+              return { ...item, disable: isAnyNull ? 'true' : 'false' }; // disable 값을 isAnyNull에 따라 설정합니다.
+            }
+            return item;
+          });
         });
-      });
 
-      rowColor.current = code;
-      const data = addDetailArrayHandler(json.data);
-      const filteredCheckedRow = data.map((row) => {
-        // detail [] 배열 중 no가 빈 값인 거 제외
-        const filteredDetail = row.detail.filter((detail) => detail.no !== '');
-        return { ...row, detail: filteredDetail };
-      });
+        rowColor.current = code;
+        const data = addDetailArrayHandler(json.data);
+        const filteredCheckedRow = data.map((row) => {
+          // detail [] 배열 중 no가 빈 값인 거 제외
+          const filteredDetail = row.detail.filter((detail) => detail.no !== '');
+          return { ...row, detail: filteredDetail };
+        });
 
-      setCheckedRow(filteredCheckedRow);
-    });
+        setMasterCode(code);
+        setCheckedRow(filteredCheckedRow);
+      })
+      .finally(() => {
+        startIndexDetail.current += 10;
+        setIsFetchingDetail(false);
+      });
   };
 
   // receiveMater nullchk
@@ -369,7 +422,7 @@ const Receive = () => {
       />
       <NullModal open={openNullModal} onClose={() => setOpenNullModal(false)} />
       <Grid container spacing={2} style={{ marginLeft: '0px' }}>
-        <SearchBar callback={receiveMasterSearch} seDate={seDate} loading={loading} />
+        <SearchBar callback={receiveMasterSearch} setScrollend={setScrollend} setreceiveMaster={setreceiveMaster} />
         <ReceiveMaster
           masters={receiveMaster}
           receiveDetail={receiveDetailSearch}
@@ -386,6 +439,7 @@ const Receive = () => {
           openNullModal={openNullModal}
           masterStateT={masterStateT}
           loading={loading}
+          receiveMasterSearch={receiveMasterSearch}
         />
         <ReceiveDetail
           details={receiveDetail}
@@ -400,6 +454,7 @@ const Receive = () => {
           openNullModal={openNullModal}
           detailInput={detailInput}
           setCountCheck={setCountCheck}
+          receiveDetailSearch={receiveDetailSearch}
         />
       </Grid>
     </Box>

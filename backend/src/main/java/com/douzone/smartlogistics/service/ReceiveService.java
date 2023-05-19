@@ -19,16 +19,16 @@ public class ReceiveService {
 	@Autowired
 	private ReceiveRepository receiveRepository;
 
-	public List<ReceiveMasterVo> findByKeyword(String receiveCode, String businessName,String startDate, String endDate) {
-		return receiveRepository.findByKeyword(receiveCode, businessName,startDate, endDate);
+	public List<ReceiveMasterVo> findByKeyword(String receiveCode, String businessName,String startDate, String endDate,Long offset,Long limit) {
+		return receiveRepository.findByKeyword(receiveCode, businessName,startDate, endDate,offset,limit);
 	}
 	
 	public List<ReceiveMasterVo> modalfindByKeyword(String receiveCode, String businessName,String startDate, String endDate) {
 		return receiveRepository.modalfindByKeyword(receiveCode, businessName,startDate, endDate);
 	}
 
-	public List<ReceiveDetailVo> findByMasterNo(String receiveCode) {
-		return receiveRepository.findByMasterNo(receiveCode);
+	public List<ReceiveDetailVo> findByMasterNo(String receiveCode,Long offset,Long limit) {
+		return receiveRepository.findByMasterNo(receiveCode,offset,limit);
 	}
 	
 	public List<ReceiveDetailVo> modalfindByMasterNo(String receiveCode) {
@@ -50,6 +50,7 @@ public class ReceiveService {
 	@Transactional
 	public void insertDetail(List<ReceiveDetailVo> receiveDetailVo, DBLogVo logVO) {
 		for (ReceiveDetailVo vo : receiveDetailVo) {
+			System.out.println(vo);
 			vo.setLog(logVO);
 			receiveRepository.insertDetail(vo);
 			receiveRepository.insertStock(vo);

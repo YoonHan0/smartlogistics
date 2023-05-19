@@ -1,42 +1,39 @@
-import { errorHandlingMiddleware } from "./errorHandlingMiddleware";
-import { refresh } from "./refresh";
-
+import { errorHandlingMiddleware } from './errorHandlingMiddleware';
+import { refresh } from './refresh';
 // customFetch 함수는 fetch를 확장한 함수로, 에러 발생 시 errorHandlingMiddleware 함수를 호출합니다.
 export const customFetch = async (url, obj) => {
-
   return await fetch(url, {
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: localStorage.getItem("token"),
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token'),
     },
     ...obj,
   })
     .then(async (response) => {
       if (response.status === 403) {
-        alert("부여되지 않은 권한 접근입니다.");
+        alert('부여되지 않은 권한 접근입니다.');
         return null;
       }
       if (response.status === 401) {
         //리프레시 토큰 주고 다시 토큰받아오기
         if (!(await refresh())) {
-          throw new Error(
-            "로그인 시간이 만료되었습니다. 다시 로그인하여 주세요."
-          );
+          throw new Error('로그인 시간이 만료되었습니다. 다시 로그인하여 주세요.');
         }
         //다시 요청 받아오기
-        console.log("재귀 customFetch");
+        console.log('재귀 customFetch');
         return await customFetch(url, obj);
       }
       //403 401외의 에러 잡아서 표기
       if (!response.ok) {
+        console.log('response.status:' + response.status);
+        console.log(response);
         throw new Error(`${response.statusText} 다시 로그인하여 주세요.`);
       }
       return response.json();
     })
-
     .then((json) => {
-      if (json.result !== "success") {
+      if (json.result !== 'success') {
         alert(json.message);
       }
       return json;

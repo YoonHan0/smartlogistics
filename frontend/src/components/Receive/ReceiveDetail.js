@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import styled from 'styled-components';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import DetailItem from './DetailItem';
 import checkImg from '../../assets/img/checkmark.png';
 import SearchIcon from '@mui/icons-material/Search';
@@ -42,20 +42,24 @@ const ReceiveDetail = ({
   openNullModal,
   detailInput,
   setCountCheck,
+  receiveDetailSearch,
 }) => {
+  const handleWindowScroll1 = (event) => {
+    const { scrollTop, clientHeight, scrollHeight } = event.target;
 
-  // const detailTextFieldRef = useRef(null);      // Product Modal이 끝난 후에 focus 맞추길 위한 state
+    if (clientHeight + scrollTop + 10 > scrollHeight) {
+      receiveDetailSearch(masterCode);
+    }
+  };
 
-  // useImperativeHandle(ref, () => ({
-  //   setFocus: () => {
-      
-  //     if (detailTextFieldRef.current) {
-  //       console.log("Receive detail들어옴");
-  //       console.log(detailTextFieldRef.current);
-  //       detailTextFieldRef.current.setFocus1();
-  //     }
-  //   },
-  // }));
+  useEffect(() => {
+    const tablePro = document.getElementById('table1');
+    tablePro.addEventListener('scroll', handleWindowScroll1);
+
+    return () => {
+      tablePro.removeEventListener('scroll', handleWindowScroll1);
+    };
+  }, []);
 
   /** 모두 선택해주는 체크박스 (detail header부분의 체크박스) */
   const detailAllCheckBox = (checked) => {
@@ -82,13 +86,13 @@ const ReceiveDetail = ({
   const filteredRows = checkedRow.filter((row) =>
     row.detail.some((detail) => details.some((item) => item.no === detail.no && detail.state === 't'))
   );
-  
+
   /** Enter 눌렀을 때 다음 Item의 TextField로 focus 넘어가게 하는 함수 */
   const handleEnterKeyPress = (index) => {
     // 값이 있는 TextField는 건너뛰기 (추가)
     const nextIndex = index + 1;
     const nextDetailItem = document.getElementById(`receivecnt-${nextIndex}`);
-    
+
     if (nextDetailItem) {
       nextDetailItem.focus();
     }
@@ -148,7 +152,7 @@ const ReceiveDetail = ({
           width: '100%',
         }}
       >
-        <FormControl component="form">
+        <FormControl component="form" id="table1">
           <TableContainer
             component={Paper}
             sx={{
@@ -159,6 +163,7 @@ const ReceiveDetail = ({
               height: 300,
               // marginLeft: "40px",
             }}
+            onScroll={handleWindowScroll1}
           >
             <Table stickyHeader size="small" sx>
               <TableHead>
@@ -249,30 +254,28 @@ const ReceiveDetail = ({
               </TableHead>
               <TableBody>
                 {(!details[0] || Object.keys(details[0]).length !== 0) && masterCode && details.length > 0 ? (
-
-                    details.map((detail, index) => {
-
-                      return (
-                        <DetailItem
-                          key={detail.masterCode + '-' + index}
-                          index={index}
-                          no={detail.no}
-                          mcode={detail.masterCode}
-                          pcode={detail.productCode}
-                          pname={detail.productName}
-                          psize={detail.productSize}
-                          putil={detail.productUnit}
-                          receivecnt={detail.receiveCount}
-                          stockcnt={detail.stockCount}
-                          updateReceiveCnt={updateReceiveCnt}
-                          state={detail.state}
-                          checkedRow={checkedRow}
-                          setCheckedRow={setCheckedRow}
-                          setCountCheck={setCountCheck}
-                          handleEnterKeyPress={handleEnterKeyPress}
-                        />
-                      );
-                    })
+                  details.map((detail, index) => {
+                    return (
+                      <DetailItem
+                        key={detail.masterCode + '-' + index}
+                        index={index}
+                        no={detail.no}
+                        mcode={detail.masterCode}
+                        pcode={detail.productCode}
+                        pname={detail.productName}
+                        psize={detail.productSize}
+                        putil={detail.productUnit}
+                        receivecnt={detail.receiveCount}
+                        stockcnt={detail.stockCount}
+                        updateReceiveCnt={updateReceiveCnt}
+                        state={detail.state}
+                        checkedRow={checkedRow}
+                        setCheckedRow={setCheckedRow}
+                        setCountCheck={setCountCheck}
+                        handleEnterKeyPress={handleEnterKeyPress}
+                      />
+                    );
+                  })
                 ) : (
                   <TableRow>
                     <TableCell colSpan={9} sx={{ textAlign: 'center' }}>
@@ -283,7 +286,6 @@ const ReceiveDetail = ({
               </TableBody>
             </Table>
           </TableContainer>
-          
         </FormControl>
       </Box>
     </Grid>

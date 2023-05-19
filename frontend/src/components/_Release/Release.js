@@ -43,8 +43,6 @@ const Release = () => {
   /* detail 리스트에 있는 input 창을 나타낼지 말지를 결정하는 state */
   const [detailInput, setDetailInput] = useState(false);
 
-  /* date값을 가지고 있는 */
-  const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
   const rowColor = useRef(); // Master 행 클릭 시 background 색상 변경 Ref
 
   const masterStateT = checkedRow.filter((row) => row.state === 't').map((row) => row.master);
@@ -141,21 +139,28 @@ const Release = () => {
 
   // ============================ release Master검색 ============================
   const releaseMasterSearch = async (searchKw) => {
-    // console.log('키워드 검색', searchKw);
+    setLoading(true);
+
     var url = `/api/release/list`;
     if (searchKw) {
-      url = `/api/release/list?ic=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
+      url = `/api/release/list?ic=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${format(
+        searchKw.startdt.$d,
+        'yyyy-MM-dd'
+      )}&edt=${format(searchKw.enddt.$d, 'yyyy-MM-dd')}`;
     }
     await customFetch(url, { method: 'get' }).then((json) => {
-      const { dataList, sDate, eDate } = json.data; // dataList: 기존에 불러오던 data, sDate, eDate: 오늘 날짜를 기준으로 -7, +7일 date 값
+      const { dataList } = json.data; // dataList: 기존에 불러오던 data, sDate, eDate: 오늘 날짜를 기준으로 -7, +7일 date 값
       setreleaseMaster(dataList);
-      setSeDate({ sDate: sDate, eDate: eDate });
-
-      setreleaseDetail([{}]); // 검색 했을 때 기존에 있는 releaseDetail List Clear
-      rowColor.current = ''; // Master 행 선택 시 Background Color 변경했던 거 Clear
+      
       // 넘어온 데이터의 master code 값 담기
+      
+      rowColor.current = ''; // Master 행 선택 시 Background Color 변경했던 거 Clear
+      if (json.data !== null) {
+        setLoading(false);
+      }
+
       setCheckedRow(dataList.map((item) => ({ master: item.code, state: 'f', detail: [{ no: '', state: 'f' }] })));
-      setLoading(false);
+      setreleaseDetail([{}]); // 검색 했을 때 기존에 있는 releaseDetail List Clear
     });
   };
 
@@ -398,7 +403,7 @@ const Release = () => {
       <NullModal open={openNullModal} onClose={() => setOpenNullModal(false)} />
 
       <Grid container spacing={2} style={{ marginLeft: '0px' }}>
-        <SearchBar callback={releaseMasterSearch} seDate={seDate} />
+        <SearchBar callback={releaseMasterSearch} />
         <ReleaseMaster
           masters={releaseMaster}
           releaseDetail={releaseDetailSearch}

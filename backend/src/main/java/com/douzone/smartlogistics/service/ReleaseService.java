@@ -23,7 +23,6 @@ public class ReleaseService {
 	private ReleaseRepository releaseRepository;
 
 	public List<ReleaseMasterVo> findByKeyword(String releaseCode, String businessName,String startDate, String endDate) {
-		System.out.println(releaseCode + " : " + businessName + " : " + startDate + " : " + endDate);
 		return releaseRepository.findByKeyword(releaseCode, businessName,startDate, endDate);
 	}
 
@@ -31,14 +30,17 @@ public class ReleaseService {
 		return releaseRepository.findByMasterNo(releaseCode);
 	}
 
+	@Transactional
 	public boolean deleteMasterItem(List<String> masterNo) {
         boolean isDeleteMasterSuccess = releaseRepository.deleteMasterItem(masterNo);
         boolean isDeleteDetailSuccess = releaseRepository.deleteDetailByMasterNo(masterNo);
-        return isDeleteMasterSuccess && isDeleteDetailSuccess;
+        boolean isDeleteStock = releaseRepository.deleteStockByMasterCode(masterNo);
+        return isDeleteMasterSuccess && isDeleteDetailSuccess && isDeleteStock;
     }
 
 	public boolean deleteDetailItem(List<Integer> detailNo, String masterCode, int length) {
 		boolean isDeleteDetailSuccess = releaseRepository.deleteDetailItem(detailNo);
+		releaseRepository.deleteStockByDetailNo(masterCode, detailNo);
 		
 		return (detailNo.size() == length) ? (isDeleteDetailSuccess && releaseRepository.deleteMasterByDetailNo(masterCode)) : releaseRepository.deleteDetailItem(detailNo);
 	}
@@ -51,8 +53,6 @@ public class ReleaseService {
 	@Transactional
 	public void insertDetail(List<ReleaseDetailVo> releaseDetailVo, DBLogVo logVO) {
 		for (ReleaseDetailVo vo : releaseDetailVo) {
-			System.out.println("===== Count ==== ");
-			System.out.println(vo.getCount());
 			vo.setLog(logVO);
 			releaseRepository.insertDetail(vo);
 			releaseRepository.updateReceiveCount(vo.getReceiveDetailNo(), vo.getCount());
