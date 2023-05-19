@@ -42,17 +42,8 @@ public class BusinessController {
 	
 	@PostMapping("/add")
 	public ResponseEntity<JsonResult> add(@RequestBody BusinessVo businessVo, @DBLog DBLogVo logVo) {
-		System.out.println("\n======================= Business INSERT =======================");
-		// System.out.println(logVo);
-//		businessVo.setInsertId("han0");
-//		businessVo.setInsertIp("192.168.64.2");
-//		businessVo.setUpdateId("han0");
-//		businessVo.setUpdateIp("192.168.64.2");
-		
-		System.out.println(businessVo);
 		Map<String, Object> map = Map.of("vo", businessVo, "state", "false");
-		// productcode 중복체크
-		System.out.println("///"+businessService.findByCode(businessVo.getCode()) );
+
 		if (businessService.findByCode(businessVo.getCode()) == null) {
 			businessService.addBusinessItem(businessVo, logVo);
 			map = Map.of("vo", businessVo, "state", "true");
@@ -73,11 +64,7 @@ public class BusinessController {
 	
 	@PostMapping("/delete")
 	public ResponseEntity<JsonResult> deleteBusiness(@RequestBody List<String> deleteItem) {
-		
-		for (String item : deleteItem) {
-		  System.out.println(item);
-		}
-		
-		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(businessService.deleteItem(deleteItem)));
+		boolean result = businessService.deleteItem(deleteItem);
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(result ? deleteItem : null));
 	}
 }

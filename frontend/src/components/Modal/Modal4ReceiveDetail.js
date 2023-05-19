@@ -128,18 +128,11 @@ const filteredRows = checkedRow.filter(row =>
       }}
     >
       <Box sx={{ display: "flex", paddingLeft: 0, width: "94%" }}>
-      <Box
-          component="img"
-          src={checkImg}
-          sx={{
-            width: '30px',
-            height: '30px',
-          }}
-        />
+      
         <span
           style={{
             position: "relative",
-            fontSize: "16px",
+            fontSize: "15px",
             fontWeight: 800,
             marginRight: "15px",
             marginTop: "5px",
@@ -252,7 +245,7 @@ const filteredRows = checkedRow.filter(row =>
             </Table>
           </TableContainer>
         </FormControl>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", paddingRight: 3 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end"}}>
         <Button
         
             sx={{
@@ -265,7 +258,7 @@ const filteredRows = checkedRow.filter(row =>
                 color: "#fff",
                 backgroundColor: "#41719C",
               },
-              height: "40px",
+              height: "35px",
             }}
             onClick={() => {multiClicks(details);}}
           ><strong>추가</strong></Button>

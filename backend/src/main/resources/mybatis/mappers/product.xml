@@ -5,7 +5,7 @@
 	<insert id="insert" parameterType="map">
 		<![CDATA[	
     		INSERT INTO product 
-    		VALUES(#{vo.code}, #{vo.name}, #{vo.size}, #{vo.unit},#{log.id},#{log.ip},#{log.dt},#{log.id},#{log.ip},#{log.dt})
+    		VALUES(#{vo.code}, #{vo.name}, #{vo.size}, #{vo.unit}, true, #{log.id},#{log.ip},#{log.dt},#{log.id},#{log.ip},#{log.dt})
 		]]>
 	</insert>
 	
@@ -20,12 +20,14 @@
 				WHERE (code LIKE CONCAT('%',#{pkeywd },'%')
 				OR name LIKE CONCAT('%',#{pkeywd },'%'))
 				AND size = #{psize }
+				AND state=true
 			]]>
 			</when>
 			<otherwise>
 			<![CDATA[
-				WHERE code LIKE CONCAT('%',#{pkeywd },'%')
-				OR name LIKE CONCAT('%',#{pkeywd },'%')
+				WHERE (code LIKE CONCAT('%',#{pkeywd },'%')
+				OR name LIKE CONCAT('%',#{pkeywd },'%'))
+				AND state=true
 			]]>
 			</otherwise>
 		</choose>
@@ -49,9 +51,9 @@
 
 	<delete id="deleteByCode" parameterType="java.util.List">
 		<![CDATA[
-			DELETE
-			FROM product
-			WHERE code in
+			UPDATE product
+			SET state=false
+			WHERE code IN
 		]]>
 		<foreach item="item" collection="list" open="(" separator=","
 			close=")">
@@ -60,5 +62,34 @@
 				]]>
 		</foreach>
 	</delete>
+	
+	
+	<select id="checkInReceive" resultType="receivedetailvo" parameterType="java.util.List">
+		<![CDATA[
+			SELECT product_code
+			FROM receive_detail
+			WHERE product_code IN
+		]]>
+		<foreach item="item" collection="list" open="(" separator=","
+			close=")">
+				<![CDATA[
+					#{item}
+				]]>
+		</foreach>
+	</select>
+	
+	<select id="checkInRelease" resultType="releasedetailvo" parameterType="java.util.List">
+		<![CDATA[
+			SELECT product_code
+			FROM release_detail
+			WHERE product_code IN
+		]]>
+		<foreach item="item" collection="list" open="(" separator=","
+			close=")">
+				<![CDATA[
+					#{item}
+				]]>
+		</foreach>
+	</select>
 	
 </mapper>

@@ -6,7 +6,7 @@
 	<![CDATA[	
 		SELECT master_code AS code,
 		       master.date, 
-   		       state,
+   		       tmp.state,
 		       product_code,
 		       p.name AS product_name, 
 		       u.name AS user_name, 
@@ -25,7 +25,7 @@
        	  			SELECT master_code,
 		                   detail_no, 
 		                   product_code,
-		  			 	   state,
+		  			 	   s.state,
 		  				   count,
 		  				   SUM(
 		  			     	   CASE WHEN state = 'IS' THEN -1 * count ELSE count END
@@ -34,7 +34,7 @@
 									        ORDER BY detail_no
 									    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
 		  							 ) AS ending_stock
-		       		  FROM stock
+		       		  FROM stock s
 		   		  ORDER BY detail_no
 		   		) tmp
        	  INNER JOIN (
@@ -67,6 +67,8 @@
               AND b.name LIKE CONCAT('%',#{business_name},'%')
               AND master_code LIKE CONCAT('%',#{code},'%'))
 		ORDER BY master.date DESC
+		OFFSET #{offset} ROWS
+ 		FETCH NEXT #{limit} ROWS ONLY
 	]]>
 	</select>
 	<select id="stock.getdata" parameterType="map" resultType="stockgraphvo">

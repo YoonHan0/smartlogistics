@@ -18,8 +18,8 @@ public class ReceiveRepository {
 	@Autowired
 	private SqlSession sqlSession;
 
-	public List<ReceiveMasterVo> findByKeyword(String receiveCode, String businessName, String startDate,String endDate) {
-		Map<String, Object> map = Map.of("rcode", receiveCode, "bname", businessName, "startdt", startDate, "enddt",endDate);
+	public List<ReceiveMasterVo> findByKeyword(String receiveCode, String businessName, String startDate,String endDate,Long offset,Long limit) {
+		Map<String, Object> map = Map.of("rcode", receiveCode, "bname", businessName, "startdt", startDate, "enddt",endDate,"offset",offset,"limit",limit);
 		return sqlSession.selectList("receive.findByKeyword", map);
 	}
 
@@ -32,8 +32,9 @@ public class ReceiveRepository {
 		return sqlSession.selectList("receive.modalfindByMasterNo", receiveCode);
 	}
 	
-	public List<ReceiveDetailVo> findByMasterNo(String receiveCode) {
-		return sqlSession.selectList("receive.findByMasterNo", receiveCode);
+	public List<ReceiveDetailVo> findByMasterNo(String receiveCode,Long offset,Long limit) {
+		Map<String, Object> map = Map.of("rcode", receiveCode, "offset", offset, "limit", limit);
+		return sqlSession.selectList("receive.findByMasterNo", map);
 	}
 	
 	

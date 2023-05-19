@@ -21,9 +21,16 @@ const Header = ({ info }) => {
         width: '100%',
         marginTop: '8px',
         marginBottom: '20px',
+        p: 0,
       }}
     >
-      <StyledToolbar>
+      <Box sx={{
+        padding: "0px",
+        height: "50px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}>
         <Box
           component="div"
           sx={{
@@ -62,7 +69,9 @@ const Header = ({ info }) => {
             component={NavLink}
             to={'/mypage'}
             sx={{
-              justifyContent: 'right',
+              float:'right',
+              p:0,
+              marginRight: -1.5
             }}
           >
             {/* <span style={{ backgroundImage: `url(${info.profile})` }}/> */}
@@ -76,13 +85,13 @@ const Header = ({ info }) => {
               </Box>
             ) : (
               <Box sx={{ display: 'flex' }}>
-                <Box sx={{ fontWeight: 'bold' }}>{info.name}</Box> <Box sx={{ marginLeft: 1 }}>사용자님</Box>
+                <Box sx={{ fontWeight: 'bold' }}>{info.name}</Box><Box>님</Box>
               </Box>
             )}
             {/* role을 보고 'admin'이면 name+관리자님 | 'user'이면 name+사용자님 */}
           </ListItemButton>
         </Box>
-      </StyledToolbar>
+      </Box>
     </Box>
   );
 };

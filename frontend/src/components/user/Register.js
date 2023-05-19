@@ -104,7 +104,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: 600,
-            height: 500,
+            height: 600,
             bgcolor: "background.paper",
             borderRadius: 1,
             boxShadow: 5,
@@ -117,7 +117,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
             <TextField
               type="text"
               id="id"
-              label="id"
+              placeholder="id"
               name="id"
               variant="outlined"
               size="small"
@@ -142,7 +142,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
             <TextField
               type="password"
               id="password"
-              label="password"
+              placeholder="password"
               name="password"
               variant="outlined"
               size="small"
@@ -166,7 +166,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
             <TextField
               type="password"
               id="check-password"
-              label="check-password"
+              placeholder="check-password"
               name="check-password"
               variant="outlined"
               size="small"
@@ -190,7 +190,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
             <TextField
               type="text"
               id="username"
-              label="username"
+              placeholder="username"
               name="username"
               size="small"
               onChange={(e) => {
@@ -208,7 +208,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
             <TextField
               type="text"
               id="phone"
-              label="phone"
+              placeholder="phone"
               name="phone"
               size="small"
               value={phone}

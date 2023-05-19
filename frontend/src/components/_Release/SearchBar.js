@@ -10,11 +10,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
 
-const SerchBar = ({ callback, seDate }) => {
-  const [searchKw, setSearchKw] = useState({ rcode: '', bname: '', startdt: '', enddt: '' });
-  const [searchChk, setSearchChk] = useState();
-  const [minDate, setMindate] = useState();
-
+const SerchBar = ({ callback }) => {
+  const [searchKw, setSearchKw] = useState({ 
+    rcode: '', 
+    bname: '', 
+    startdt: dayjs().subtract(6, 'day'), 
+    enddt: dayjs().add(6, 'day'),
+  });
   const refForm = useRef(null);
 
   const changeHandler = (e) => {
@@ -23,38 +25,22 @@ const SerchBar = ({ callback, seDate }) => {
   };
 
   const handleAcceptStart = (date) => {
-    setMindate(date);
-    setSearchKw({ ...searchKw, startdt: format(date.$d, 'yyyy-MM-dd') });
-    setSearchChk(true);
+    setSearchKw({ ...searchKw, startdt: date });
   };
   const handleAcceptEnd = (date) => {
-    console.log('date====', date);
-    setSearchKw({ ...searchKw, enddt: format(date.$d, 'yyyy-MM-dd') });
+    setSearchKw({ ...searchKw, enddt: date });
   };
   const submit = (e) => {
     e.preventDefault();
-    if (searchKw.startdt !== '') {
-      setSearchChk(true);
-    } else {
-      setSearchChk(false);
-    }
-    if (searchChk) {
-      callback(searchKw);
-      setSearchChk();
-      setSearchKw({ rcode: '', bname: '', startdt: '', enddt: '' });
-    }
+    console.log(searchKw);
+    callback(searchKw);
+    setSearchKw({ rcode: '', bname: '', startdt: dayjs().subtract(6, 'day'), enddt: dayjs().add(6, 'day') });
   };
 
   useEffect(() => {
-    //callback(searchKw);
-    // return () => {};
-    console.log('searchKw 변경!');
-    console.log(searchKw);
+    return () => {};
   }, [searchKw]);
 
-  useEffect(() => {
-    setSearchKw({ ...searchKw, startdt: seDate.sDate, enddt: seDate.eDate });
-  }, [seDate]);
 
   return (
     <Grid
@@ -171,6 +157,7 @@ const SerchBar = ({ callback, seDate }) => {
                 sx={{
                   minWidth: 0,
                   paddingLeft: 2,
+                  overflow: 'hidden',
                   '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                     padding: 0,
                     height: 30,
@@ -178,7 +165,6 @@ const SerchBar = ({ callback, seDate }) => {
                     marginLeft: '10px',
                   },
                   '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
-                    border: searchChk === false || null ? '1px solid red' : null,
                     width: '165px',
                   },
                   '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
@@ -186,7 +172,7 @@ const SerchBar = ({ callback, seDate }) => {
                     height: '35px',
                   },
                 }}
-                value={searchKw.startdt || dayjs(seDate.sDate) || null}
+                value={searchKw.startdt === '' ? dayjs().subtract(6, 'day') : dayjs(searchKw.startdt)}
                 onAccept={handleAcceptStart}
               ></DatePicker>
               <span>~</span>
@@ -199,6 +185,7 @@ const SerchBar = ({ callback, seDate }) => {
                 sx={{
                   minWidth: 0,
                   paddingRight: 5,
+                  overflow: 'hidden',
                   '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                     padding: 0,
                     height: 30,
@@ -206,7 +193,6 @@ const SerchBar = ({ callback, seDate }) => {
                     marginLeft: '10px',
                   },
                   '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
-                    border: searchChk === false || null ? '1px solid red' : null,
                     width: '165px',
                   },
                   '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
@@ -214,8 +200,8 @@ const SerchBar = ({ callback, seDate }) => {
                     height: '35px',
                   },
                 }}
-                minDate={minDate || null}
-                value={searchKw.enddt || dayjs(seDate.eDate) || null}
+                minDate={searchKw.startdt || null}
+                value={searchKw.enddt === '' ? dayjs().add(6, 'day') : dayjs(searchKw.enddt)}
                 onAccept={handleAcceptEnd}
               ></DatePicker>
             </DemoContainer>

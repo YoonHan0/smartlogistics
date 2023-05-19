@@ -74,7 +74,8 @@ const Modal4SearchBar = ({ callback,seDate }) => {
             fontSize: '23px',
             fontWeight: 800,
             marginRight: '15px',
-             marginLeft: '700px',
+            marginLeft: '700px',
+            marginBottom: '15px',
             textAlign: "center",
           }}
         >
@@ -202,7 +203,7 @@ const Modal4SearchBar = ({ callback,seDate }) => {
             </DemoContainer>
           </LocalizationProvider>
         </Box>
-        <Button type="submit" variant="outlined" sx={{ marginRight: 6 }}>
+        <Button type="submit" variant="outlined" >
           <SearchIcon />
         </Button>
       </FormControl>

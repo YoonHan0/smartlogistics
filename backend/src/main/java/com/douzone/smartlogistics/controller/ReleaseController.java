@@ -52,6 +52,7 @@ public class ReleaseController {
 		System.out.println(startDate + " : " + endDate);
 
 		List<ReleaseMasterVo> dataList = releaseService.findByKeyword(releaseCode, businessName, startDate, endDate);
+		// 이 부분 필요 없지 않나?? / responseData, sDate, eDate
 		String sDate = startDate;
 		String eDate = endDate;
 

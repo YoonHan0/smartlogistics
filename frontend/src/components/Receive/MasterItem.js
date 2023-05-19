@@ -8,12 +8,14 @@ const MasterItem = ({
   username,
   businessname,
   disable,
+  exit,
   receiveDetail,
   rowColor,
   state,
   checkedRow,
   masterStateUpdate,
 }) => {
+  console.log(code, " ", exit);
   /** 이벤트 캡처링 - 이벤트 전파 막기 */
   const handleCheckboxClick = (event) => {
     event.stopPropagation();
@@ -69,7 +71,7 @@ const MasterItem = ({
       </TableCell>
       <TableCell id="code">{code}</TableCell>
       <TableCell>{date}</TableCell>
-      <TableCell>{username}</TableCell>
+      <TableCell>{exit === "1" ? username : username + "(퇴사자)"}</TableCell>
       <TableCell>{businessname}</TableCell>
       <TableCell>
         <Box

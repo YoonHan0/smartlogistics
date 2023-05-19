@@ -323,13 +323,22 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
   };
 
   // ReceiveCntUpdate
-  const updateReceiveCnt = async (receiveCnt, no, mcode) => {
-    await customFetch('/api/receive/updatedetail', {
-      method: 'post',
-      body: JSON.stringify({ no: no, receiveCount: receiveCnt }),
-    }).then((json) => {
-      receiveDetailSearch(mcode);
+  const updateReceiveCnt = async (count, no) => {
+    const updatedData = modal4receiveDetail.map((item) => {
+      if (item.no === no) {
+        return {
+          ...item,
+          stockCount: count
+        };
+      }
+      return item;
     });
+    setreceiveDetail(updatedData);
+
+    // console.log("업데이또",updatedData)
+    // console.log("업데이또 체크",count,no)
+    // console.log("업데이또 데이터 체크",modal4receiveDetail)
+    
   };
 
 
@@ -359,10 +368,11 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
               left: "50%",
               transform: "translate(-50%, -50%)",
               backgroundColor: "white",
-              width: "80%",
-              padding: "80px",
+              width: "90%",
+              paddingLeft: '20px',
+              paddingRight: '20px',
               paddingTop: '20px',
-              height: "80%",
+              height: "90%",
               borderRadius: "8px",
             }}
           >

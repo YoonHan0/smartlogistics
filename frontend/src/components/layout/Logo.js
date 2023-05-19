@@ -14,7 +14,7 @@ const Logo = () => {
                     fontSize: '28px',
                     color: '#117AEF',
                     fontFamily: 'sans-serif',
-                    lineHeight: '90px',
+                    
                     fontWeight: 800,
                     pt: '5px',
                 }}>
@@ -24,7 +24,7 @@ const Logo = () => {
                     fontSize: '28px',
                     color: '#000',
                     fontFamily: 'sans-serif',
-                    lineHeight: '90px',
+                    
                     fontWeight: 800,
                     pt: '5px',
                 }}>LOGISTRICS</Typography>

@@ -36,29 +36,27 @@ public class ReceiveController {
 			@RequestParam(value = "rc", required = true, defaultValue = "") String receiveCode,
 			@RequestParam(value = "bn", required = true, defaultValue = "") String businessName,
 			@RequestParam(value = "sdt", required = true, defaultValue = "") String startDate,
-			@RequestParam(value = "edt", required = true, defaultValue = "") String endDate) {
+			@RequestParam(value = "edt", required = true, defaultValue = "") String endDate,
+			@RequestParam(value = "o", required = true, defaultValue = "0") Long offset,
+			@RequestParam(value = "l", required = true, defaultValue = "0") Long limit) {
+		System.out.println(receiveCode);
+		System.out.println("o:" + offset + "l:" + limit);
 		if (!startDate.equals("") && endDate.equals("")) {
 			// startDate만 선택했을 시
 			endDate = startDate;
-		} 
+		}
 		if (startDate.equals("")) {
 			// 첫페이지(-7~오늘날짜~+7) => 2주치의 데이터 가져올 날짜
 			startDate = DateUtil.minusDays(6);
 			endDate = DateUtil.addDays(6);
 		}
-		System.out.println(startDate+"///"+endDate);
-		List<ReceiveMasterVo> dataList = receiveService.findByKeyword(receiveCode, businessName, startDate, endDate);
-		String sDate = startDate;
-		String eDate = endDate;
 
-		Map<String, Object> responseData = new HashMap<>();
-		responseData.put("dataList", dataList);
-		responseData.put("sDate", sDate);
-		responseData.put("eDate", eDate);
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(responseData));
+		System.out.println(startDate+"///"+endDate);
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult
+				.success(receiveService.findByKeyword(receiveCode, businessName, startDate, endDate, offset, limit)));
 	}
-	//모달 receive select masterList
+
+	// 모달 receive select masterList
 	@GetMapping("/list1")
 	public ResponseEntity<JsonResult> modaleadReceive(
 			@RequestParam(value = "rc", required = true, defaultValue = "") String receiveCode,
@@ -68,14 +66,15 @@ public class ReceiveController {
 		if (!startDate.equals("") && endDate.equals("")) {
 			// startDate만 선택했을 시
 			endDate = startDate;
-		} 
+		}
 		if (startDate.equals("")) {
 			// 첫페이지(-7~오늘날짜~+7) => 2주치의 데이터 가져올 날짜
 			startDate = DateUtil.minusDays(6);
 			endDate = DateUtil.addDays(6);
 		}
-		System.out.println(startDate+"///"+endDate);
-		List<ReceiveMasterVo> dataList = receiveService.findByKeyword(receiveCode, businessName, startDate, endDate);
+		System.out.println(startDate + "///" + endDate);
+		List<ReceiveMasterVo> dataList = receiveService.modalfindByKeyword(receiveCode, businessName, startDate,
+				endDate);
 		String sDate = startDate;
 		String eDate = endDate;
 
@@ -83,55 +82,51 @@ public class ReceiveController {
 		responseData.put("dataList", dataList);
 		responseData.put("sDate", sDate);
 		responseData.put("eDate", eDate);
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(responseData));
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(responseData));
 	}
-
 
 	// receive select detailList
 	@GetMapping("/detail")
 	public ResponseEntity<JsonResult> readReceive(
+			@RequestParam(value = "rc", required = true, defaultValue = "") String receiveCode,
+			@RequestParam(value = "o", required = true, defaultValue = "0") Long offset,
+			@RequestParam(value = "l", required = true, defaultValue = "0") Long limit) {
+		System.out.println(offset+"///"+limit+"////"+receiveCode);
+		if(offset<0) {
+			offset=0l;
+		}
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(JsonResult.success(receiveService.findByMasterNo(receiveCode, offset, limit)));
+	}
+
+	// 모달 receive select detailList
+	@GetMapping("/detail1")
+	public ResponseEntity<JsonResult> modalreadReceive(
 			@RequestParam(value = "rc", required = true, defaultValue = "") String receiveCode) {
 		System.out.println("detail" + receiveCode);
-		for (ReceiveDetailVo vo : receiveService.findByMasterNo(receiveCode)) {
+		for (ReceiveDetailVo vo : receiveService.modalfindByMasterNo(receiveCode)) {
 			System.out.println("detail: " + vo);
 		}
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(receiveService.findByMasterNo(receiveCode)));
+				.body(JsonResult.success(receiveService.modalfindByMasterNo(receiveCode)));
 	}
-	
-	
-	
-	
-	// 모달 receive select detailList
-		@GetMapping("/detail1")
-		public ResponseEntity<JsonResult> modalreadReceive(
-				@RequestParam(value = "rc", required = true, defaultValue = "") String receiveCode) {
-			System.out.println("detail" + receiveCode);
-			for (ReceiveDetailVo vo : receiveService.findByMasterNo(receiveCode)) {
-				System.out.println("detail: " + vo);
-			}
-			return ResponseEntity.status(HttpStatus.OK)
-					.body(JsonResult.success(receiveService.modalfindByMasterNo(receiveCode)));
-		}
-		
-		
+
 	// my receive master list
 	@GetMapping("/mylist")
 	public ResponseEntity<JsonResult> readMyReceive(
 			@RequestParam(value = "u", required = true, defaultValue = "") String userName) {
-		System.out.println("--------------------------"+userName);
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(receiveService.findByName(userName)));
+		System.out.println("--------------------------" + userName);
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(receiveService.findByName(userName)));
 	}
+
 	// my release master statistics
 	@GetMapping("/mystatistics")
 	public ResponseEntity<JsonResult> readMyReceiveStatistics(
 			@RequestParam(value = "u", required = true, defaultValue = "") String userId) {
-		System.out.println("===================="+JsonResult.success(receiveService.findByUserId(userId)));
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(receiveService.findByUserId(userId)));
+		System.out.println("====================" + JsonResult.success(receiveService.findByUserId(userId)));
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(receiveService.findByUserId(userId)));
 	}
+
 	// receive master,detail insert
 	@PostMapping("/insert")
 	@Transactional
@@ -190,6 +185,5 @@ public class ReceiveController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(receiveService.deleteDetailItem(no, masterCode, length)));
 	}
-
 
 }

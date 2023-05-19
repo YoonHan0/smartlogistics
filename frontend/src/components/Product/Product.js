@@ -74,12 +74,14 @@ const Product = () => {
 
   // product 삭제
   const deleteItemHandler = async (data) => {
-    console.log(' ===== delete ===== ');
-    console.log(data);
     await customFetch(`/api/product/delete`, {
       method: 'post',
       body: JSON.stringify(data),
-    }).then((json) => setProducts(products.filter((product) => json.data.indexOf(product.code) == -1)));
+    }).then((json) => {
+      json.data === null 
+      ? alert("사용되고 있는 데이터입니다. 입﹒출고를 완료한 후 삭제를 해주세요.") 
+      : setProducts(products.filter((product) => json.data.indexOf(product.code) == -1));
+    });
     setSearchEvent((prev) => !prev);
   };
 

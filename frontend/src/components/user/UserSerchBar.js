@@ -37,7 +37,8 @@ const UserSerchBar = ({ callback }) => {
           display: "flex",
           alignItems: "center",
           marginLeft: "30px",
-          marginTop: "6px",
+          marginTop: '6px',
+          marginBottom: '10px',
         }}
       >
         <span
@@ -53,10 +54,9 @@ const UserSerchBar = ({ callback }) => {
         <span
           style={{
             backgroundColor: "#EBF2FF",
-            padding: "3px",
+            padding: "3px 8px",
           }}
         >
-          <FontAwesomeIcon icon={faVolumeHigh} />
           <span
             style={{
               color: "gray",

@@ -7,40 +7,35 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import { format } from 'date-fns';
 import dayjs from 'dayjs';
-const SerchBar = ({ callback }) => {
-  const [searchKw, setSearchKw] = useState({ rcode: '', bname: '', startdt: '', enddt: '' });
-  const [searchChk, setSearchChk] = useState();
-  const [minDate, setMindate] = useState();
+const SerchBar = ({ callback, setScrollend, setreceiveMaster }) => {
+  const [searchKw, setSearchKw] = useState({
+    rcode: '',
+    bname: '',
+    startdt: '',
+    enddt: '',
+  });
 
   const refForm = useRef(null);
+
   const changeHandler = (e) => {
     const { value, name } = e.target;
     setSearchKw((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAcceptStart = (date) => {
-    setMindate(date);
-    setSearchKw({ ...searchKw, startdt: format(date.$d, 'yyyy-MM-dd') });
-    setSearchChk(true);
+    setSearchKw({ ...searchKw, startdt: date });
   };
   const handleAcceptEnd = (date) => {
-    setSearchKw({ ...searchKw, enddt: format(date.$d, 'yyyy-MM-dd') });
+    setSearchKw({ ...searchKw, enddt: date });
   };
   const submit = (e) => {
     e.preventDefault();
-    if (searchKw.startdt !== '') {
-      setSearchChk(true);
-    } else {
-      setSearchChk(false);
-    }
-    if (searchChk) {
-      // setSearchKw({ ...searchKw, startdt: formattedDate });
-      callback(searchKw);
-      setSearchChk();
-      setSearchKw({ ...searchKw, rcode: '', bname: '' });
-    }
+    setScrollend(false);
+    setreceiveMaster([]);
+    console.log(searchKw);
+    callback(searchKw);
+    setSearchKw({ ...searchKw, rcode: '', bname: '' });
   };
 
   useEffect(() => {
@@ -69,6 +64,7 @@ const SerchBar = ({ callback }) => {
           alignItems: 'center',
           marginLeft: '30px',
           marginTop: '6px',
+          marginBottom: '10px',
         }}
       >
         <span
@@ -167,7 +163,6 @@ const SerchBar = ({ callback }) => {
                     marginLeft: '10px',
                   },
                   '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
-                    border: searchChk === false || null ? '1px solid red' : null,
                     width: '165px',
                   },
                   '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
@@ -180,7 +175,6 @@ const SerchBar = ({ callback }) => {
               ></DatePicker>
               <span>~</span>
               <DatePicker
-                readOnly={searchKw.startdt === '' || searchKw.startdt === null}
                 style={{
                   '& .css-3tvb69-MuiStack-root>.MuiTextField-root': {
                     minWidth: 0,
@@ -209,7 +203,7 @@ const SerchBar = ({ callback }) => {
                     height: '35px',
                   },
                 }}
-                minDate={minDate || null}
+                minDate={searchKw.startdt || null}
                 onAccept={handleAcceptEnd}
                 value={searchKw.enddt === '' ? dayjs().add(6, 'day') : dayjs(searchKw.enddt)}
               ></DatePicker>

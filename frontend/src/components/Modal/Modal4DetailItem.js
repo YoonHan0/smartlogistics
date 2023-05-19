@@ -157,7 +157,7 @@ const Modal4DetailItem = ({
             disabled={checkedRow.filter(row => row.master === mcode && row.state === "t" && !row.detail.every(item => item.state === "t")).length > 0 ? true : false}
         />
       </TableCell>
-      <TableCell>{index}</TableCell>
+      <TableCell>{index+1}</TableCell>
       <TableCell>{pcode}</TableCell>
       <TableCell>{pname}</TableCell>
       <TableCell>{psize}</TableCell>

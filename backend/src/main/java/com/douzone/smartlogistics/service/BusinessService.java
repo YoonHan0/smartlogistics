@@ -39,8 +39,10 @@ public class BusinessService {
 	}
 
 	public boolean deleteItem(List<String> deleteItem) {
+		int receiveLength = businessRepository.checkInReceive(deleteItem).size();
+		int releaseLength = businessRepository.checkInRelease(deleteItem).size();
 		
-		return businessRepository.delete(deleteItem);
+		return (receiveLength > 0 || releaseLength > 0) ? false : businessRepository.delete(deleteItem);
 	}
 
 }

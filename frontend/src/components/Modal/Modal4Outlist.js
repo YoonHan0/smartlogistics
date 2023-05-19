@@ -145,27 +145,18 @@ const Modal4Outlist = ({
       }}
     >
       <Box sx={{ display: "flex", paddingLeft: 0, width: "94%" }}>
-      <Box
-          component="img"
-          src={checkImg}
-          sx={{
-            width: '30px',
-            height: '30px',
-          }}
-        />
+    
         <span
           style={{
             position: "relative",
-            fontSize: "16px",
-            fontWeight: 800,
+            fontSize: "15px",
+            fontWeight: 900,
             marginRight: "15px",
-            // marginTop: "5px",
             marginLeft: "2px",
-            height: 30
-            
+            height: 30,            
           }}
         >
-        추가된 출고 리스트
+        출고리스트
         </span>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end", paddingRight: 3,cursor: "pointer", }}>
@@ -285,7 +276,7 @@ const Modal4Outlist = ({
             </Table>
           </TableContainer>
         </FormControl>        
-        <Box sx={{ display: "flex", justifyContent: "flex-end", paddingRight: 3 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
           sx={{
             mt: 2,
@@ -298,7 +289,7 @@ const Modal4Outlist = ({
               color: "#fff",
               backgroundColor: "#41719C",
             },
-            height: "40px",
+            height: "35px",
           }}
 
           onClick={() => {

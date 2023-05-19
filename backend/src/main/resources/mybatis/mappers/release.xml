@@ -78,6 +78,29 @@
 		]]>
 	</delete>
 	
+	<delete id="stockDeleteByMasterCode" parameterType="string">
+		<![CDATA[
+			DELETE
+			FROM stock
+			WHERE master_code=#{masterCode}
+		]]>
+	</delete>
+	
+	<delete id="stockDeleteByDetailNo" parameterType="map">
+		<![CDATA[	
+			DELETE
+			FROM stock
+			WHERE code = #{code} 
+			AND no IN 
+			
+		]]>
+			<foreach item="item" collection="list" open="(" separator="," close=")">
+				<![CDATA[
+					#{item}
+				]]>
+			</foreach>		
+	</delete>
+	
 	<select id="findSeqByDateAndState" resultType="int" parameterType="string">
 		<![CDATA[	
 			SELECT IF(MAX(no) IS NULL,1,(MAX(no)+1) )AS cnt FROM sequence WHERE date=#{date} and state="IS"

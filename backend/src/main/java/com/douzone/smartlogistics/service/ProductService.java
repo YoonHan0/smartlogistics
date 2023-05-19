@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.douzone.smartlogistics.repository.ProductRepository;
 import com.douzone.smartlogistics.vo.DBLogVo;
 import com.douzone.smartlogistics.vo.ProductVo;
-import com.douzone.smartlogistics.vo.UserVo;
 
 @Service
 public class ProductService {
@@ -31,8 +31,12 @@ public class ProductService {
 		return  productRepository.updateByCode(productCode,vo,logVo);
 	}
 
+	@Transactional
 	public boolean deleteByCode(List<String> deleteItem) {
-		return productRepository.deleteByCode(deleteItem);
+		int receiveLength = productRepository.checkInReceive(deleteItem).size();
+		int releaseLength = productRepository.checkInRelease(deleteItem).size();
+
+		return (receiveLength > 0 || releaseLength > 0) ? false : productRepository.deleteByCode(deleteItem);
 	}
 
 }

@@ -65,7 +65,7 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
       item
       xs={12}
       sx={{
-        width: "100%",
+        width: "90%",
         height: 230,
         // position: "relative",
         backgroundColor: "#FFF",
@@ -75,18 +75,10 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
       }}
     >
       <Box sx={{ display: "flex", paddingLeft: 0, width: "94%" ,marginBottom:1}}>
-      <Box
-          component="img"
-          src={checkImg}
-          sx={{
-            width: '30px',
-            height: '30px',
-          }}
-        />
         <span
           style={{
             position: "relative",
-            fontSize: "16px",
+            fontSize: "15px",
             fontWeight: 800,
             marginRight: "15px",
             marginTop: "5px",
@@ -139,7 +131,7 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
                     }}
                     checked={checkedRow.every((row) => row.state === 't')} />
                   </TableCell>
-                  <TableCell sx={{width: "10%", backgroundColor: "#F6F7F9" }}>
+                  <TableCell sx={{width: "10%", backgroundColor: "#F6F7F9", fontWeight: 900 }}>
                     입고번호
                   </TableCell>
                   <TableCell sx={{  width: "10%",backgroundColor: "#F6F7F9" }}>
