@@ -118,7 +118,7 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
           <Box
             sx={{
               width: '800px',
-              height: '190px',
+              height: '221px',
               overflow: 'auto',
               inlineSize: 'auto',
               msOverflowStyle: 'none',
@@ -126,24 +126,25 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
               '&::-webkit-scrollbar': {
                 display: 'none',
               },
+              border: '1px solid #D1D1D1',
             }}
           >
             <Table stickyHeader size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9' }} align="center">
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
                     순번
                   </TableCell>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9' }} align="center">
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
                     아이디
                   </TableCell>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9' }} align="center">
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
                     이름
                   </TableCell>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9' }} align="center">
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
                     전화번호
                   </TableCell>
-                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9' }} align="center">
+                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
                     선택
                   </TableCell>
                 </TableRow>

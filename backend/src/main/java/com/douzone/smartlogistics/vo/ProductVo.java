@@ -12,4 +12,5 @@ public class ProductVo {
     private String name;
     private String size;
     private String unit;
+    private String state;
 }

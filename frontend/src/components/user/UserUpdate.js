@@ -3,8 +3,12 @@ import {
   Button,
   FormControl,
   TextField,
-  Typography,
   Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableContainer,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import sha256 from "sha256";
@@ -25,7 +29,6 @@ export default function UserUpdate({
       name: userDetail.name,
       phone: userDetail.phone,
     });
-    return () => {};
   }, [userDetail]);
 
   const changeHandler = (e) => {
@@ -79,112 +82,110 @@ export default function UserUpdate({
           marginTop: 3,
         }}
       >
-        <Grid container>
-          <Grid
-            item
-            xs={4}
-            sm={4}
-            md={4}
-            sx={{
-              backgroundColor: "#F6F7F9",
-              textAlign: "center",
-              paddingTop: "8px",
-            }}
-          >
-            <Typography sx={{ fontSize: "0.9rem" }}>아이디</Typography>
-          </Grid>
-          <Grid item xs={8} sm={8} md={8}>
-            <TextField
-              type="text"
-              name="id"
-              size="small"
-              value={item.id || ""}
-              variant="outlined"
-              disabled
-              sx={{ width: "100%" }}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={4}
-            sm={4}
-            md={4}
-            sx={{
-              backgroundColor: "#F6F7F9",
-              textAlign: "center",
-              paddingTop: "8px",
-            }}
-          >
-            <Typography sx={{ fontSize: "0.9rem" }}>이름</Typography>
-          </Grid>
-          <Grid item xs={8} sm={8} md={8}>
-            <TextField
-              type="text"
-              name="name"
-              value={item.name || ""}
-              onChange={changeHandler}
-              size="small"
-              sx={{ width: "100%" }}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={4}
-            sm={4}
-            md={4}
-            sx={{
-              backgroundColor: "#F6F7F9",
-              textAlign: "center",
-              paddingTop: "8px",
-            }}
-          >
-            <Typography sx={{ fontSize: "0.9rem" }}>전화번호</Typography>
-          </Grid>
-          <Grid item xs={8} sm={8} md={8}>
-            <TextField
-              type="text"
-              name="phone"
-              value={item.phone || ""}
-              onChange={changeHandler}
-              size="small"
-              variant="outlined"
-              sx={{ width: "100%" }}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={4}
-            sm={4}
-            md={4}
-            sx={{
-              backgroundColor: "#F6F7F9",
-              textAlign: "center",
-              paddingTop: "8px",
-            }}
-          >
-            <Typography sx={{ fontSize: "0.9rem" }}>비밀번호</Typography>
-          </Grid>
-          <Grid item xs={8} sm={8} md={8}>
-            <TextField
-              type="password"
-              name="password"
-              value={item.password || ""}
-              onChange={changeHandler}
-              size="small"
-              variant="outlined"
-              sx={{ width: "100%" }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12}>
-            <Button
-              type="submit"
-              variant="outlined"
-              sx={{ marginTop: 2, width: "100%" }}
-            >
-              수정
-            </Button>
-          </Grid>
-        </Grid>
+        <TableContainer>
+          <Table size="small" sx={{ width: "100%" }}>
+            <TableBody>
+              <TableRow>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  sx={{ backgroundColor: "#F6F7F9" }}
+                >
+                  아이디
+                </TableCell>
+
+                <TableCell align="left">
+                  <TextField
+                    disabled
+                    type="text"
+                    id="id"
+                    name="id"
+                    variant="outlined"
+                    size="small"
+                    InputProps={{ sx: { height: 30, width: 300 } }}
+                    value={item.id || ""}
+                  />
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  sx={{ backgroundColor: "#F6F7F9" }}
+                >
+                  이름
+                </TableCell>
+
+                <TableCell align="left" sx={{ display: "flex" }}>
+                  <TextField
+                    type="text"
+                    id="name"
+                    name="name"
+                    size="small"
+                    InputProps={{ sx: { height: 30, width: 300 } }}
+                    onChange={changeHandler}
+                    value={item.name || ""}
+                  />
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  sx={{ width: "200px", backgroundColor: "#F6F7F9" }}
+                >
+                  전화번호
+                </TableCell>
+
+                <TableCell align="left" sx={{ display: "flex" }}>
+                  <TextField
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    size="small"
+                    value={item.phone || ""}
+                    onChange={changeHandler}
+                    InputProps={{ sx: { height: 30, width: 300 } }}
+                  />
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  sx={{ backgroundColor: "#F6F7F9" }}
+                >
+                  비밀번호
+                </TableCell>
+
+                <TableCell align="left" sx={{ display: "flex" }}>
+                  <TextField
+                    type="password"
+                    id="password"
+                    name="password"
+                    variant="outlined"
+                    size="small"
+                    InputProps={{ sx: { height: 30, width: 300 } }}
+                    value={item.password || ""}
+                    onChange={changeHandler}
+                    placeholder="영어,숫자 포함 최소 9자~최대20자"
+                  />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Button
+          type="submit"
+          variant="outlined"
+          sx={{ marginTop: 2, width: "100%" }}
+        >
+          수정
+        </Button>
       </FormControl>
     </Grid>
   );

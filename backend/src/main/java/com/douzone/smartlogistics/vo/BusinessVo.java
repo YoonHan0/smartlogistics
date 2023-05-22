@@ -18,6 +18,7 @@ public class BusinessVo {
 	private String updateId;
 	private String updateIp;
 	private String updateDate;
+	private String state;
 	
 	
 }

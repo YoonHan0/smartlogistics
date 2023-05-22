@@ -57,9 +57,7 @@ const Modal4MasterItem = ({
           )}
           disabled={checkedRow.some(
             (row) =>
-              row.master === code &&
-              row.state === "t" &&
-              row.detail.every((d) => d.state === "t")
+              row.master === code && row.state === 't' && row.detail.length !== 0 && row.detail.every((d) => d.state === 't')
           )}
           onChange={(e) => {
             masterStateUpdate(e.currentTarget.checked, code);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import UserList from "./UserList";
 import UserSerchBar from "./UserSerchBar";
 import UserUpdate from "./UserUpdate";
@@ -6,31 +6,77 @@ import { Box, Grid } from "@mui/material";
 import { customFetch } from "../custom/customFetch";
 
 const User = () => {
-  // productlist
+  const searchKw = useRef({ ukeywd: "", uphone: "" });
+  const [searchTextFiled, setSearchTextFiled] = useState({
+    ukeywd: "",
+    uphone: "",
+  });
+
+  const changeSearchKwdEvent = () => {
+    searchKw.current = searchTextFiled;
+    setSearchTextFiled({ ukeywd: "", uphone: "" });
+    startIndex.current = 0;
+    isNotDataMore.current = false;
+    setUsers([]);
+  };
+
+  const changeHandler = (e) => {
+    let { value, name } = e.target;
+    if (name === "uphone") {
+      if (value.length > 13) {
+        return;
+      }
+      value = autoHyphen(value);
+      console.log(value);
+    }
+    setSearchTextFiled((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const autoHyphen = (target) => {
+    return target
+      .replace(/[^0-9]/g, "")
+      .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
+      .replace(/(\-{1,2})$/g, "");
+  };
+
   const [users, setUsers] = useState([]);
-  // productdetail
   const [Detail, setDetail] = useState([]);
 
   const [item, setItem] = useState({ id: "", name: "", phone: "" });
 
-  useEffect(() => {
-    userSearch(null);
-  }, []);
+  const isNotDataMore = useRef(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const startIndex = useRef(0);
 
-  //product 검색
-  const userSearch = async (searchKw) => {
-    var url = `/api/user/list`;
-    if (searchKw) {
-      url = `/api/user/list?uk=${searchKw.ukeywd}&us=${searchKw.usize}`;
+  const searchKeyword = async () => {
+    if (isFetching) {
+      return;
     }
-    await customFetch(url, { method: "get" }).then((json) =>
-      setUsers(json.data)
-    );
+    const limit = 15;
+
+    console.log("startIndex:" + startIndex.current);
+    console.log(searchKw.current.uphone + " : " + searchKw.current.ukeywd);
+    if (isNotDataMore.current) {
+      return;
+    }
+    var url = `/api/user/list?offset=${startIndex.current}&limit=${limit}`;
+    if (searchKw.current.ukeywd !== "" || searchKw.current.uphone !== "") {
+      url = `/api/user/list?uk=${searchKw.current.ukeywd}&up=${searchKw.current.uphone}&offset=${startIndex.current}&limit=${limit}`;
+    }
+    setIsFetching(true);
+    await customFetch(url, { method: "get" }).then((json) => {
+      if (json.data.length === limit) {
+        startIndex.current += limit;
+      } else {
+        isNotDataMore.current = true;
+      }
+      setUsers((prev) => [...prev, ...json.data]);
+      setIsFetching(false);
+    });
     setDetail([]);
     setItem({ id: "", name: "", phone: "", code: "" });
   };
 
-  // product 추가
   const itemAddHandler = async (obj) => {
     const json = await customFetch(`/api/user`, {
       headers: {
@@ -52,23 +98,20 @@ const User = () => {
     return true;
   };
 
-  //product 수정
   const itemUpdateHandler = async (item, target) => {
     console.log("update");
     await customFetch(`/api/user/update?uc=${target}`, {
       method: "post",
       body: JSON.stringify(item),
-    }).then(() => userSearch(null));
+    }).then(() => searchKeyword(null));
   };
 
-  // product 세부사항
   const userDetail = async (id) => {
     await customFetch(`/api/user/detail?uc=${id}`, { method: "get" }).then(
       (json) => setDetail(json.data)
     );
   };
 
-  // product 삭제
   const deleteItemHandler = async (data) => {
     console.log(" ===== delete ===== ");
     console.log(data);
@@ -87,7 +130,12 @@ const User = () => {
   return (
     <Box>
       <Grid container spacing={2} style={{ marginLeft: "0px" }}>
-        <UserSerchBar callback={userSearch} />
+        <UserSerchBar
+          callback={searchKeyword}
+          searchTextFiled={searchTextFiled}
+          changeHandler={changeHandler}
+          changeSearchKwdEvent={changeSearchKwdEvent}
+        />
         <Box
           sx={{
             display: "flex",
@@ -102,6 +150,7 @@ const User = () => {
             deleteItemHandler={deleteItemHandler}
             setItem={setItem}
             setDetail={setDetail}
+            searchKeyword={searchKeyword}
           />
           <UserUpdate
             userDetail={Detail}

@@ -46,8 +46,16 @@ const Product = () => {
         if (json.data.state === 'true') {
           setProducts((prev) => [...prev, json.data.vo]);
           setCodeChk(true);
+          alert('등록되었습니다.');
         } else {
           setCodeChk(false);
+          console.log(json.data.vo.state);
+          if (json.data.vo.state === '1') {
+            alert('이미 등록되어 있는 데이터 입니다');
+          } else if (json.data.vo.state === '0') {
+            alert('삭제된 데이터 품번과 동일합니다.');
+          }
+          //if(json.data.vo.state)
         }
       });
     }
@@ -68,6 +76,7 @@ const Product = () => {
     await customFetch(`/api/product/detail?pc=${code}`, { method: 'get' }).then((json) => {
       setDetail(json.data);
       rowColor.current = code;
+      setCodeChk(true);
     });
     setSearchEvent((prev) => !prev);
   };
@@ -78,9 +87,9 @@ const Product = () => {
       method: 'post',
       body: JSON.stringify(data),
     }).then((json) => {
-      json.data === null 
-      ? alert("사용되고 있는 데이터입니다. 입﹒출고를 완료한 후 삭제를 해주세요.") 
-      : setProducts(products.filter((product) => json.data.indexOf(product.code) == -1));
+      json.data === null
+        ? alert('사용되고 있는 데이터입니다. 입﹒출고를 완료한 후 삭제를 해주세요.')
+        : setProducts(products.filter((product) => json.data.indexOf(product.code) == -1));
     });
     setSearchEvent((prev) => !prev);
   };

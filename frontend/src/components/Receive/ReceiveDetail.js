@@ -42,25 +42,7 @@ const ReceiveDetail = ({
   openNullModal,
   detailInput,
   setCountCheck,
-  receiveDetailSearch,
 }) => {
-  const handleWindowScroll1 = (event) => {
-    const { scrollTop, clientHeight, scrollHeight } = event.target;
-
-    if (clientHeight + scrollTop + 10 > scrollHeight) {
-      receiveDetailSearch(masterCode);
-    }
-  };
-
-  useEffect(() => {
-    const tablePro = document.getElementById('table1');
-    tablePro.addEventListener('scroll', handleWindowScroll1);
-
-    return () => {
-      tablePro.removeEventListener('scroll', handleWindowScroll1);
-    };
-  }, []);
-
   /** 모두 선택해주는 체크박스 (detail header부분의 체크박스) */
   const detailAllCheckBox = (checked) => {
     const updatedCheckedRow = checkedRow.map((row) => {
@@ -138,7 +120,7 @@ const ReceiveDetail = ({
             marginLeft: 'auto',
           }}
           onClick={() => {
-            console.log(filteredDetails.length);
+            //console.log(filteredDetails.length);
             filteredDetails.length > 0
               ? toggleModal(openDeleteModalInDetail, 'deleteDetail')
               : toggleModal(openNullModal, 'null');
@@ -152,7 +134,7 @@ const ReceiveDetail = ({
           width: '100%',
         }}
       >
-        <FormControl component="form" id="table1">
+        <FormControl component="form">
           <TableContainer
             component={Paper}
             sx={{
@@ -163,7 +145,6 @@ const ReceiveDetail = ({
               height: 300,
               // marginLeft: "40px",
             }}
-            onScroll={handleWindowScroll1}
           >
             <Table stickyHeader size="small" sx>
               <TableHead>
@@ -196,14 +177,14 @@ const ReceiveDetail = ({
                       }
                     />
                   </TableCell>
-                  <TableCell sx={{ width: '8%', backgroundColor: '#F6F7F9' }}>순번</TableCell>
-                  <TableCell sx={{ width: '15%', backgroundColor: '#F6F7F9' }}>품번</TableCell>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9' }}>품명</TableCell>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9' }}>규격</TableCell>
-                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9' }}>단위</TableCell>
-                  <TableCell sx={{ width: '12%', backgroundColor: '#F6F7F9' }}>수량</TableCell>
-                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9' }}>잔량</TableCell>
-                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9' }}>진행상태</TableCell>
+                  <TableCell sx={{ width: '8%', backgroundColor: '#F6F7F9', fontWeight: '800' }}>순번</TableCell>
+                  <TableCell sx={{ width: '15%', backgroundColor: '#F6F7F9', fontWeight: '800' }}>품번</TableCell>
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>품명</TableCell>
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>규격</TableCell>
+                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', fontWeight: '800' }}>단위</TableCell>
+                  <TableCell sx={{ width: '12%', backgroundColor: '#F6F7F9', fontWeight: '800' }}>수량</TableCell>
+                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', fontWeight: '800' }}>잔량</TableCell>
+                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', fontWeight: '800' }}>진행상태</TableCell>
                 </TableRow>
                 {detailInput || ((!details[0] || Object.keys(details[0]).length !== 0) && masterCode && details.length) > 0 ? (
                   <TableRow>

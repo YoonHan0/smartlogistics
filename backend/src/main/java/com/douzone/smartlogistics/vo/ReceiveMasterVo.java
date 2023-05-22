@@ -19,6 +19,7 @@ public class ReceiveMasterVo {
     private String businessName;
     private String state;
     private String disable;
+    private Long totalCount;
     
     private List<ReceiveDetailVo> receiveDetails;
     

@@ -1,6 +1,7 @@
 package com.douzone.smartlogistics.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,8 @@ public class UserService {
 	public List<UserVo> getUsers() {
 		return userRepository.findAll();
 	}
-	public List<UserVo> findByKeyword(String Userkeywd, String UserSize) {
-		return userRepository.findByKeyword(Userkeywd, UserSize);
+	public List<UserVo> findByKeyword(Map<String, Object> map) {
+		return userRepository.findByKeyword(map);
 	}
 	
 	

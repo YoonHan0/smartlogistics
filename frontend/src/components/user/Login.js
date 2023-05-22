@@ -40,7 +40,7 @@ const Login = ({ handleLogin }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    loginUser();
+    loginUser(e);
   };
 
   const delayExecution = async (jwtToken, refreshToken, json) => {
@@ -51,7 +51,7 @@ const Login = ({ handleLogin }) => {
   };
 
   // user login
-  const loginUser = async () => {
+  const loginUser = async (event) => {
     const data = {
       id: document.getElementById('id').value,
       password: sha256(document.getElementById('password').value),
@@ -83,9 +83,10 @@ const Login = ({ handleLogin }) => {
       }
 
       const jwtToken = response.headers.get('Authorization').replace('Bearer ', '');
-
       const refreshToken = response.headers.get('refresh');
-      setRotateX(rotateX + 90);
+      if (rotateX === 0) {
+        setRotateX(rotateX + 90);
+      }
       console.log(rotateX);
       delayExecution(jwtToken, refreshToken, json.data);
       // handleLogin(jwtToken, refreshToken, json.data);

@@ -16,8 +16,7 @@ public class UserRepository {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	public List<UserVo> findByKeyword(String Userkeywd, String UserSize) {
-		Map<String, Object> map = Map.of("ukeywd",Userkeywd,"usize",UserSize);
+	public List<UserVo> findByKeyword(Map<String, Object> map) {
 		return sqlSession.selectList("user.findByKeyword",map);
 	}
 

@@ -122,7 +122,7 @@ const Navigation = ({ role, page }) => {
               </Typography>
             }
             sx={{
-              opacity: open ? 1 : 0,
+              opacity: open ? 1 : 0
             }}
           />
         </ListItemButton>

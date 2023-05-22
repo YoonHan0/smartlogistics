@@ -46,6 +46,7 @@ public class StockController {
 			endDate = DateUtil.addDays(6);
 		}
 		System.out.println(startDate+"///"+endDate);
+		System.out.println(offset+"///"+limit);
 		List<StockVo> dataList = stockService.findByKeyword(offset,limit, user_name, business_name, code, startDate, endDate);
 		String sDate = startDate;
 		String eDate = endDate;

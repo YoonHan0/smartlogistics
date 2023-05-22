@@ -13,7 +13,8 @@
                CASE 
 		           WHEN tmp.수량미입력>0 THEN 'true'
                    ELSE 'false'
-		       END AS disable
+		       END AS disable,
+		       COUNT(*) OVER() AS total_count
 		FROM receive_master r
 		INNER JOIN (SELECT master_code, 
 		             COUNT(*) AS total_cnt,
@@ -79,20 +80,26 @@
 	ELSE 0
 	END) AS "대기",
 	SUM(CASE
-WHEN (receive_count = 0 AND release_count = 0) THEN 1
-ELSE 0
-END) AS "수량미입력"
-FROM receive_detail
-GROUP BY master_code) tmp
-ON r.code = tmp.master_code
-INNER JOIN business b ON r.business_code=b.code
-INNER JOIN user u ON r.user_id = u.id
-HAVING state != '완료' AND disable='false'
+	WHEN (receive_count = 0 AND release_count = 0) THEN 1
+	ELSE 0
+	END) AS "수량미입력"
+	FROM receive_detail
+	GROUP BY master_code) tmp
+	ON r.code = tmp.master_code
+	INNER JOIN business b ON r.business_code=b.code
+	INNER JOIN user u ON r.user_id = u.id
+	WHERE (b.name LIKE CONCAT('%',#{bname },'%') 
+		AND r.code LIKE CONCAT('%',#{rcode },'%')) 
+		AND DATE_FORMAT(r.date, '%Y-%m-%d') BETWEEN #{startdt} AND #{enddt}
+	HAVING state != '완료' AND disable='false'
+	
 ORDER BY r.code
+OFFSET #{offset} ROWS 
+		FETCH NEXT #{limit} ROWS ONLY
 ]]>
 </select>
 	
-	<select id="findByMasterNo" resultType="receivedetailvo" parameterType="map">
+	<select id="findByMasterNo" resultType="receivedetailvo" parameterType="string">
 		<![CDATA[	
 			SELECT r.no,r.master_code,r.product_code,p.name AS 'product_name',p.size AS 'product_size',p.unit AS 'product_unit',r.receive_count,r.release_count,(r.receive_count-r.release_count)as stock_count,
 				CASE 
@@ -104,22 +111,25 @@ ORDER BY r.code
 			INNER JOIN product p
 			ON r.product_code=p.code
 			WHERE r.master_code=#{rcode }
-			OFFSET #{offset} ROWS 
-			FETCH NEXT #{limit} ROWS ONLY
+
 		]]>
 	</select>
 	
 	<select id="modalfindByMasterNo" resultType="receivedetailvo" parameterType="string">
 		<![CDATA[	
-			SELECT r.no, r.master_code, r.product_code, p.name AS 'product_name', p.size AS 'product_size', p.unit AS 'product_unit', r.receive_count, r.release_count, (r.receive_count - r.release_count) AS stock_count,
-    CASE
-        WHEN (r.receive_count - r.release_count > 0 AND r.release_count > 0) THEN "진행"
-        WHEN (r.receive_count - r.release_count = 0 AND r.receive_count > 0) THEN "완료"
-        WHEN (r.receive_count > 0 AND r.release_count = 0) THEN "대기"
-    END AS state
+			SELECT r.no, r.master_code, r.product_code, p.name AS 'product_name', p.size AS 'product_size', p.unit AS 'product_unit',
+       r.receive_count, r.release_count, (r.receive_count - r.release_count) AS stock_count,
+       CASE
+           WHEN (r.receive_count - r.release_count > 0 AND r.release_count > 0) THEN "진행"
+           WHEN (r.receive_count > 0 AND r.receive_count - r.release_count = 0 AND r.receive_count > 0) THEN NULL
+           WHEN (r.receive_count > 0 AND r.release_count = 0) THEN "대기"
+       END AS state
 FROM receive_detail r
 INNER JOIN product p ON r.product_code = p.code
-WHERE r.master_code = #{rcode} AND r.receive_count > 0;
+WHERE r.master_code = #{rcode} AND (r.receive_count - r.release_count) != 0;
+
+
+
 
 		]]>
 	</select>
@@ -291,6 +301,63 @@ WHERE r.master_code = #{rcode} AND r.receive_count > 0;
 			WHERE code=#{masterCode}
 		]]>
 	</delete>
+	
+	<select id="checkStateReceiveByMasterCode" resultType="receivedetailvo" parameterType="java.util.List">
+		<![CDATA[	
+			SELECT * FROM receive_detail WHERE master_code IN
+		]]>
+		<foreach item="item" collection="list" open="(" separator="," close=")">
+			<![CDATA[
+				#{item}
+			]]>
+		</foreach>
+		<![CDATA[
+			AND release_count != 0;
+		]]>
+	</select>
+	
+	<select id="checkStateReceiveByDetailNo" resultType="receivedetailvo" parameterType="java.util.List">
+		<![CDATA[	
+			SELECT * FROM receive_detail WHERE no IN
+		]]>
+		<foreach item="item" collection="list" open="(" separator="," close=")">
+			<![CDATA[
+				#{item}
+			]]>
+		</foreach>
+		<![CDATA[
+			AND release_count != 0;
+		]]>
+	</select>
 
+	
+	<delete id="stockDeleteByMasterCode" parameterType="java.util.List">
+		<![CDATA[
+			DELETE
+			FROM stock
+			WHERE master_code IN
+		]]>
+		
+			<foreach item="item" collection="list" open="(" separator="," close=")">
+				<![CDATA[
+					#{item}
+				]]>
+			</foreach>
+	</delete>
+	
+	<delete id="stockDeleteByDetailNo" parameterType="map">
+		<![CDATA[	
+			DELETE
+			FROM stock
+			WHERE master_code = #{code} 
+			AND detail_no IN 
+			
+		]]>
+			<foreach item="item" collection="no" open="(" separator="," close=")">
+				<![CDATA[
+					#{item}
+				]]>
+			</foreach>		
+	</delete>
 	
 </mapper>

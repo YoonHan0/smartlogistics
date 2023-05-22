@@ -188,7 +188,7 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
           <Box
             sx={{
               width: '800px',
-              height: '190px',
+              height: '221px',
               overflow: 'auto',
               inlineSize: 'auto',
               msOverflowStyle: 'none',
@@ -196,25 +196,26 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
               '&::-webkit-scrollbar': {
                 display: 'none',
               },
+              border: '1px solid #D1D1D1',
             }}
             onScroll={handleScroll}
           >
             <Table stickyHeader size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
+                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>
                     순번
                   </TableCell>
-                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
+                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>
                     거래처코드
                   </TableCell>
-                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
+                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>
                     거래처명
                   </TableCell>
-                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
+                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>
                     전화번호
                   </TableCell>
-                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
+                  <TableCell align="center" sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>
                     선택
                   </TableCell>
                 </TableRow>

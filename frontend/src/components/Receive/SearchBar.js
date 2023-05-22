@@ -8,7 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import dayjs from 'dayjs';
-const SerchBar = ({ callback, setScrollend, setreceiveMaster }) => {
+const SerchBar = ({ callback }) => {
   const [searchKw, setSearchKw] = useState({
     rcode: '',
     bname: '',
@@ -31,10 +31,10 @@ const SerchBar = ({ callback, setScrollend, setreceiveMaster }) => {
   };
   const submit = (e) => {
     e.preventDefault();
-    setScrollend(false);
-    setreceiveMaster([]);
     console.log(searchKw);
-    callback(searchKw);
+    //    setLoading(true);
+    // setScrollend(false);
+    callback(searchKw, 'search');
     setSearchKw({ ...searchKw, rcode: '', bname: '' });
   };
 
@@ -80,7 +80,7 @@ const SerchBar = ({ callback, setScrollend, setreceiveMaster }) => {
         <span
           style={{
             backgroundColor: '#EBF2FF',
-            padding: '3px 8px',
+            padding: '2px 5px 4.5px 0',
           }}
         >
           <span
@@ -203,7 +203,7 @@ const SerchBar = ({ callback, setScrollend, setreceiveMaster }) => {
                     height: '35px',
                   },
                 }}
-                minDate={searchKw.startdt || null}
+                minDate={searchKw.startdt || dayjs().subtract(6, 'day')}
                 onAccept={handleAcceptEnd}
                 value={searchKw.enddt === '' ? dayjs().add(6, 'day') : dayjs(searchKw.enddt)}
               ></DatePicker>

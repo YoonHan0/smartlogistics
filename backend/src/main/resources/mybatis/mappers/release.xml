@@ -78,28 +78,69 @@
 		]]>
 	</delete>
 	
-	<delete id="stockDeleteByMasterCode" parameterType="string">
+	<delete id="stockDeleteByMasterCode" parameterType="java.util.List">
 		<![CDATA[
 			DELETE
 			FROM stock
-			WHERE master_code=#{masterCode}
+			WHERE master_code IN
 		]]>
+		
+			<foreach item="item" collection="list" open="(" separator="," close=")">
+				<![CDATA[
+					#{item}
+				]]>
+			</foreach>
 	</delete>
 	
 	<delete id="stockDeleteByDetailNo" parameterType="map">
 		<![CDATA[	
 			DELETE
 			FROM stock
-			WHERE code = #{code} 
-			AND no IN 
+			WHERE master_code = #{code} 
+			AND detail_no IN 
 			
 		]]>
-			<foreach item="item" collection="list" open="(" separator="," close=")">
+			<foreach item="item" collection="no" open="(" separator="," close=")">
 				<![CDATA[
 					#{item}
 				]]>
 			</foreach>		
 	</delete>
+	
+	<update id="updateReleaseCountInReceiveByMasterCodeList" parameterType="java.util.List">
+		<![CDATA[
+			UPDATE receive_detail rd
+			JOIN (
+					SELECT receive_detail_no, count 
+					FROM release_detail WHERE master_code IN
+					]]>
+					<foreach item="item" collection="list" open="(" separator="," close=")">
+						#{item}
+					</foreach>
+		<![CDATA[
+			) a 
+			ON a.receive_detail_no = rd.no
+			SET rd.release_count = rd.release_count - a.count;
+		]]>	
+	</update>
+	
+	<update id="updateReleaseCountInReceiveByDetailNo" parameterType="java.util.List">
+		<![CDATA[
+			UPDATE receive_detail rcd
+			JOIN (
+					SELECT receive_detail_no, count 
+					FROM release_detail WHERE no IN
+					]]>
+					<foreach item="item" collection="list" open="(" separator="," close=")">
+						#{item}
+					</foreach>
+		<![CDATA[
+			) isd 
+			ON isd.receive_detail_no = rcd.no
+			SET rcd.release_count = rcd.release_count - isd.count;
+		]]>	
+	</update>
+	
 	
 	<select id="findSeqByDateAndState" resultType="int" parameterType="string">
 		<![CDATA[	
@@ -131,7 +172,7 @@
 	<update id="updateReceiveCount" parameterType="map">
 		<![CDATA[
 			UPDATE receive_detail
-			SET release_count = #{count}
+			SET release_count = release_count + #{count}
 			WHERE no = #{no}
 		]]>
 	</update>
@@ -142,7 +183,7 @@
 			VALUES (#{no}, #{state}, #{date},#{log.id }, #{log.ip}, #{log.dt}, #{log.id }, #{log.ip}, #{log.dt})	
 	  	]]>	  		
 	</insert>
-	<insert id="insertStock" parameterType="receivedetailvo">
+	<insert id="insertStock" parameterType="releasedetailvo">
 		<![CDATA[
 			INSERT INTO stock 
 			VALUES(#{masterCode},#{no},"IS",#{productCode},#{count},#{log.id }, #{log.ip}, #{log.dt}, #{log.id }, #{log.ip}, #{log.dt});

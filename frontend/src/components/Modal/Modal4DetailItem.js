@@ -14,7 +14,7 @@ const Modal4DetailItem = ({
   stockcnt,
   item,
   onSave,
-  onRowClick, 
+  onRowClick,
   clicks,
   code,
   checkedRow,
@@ -32,25 +32,25 @@ const Modal4DetailItem = ({
   isButtonDisabled,
   setIsButtonDisabled,
   graybutton,
-  disabled
-  // isDisabled
+  disabled,
+  isInChulgo
 }) => {
-  
+
   const [isEditing, setIsEditing] = useState(false);
   const [editedStockCnt, setEditedStockCnt] = useState(stockcnt);
   const [checked, setChecked] = useState(false);
   const [selectedDataArray, setSelectedDataArray] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null); // 선택된 행 데이터 추가
   const [newdata, setnewdata] = useState(null);
-  const [count, setCount] = useState(stockcnt);
+  // const [count, setCount] = useState(stockcnt);
   const [clickedItems,setClickedItems] = useState();
   const [disable,setDisable] = useState();
 
 
-  
+
     // const [value, setValue] = useState(0);
     // const max = receivecnt;
-  
+
     // const handleInputChange = (event) => {
     //   const inputValue = count;
     //   if (inputValue <= max) {
@@ -59,15 +59,15 @@ const Modal4DetailItem = ({
     //     setValue(max);
     //   }
     // }
-    
 
- 
-  
+
+
+
 // useEffect(() => {
 //   console.log("===== find 확인 ===== ");
 //   console.log(no,data)
 //   console.log(data.filter((item)=> {item.no === no}));
-  
+
 // }, [data]);
 
 
@@ -76,7 +76,7 @@ const Modal4DetailItem = ({
   // const handleKeyDown = (e) => {
   //   if (e.key === 'Enter') {
   //     handleSubmit(e);
-      
+
   //   }
   // };
 
@@ -131,7 +131,7 @@ const Modal4DetailItem = ({
 
     // console.log("가가가가",updatedDetail)
   return (
-    
+
     <TableRow
       key={no}
       sx={{
@@ -144,17 +144,17 @@ const Modal4DetailItem = ({
         },
       }}
       id="searchRow"
-     
+
     >
       <TableCell  sx={{ p: 0 }}>
       <Checkbox
             size="small"
             onChange={(e) => {
-            
+
               setCheckedRow(updatedCheckedRow(e));
             }}
             checked={checkedRow.filter(row => (row.master === mcode && row.state === 't') || (row.detail.some(detail => detail.no === code && detail.state === 't'))).length > 0 ? true : false}
-            disabled={checkedRow.filter(row => row.master === mcode && row.state === "t" && !row.detail.every(item => item.state === "t")).length > 0 ? true : false}
+            disabled={checkedRow.filter(row => row.master === mcode && row.state === "t" && !row.detail.every(item => item.state === "t")).length > 0 ? true : (isInChulgo? true : false)}
         />
       </TableCell>
       <TableCell>{index+1}</TableCell>
@@ -162,8 +162,8 @@ const Modal4DetailItem = ({
       <TableCell>{pname}</TableCell>
       <TableCell>{psize}</TableCell>
       <TableCell>{putil}</TableCell>
-      <TableCell>{receivecnt}</TableCell>
-      <TableCell>
+      <TableCell>{stockcnt}</TableCell>
+      {/* <TableCell>
       <TextField
   type="number"
   id="stockcnt"
@@ -178,7 +178,7 @@ const Modal4DetailItem = ({
     inputProps: { min: 0, max: receivecnt},
   }}
 ></TextField>
-      </TableCell>
+      </TableCell> */}
           {/* <Button onClick={() => {
             // const isDuplicateNo = clickedItems.some(item => item.no === no);
           if ( receivecnt >= stockcnt) {
@@ -195,9 +195,9 @@ const Modal4DetailItem = ({
           }}
          disabled={disabled}
           >저장</Button> */}
-          
+
     </TableRow>
-  
+
   );
 };
 export default Modal4DetailItem;

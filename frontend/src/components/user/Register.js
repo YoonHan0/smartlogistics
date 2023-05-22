@@ -62,7 +62,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
       phone === "" ||
       password !== checkPassword ||
       !/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{0,12}$/g.test(id) ||
-      !/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{9,12}$/g.test(password)
+      !/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{9,20}$/g.test(password)
     ) {
       setOnSubmit(true);
       return;
@@ -158,8 +158,8 @@ const Register = ({ open, onClose, itemAddHandler }) => {
             >
               {password === ""
                 ? "password가 빈값입니다."
-                : !/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{9,12}$/g.test(password)
-                ? "영어, 숫자를 포함한 최소 9자 최대 12자여야 합니다."
+                : !/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{9,20}$/g.test(password)
+                ? "영어, 숫자를 포함한 최소 9자 최대 20자여야 합니다."
                 : " "}
             </Typography>
             <br></br>

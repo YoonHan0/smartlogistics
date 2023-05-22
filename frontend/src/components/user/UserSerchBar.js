@@ -4,18 +4,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // 아이콘을 넣기 위한 import
 import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 
-const UserSerchBar = ({ callback }) => {
-  const [searchKw, setSearchKw] = useState({ ukeywd: "", usize: "" });
-
-  const changeHandler = (e) => {
-    const { value, name } = e.target;
-    setSearchKw((prev) => ({ ...prev, [name]: value }));
-  };
-
-  useEffect(() => {
-    //callback(searchKw);
-    return () => {};
-  }, [searchKw]);
+const UserSerchBar = ({
+  callback,
+  searchTextFiled,
+  changeHandler,
+  changeSearchKwdEvent,
+}) => {
+  // useEffect(() => {
+  //   //callback(searchKw);
+  //   return () => {};
+  // }, [searchTextFiled]);
 
   return (
     <Grid
@@ -37,8 +35,8 @@ const UserSerchBar = ({ callback }) => {
           display: "flex",
           alignItems: "center",
           marginLeft: "30px",
-          marginTop: '6px',
-          marginBottom: '10px',
+          marginTop: "6px",
+          marginBottom: "10px",
         }}
       >
         <span
@@ -72,14 +70,13 @@ const UserSerchBar = ({ callback }) => {
         component="form"
         onSubmit={(e) => {
           e.preventDefault();
-          callback(searchKw);
-          setSearchKw({ ukeywd: "", usize: "" });
+          changeSearchKwdEvent();
+          callback();
         }}
         sx={{
           display: "flex",
           flexDirection: "row",
           justifyContent: "flex-end",
-
           marginBottom: "5px",
         }}
       >
@@ -98,17 +95,17 @@ const UserSerchBar = ({ callback }) => {
             size="small"
             sx={{ marginLeft: 2, marginRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
-            value={searchKw.ukeywd}
+            value={searchTextFiled.ukeywd}
           />
           <label sx={{ fontSize: "0.5rem" }}>연락처</label>
           <TextField
             type="text"
-            name="usize"
+            name="uphone"
             onChange={changeHandler}
             size="small"
             sx={{ marginLeft: 2, marginRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
-            value={searchKw.usize}
+            value={searchTextFiled.uphone}
           />
         </Box>
         <Button type="submit" variant="outlined" sx={{ marginRight: 6 }}>

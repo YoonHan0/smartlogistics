@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { Table, TableHead, TableRow, TableCell, TableBody, FormControl, TableContainer, Paper } from '@mui/material';
+import { Table, TableHead, TableRow, TableCell, TableBody, FormControl, TableContainer, Paper, CircularProgress } from '@mui/material';
 import StockItem from './StockItem';
+import { Box } from '@mui/system';
 
-const StockTable = ({ list, searchKeyword }) => {
+const StockTable = ({ list, searchKeyword, loading }) => {
   const handleWindowScroll = (event) => {
     const { scrollTop, clientHeight, scrollHeight } = event.target;
     // console.log('scrollTop', scrollTop)
@@ -10,32 +11,30 @@ const StockTable = ({ list, searchKeyword }) => {
     // console.log('scrollHeight', scrollHeight)
 
     if (clientHeight + scrollTop + 10 > scrollHeight) {
-      searchKeyword.call(this);
+      searchKeyword(null,'load');
     }
   }
 
   useEffect(() => {
     const tablePro = document.getElementById('table');
     tablePro.addEventListener('scroll', handleWindowScroll);
-    searchKeyword.call(this);
-
     return () => {
       tablePro.removeEventListener('scroll', handleWindowScroll);
     }
   }, []);
-
 
   const TableHeadStyle = {
     backgroundColor: "#F6F7F9",
     fontWeight: 800
   }
   return (
-    <FormControl component="form" id='table' sx={{ h: 300 }}>
+    <FormControl component="form" id="table">
       <TableContainer
         component={Paper}
         sx={{
           width: "94%",
-          
+          width: '94%',
+          paddingLeft: 3,
           paddingTop: 0,
           boxShadow: "none",
           height: 550,
@@ -44,7 +43,7 @@ const StockTable = ({ list, searchKeyword }) => {
       >
         <Table stickyHeader size="small" >
           <TableHead>
-            <TableRow key='head'>
+            <TableRow sx={{ height: 3 }} key='head'>
               <TableCell sx={TableHeadStyle}>
                 입출고일
               </TableCell>
@@ -84,25 +83,44 @@ const StockTable = ({ list, searchKeyword }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {
-              list.map((item, index) =>
-                <StockItem
-                  index={index}
-                  state={item.state}
-                  date={item.date}
-                  code={item.code}
-                  userName={item.userName}
-                  businessName={item.businessName}
-                  productCode={item.productCode}
-                  productName={item.productName}
-                  size={item.size}
-                  unit={item.unit}
-                  beginningStock={item.beginningStock}
-                  count={item.count}
-                  endingStock={item.endingStock}
-                />
-              )
-            }
+          {loading.current ? (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                    }}
+                  >
+                    <CircularProgress />
+                  </Box>
+                ) : list.length > 0 ? (
+
+                list.map((item, index) =>
+                  <StockItem
+                    key={index}
+                    index={index}
+                    state={item.state}
+                    date={item.date}
+                    code={item.code}
+                    userName={item.userName}
+                    businessName={item.businessName}
+                    productCode={item.productCode}
+                    productName={item.productName}
+                    size={item.size}
+                    unit={item.unit}
+                    beginningStock={item.beginningStock}
+                    count={item.count}
+                    endingStock={item.endingStock}
+                  />
+                  )
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={12} sx={{ textAlign: 'center' }}>
+                        등록된 입고리스트가 없습니다.
+                      </TableCell>
+                    </TableRow>
+                  )}
           </TableBody>
         </Table>
       </TableContainer>
