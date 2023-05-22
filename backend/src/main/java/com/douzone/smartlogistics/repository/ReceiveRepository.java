@@ -23,18 +23,18 @@ public class ReceiveRepository {
 		return sqlSession.selectList("receive.findByKeyword", map);
 	}
 
-	public List<ReceiveMasterVo> modalfindByKeyword(String receiveCode, String businessName, String startDate,String endDate) {
-		Map<String, Object> map = Map.of("rcode", receiveCode, "bname", businessName, "startdt", startDate, "enddt",endDate);
+	public List<ReceiveMasterVo> modalfindByKeyword(String receiveCode, String businessName, String startDate,String endDate,Long offset,Long limit) {
+		Map<String, Object> map = Map.of("rcode", receiveCode, "bname", businessName, "startdt", startDate, "enddt",endDate,"offset",offset,"limit",limit);
 		return sqlSession.selectList("receive.modalfindByKeyword", map);
 	}
+
 	
 	public List<ReceiveDetailVo> modalfindByMasterNo(String receiveCode) {
 		return sqlSession.selectList("receive.modalfindByMasterNo", receiveCode);
 	}
 	
-	public List<ReceiveDetailVo> findByMasterNo(String receiveCode,Long offset,Long limit) {
-		Map<String, Object> map = Map.of("rcode", receiveCode, "offset", offset, "limit", limit);
-		return sqlSession.selectList("receive.findByMasterNo", map);
+	public List<ReceiveDetailVo> findByMasterNo(String receiveCode) {
+		return sqlSession.selectList("receive.findByMasterNo", receiveCode);
 	}
 	
 	
@@ -104,6 +104,29 @@ public class ReceiveRepository {
 	public boolean deleteMasterByDetailNo(String masterCode) {
 		return 1 == sqlSession.delete("receive.deleteMasterByDetailNo", masterCode);
 	}
+
+	public boolean checkStateReceiveByMasterCode(List<String> masterCode) {
+		List<String> dataList = sqlSession.selectList("receive.checkStateReceiveByMasterCode", masterCode);
+		return !dataList.isEmpty();
+	}
+
+	public boolean checkStateReceiveByDetailNo(List<Integer> detailNo) {
+		List<Integer> dataList = sqlSession.selectList("receive.checkStateReceiveByDetailNo", detailNo);
+		return !dataList.isEmpty();
+	}
+	
+	public boolean deleteStockByMasterCode(List<String> masterCode) {
+		return 1 == sqlSession.delete("receive.stockDeleteByMasterCode", masterCode);
+	}
+
+	public boolean deleteStockByDetailNo(String masterCode, List<Integer> detailNo) {
+		Map<String, Object> map = Map.of("code", masterCode, "no", detailNo);
+		return 1 == sqlSession.delete("receive.stockDeleteByDetailNo", map);
+	}
+
+	
+
+	
 
 
 }

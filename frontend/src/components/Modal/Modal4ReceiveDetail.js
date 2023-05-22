@@ -33,8 +33,9 @@ const TableStickyTypeCell = styled(TableCell)`
     height: 30px;
   }
 `;
-const Modal4ReceiveDetail = ({ 
+const Modal4ReceiveDetail = ({
   details,
+  pumokList,
   clicks,
   checkedRow,
   setCheckedRow,
@@ -48,8 +49,8 @@ const Modal4ReceiveDetail = ({
   graybutton
    }) => {
 
-   console.log("간다이이잉",details);
-  
+  //  console.log("간다이이잉",details);
+
 
 
 
@@ -64,7 +65,7 @@ const Modal4ReceiveDetail = ({
   //   }
   //   console.log(false);
   //   return false;
-    
+
   // };
 
 
@@ -101,7 +102,7 @@ const filteredRows = checkedRow.filter(row =>
         if (item.no === no) {
           return {
             ...item,
-            disabled: true 
+            disabled: true
           };
         }
         return item;
@@ -112,7 +113,7 @@ const filteredRows = checkedRow.filter(row =>
 
 
 
-  
+
 
   return (
     <Grid
@@ -128,7 +129,7 @@ const filteredRows = checkedRow.filter(row =>
       }}
     >
       <Box sx={{ display: "flex", paddingLeft: 0, width: "94%" }}>
-      
+
         <span
           style={{
             position: "relative",
@@ -155,7 +156,7 @@ const filteredRows = checkedRow.filter(row =>
             component={Paper}
             sx={{
               width: "100%",
-              
+
               paddingTop: 0,
               boxShadow: "none",
               height: 157,
@@ -192,11 +193,11 @@ const filteredRows = checkedRow.filter(row =>
                     단위
                   </TableCell>
                   <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
-                    수량
+                    잔량
                   </TableCell>
-                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                  {/* <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
                     출고할잔량
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -228,10 +229,10 @@ const filteredRows = checkedRow.filter(row =>
                       // setIsButtonDisabled={setIsButtonDisabled}
                       graybutton={graybutton}
                       disabled={detailss.disabled}
+                      isInChulgo={detailss.isInChulgo}
 
-                      
 
-                 
+
                     />
                     ))
                 ) : (
@@ -247,7 +248,7 @@ const filteredRows = checkedRow.filter(row =>
         </FormControl>
         <Box sx={{ display: "flex", justifyContent: "flex-end"}}>
         <Button
-        
+
             sx={{
               mt: 2,
               color: "#41719C",
@@ -260,7 +261,7 @@ const filteredRows = checkedRow.filter(row =>
               },
               height: "35px",
             }}
-            onClick={() => {multiClicks(details);}}
+            onClick={() => {multiClicks(pumokList);}}
           ><strong>추가</strong></Button>
     </Box>
       </Box>

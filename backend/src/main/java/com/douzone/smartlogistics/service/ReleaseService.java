@@ -32,17 +32,22 @@ public class ReleaseService {
 
 	@Transactional
 	public boolean deleteMasterItem(List<String> masterNo) {
+		boolean isUpdateReleaseCount = releaseRepository.updateReleaseCountInReceiveDetail(masterNo);
         boolean isDeleteMasterSuccess = releaseRepository.deleteMasterItem(masterNo);
         boolean isDeleteDetailSuccess = releaseRepository.deleteDetailByMasterNo(masterNo);
         boolean isDeleteStock = releaseRepository.deleteStockByMasterCode(masterNo);
-        return isDeleteMasterSuccess && isDeleteDetailSuccess && isDeleteStock;
+        return isDeleteMasterSuccess && isDeleteDetailSuccess && isDeleteStock && isUpdateReleaseCount;
     }
-
+	
+	@Transactional
 	public boolean deleteDetailItem(List<Integer> detailNo, String masterCode, int length) {
+		boolean isUpdateReleaseCount = releaseRepository.updateReleaseCountInReceive(detailNo);
 		boolean isDeleteDetailSuccess = releaseRepository.deleteDetailItem(detailNo);
-		releaseRepository.deleteStockByDetailNo(masterCode, detailNo);
+		boolean isDeleteStockDetailNo = releaseRepository.deleteStockByDetailNo(masterCode, detailNo);
 		
-		return (detailNo.size() == length) ? (isDeleteDetailSuccess && releaseRepository.deleteMasterByDetailNo(masterCode)) : releaseRepository.deleteDetailItem(detailNo);
+		return (detailNo.size() == length) ? (
+				isUpdateReleaseCount && isDeleteDetailSuccess && isDeleteStockDetailNo && releaseRepository.deleteMasterByDetailNo(masterCode)) 
+				: isUpdateReleaseCount && isDeleteDetailSuccess && isDeleteStockDetailNo;
 	}
 
 	public void insertMaster(ReleaseMasterVo releaseVo, DBLogVo logVO) {

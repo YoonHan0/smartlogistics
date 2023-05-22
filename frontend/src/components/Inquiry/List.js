@@ -2,12 +2,14 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import React, { useEffect } from 'react';
+import React from 'react';
 import checkImg from "../../assets/img/checkmark.png";
 import StockTable from "./StockTable";
 
-const InquiryList = ({
+const List = ({
   list,
+  searchKw,
+  loading,
   searchKeyword,
 }) => {
   return (
@@ -55,12 +57,11 @@ const InquiryList = ({
             width: "100%",
           }}
         >
-          <StockTable list={list} searchKeyword={searchKeyword}/>
-
+          <StockTable list={list} searchKw={searchKw} searchKeyword={searchKeyword} loading={loading}/>
         </Box>
       </Box>
     </Grid>
   );
 };
 
-export default InquiryList;
+export default List;

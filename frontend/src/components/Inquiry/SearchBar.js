@@ -11,45 +11,34 @@ import dayjs from 'dayjs';
 import { format } from 'date-fns';
 
 const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearchKw }) => {
-  const [searchChk, setSearchChk] = useState();
   const [minDate, setMindate] = useState();
   const refForm = useRef(null);
 
-  const changeHandler = (e) => {
+  const onChangeHandler = (e) => {
     const { value, name } = e.target;
-    setSearchKw((searchKw) => ({ ...searchKw, [name]: value }));
+    setSearchKw((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAcceptStart = (date) => {
-    setMindate(date);
-    setSearchKw((prev) => ({ ...prev, startdt: format(date.$d, 'yyyy-MM-dd') }));
-    setSearchChk(true);
+    setSearchKw({ ...searchKw, startdt: date });
   };
+
   const handleAcceptEnd = (date) => {
-    setSearchKw((prev) => ({ ...prev, enddt: format(date.$d, 'yyyy-MM-dd') }));
+    setSearchKw({ ...searchKw, enddt: date });
   };
+
   const submit = (e) => {
     e.preventDefault();
-    if (searchKw.startdt !== '') {
 
-      setSearchChk(true);
-    } else {
-      setSearchChk(false);
-    }
-    if (searchChk) {
-      console.log(searchKw)
-      searchKeyword(searchKw, 0);
-      setSearchChk();
-      setSearchKw({ user_name: '', business_name: '', code: '', startdt: '', enddt: '' });
-    }
+    console.log(searchKw)
+    searchKeyword(searchKw, 'search');
+    setSearchKw({ ...searchKw, user_name: '', business_name: '', code: '' });
 
     console.log(searchKw)
   };
 
-
-
   useEffect(() => {
-    setSearchKw({ ...searchKw, startdt: seDate.sDate, enddt: seDate.eDate });
+    return () => {};
   }, [seDate]);
   return (
     <Grid
@@ -59,12 +48,13 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
       sx={{
         width: '100%',
         display: 'flex',
+        padding: '16px 0 0 16px',
         flexDirection: 'column',
         marginBottom: 3,
         backgroundColor: '#FFF',
         borderRadius: '8px',
         boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.1)',
-        height: state ? '120px' : '90px',
+        height: '100px',
       }}
     >
       <Box
@@ -72,11 +62,16 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginLeft: '30px',
-          marginTop: '22px',
         }}
       >
-        <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: '30px',
+            marginBottom: '10px',
+          }}
+        >
           <span
             style={{
               fontSize: '23px',
@@ -100,7 +95,7 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
                 marginLeft: '8px',
               }}
             >
-              현재 입고와 출고 현황을 조회 할 수 있습니다.
+              현황 조회를 조회할 수 있습니다.
             </span>
           </span>
         </Box>
@@ -155,7 +150,7 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'flex-end',
-              marginTop: 2.5
+              marginBottom: '5px',
             }}
           >
             <Box
@@ -193,7 +188,6 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
                         marginLeft: '10px',
                       },
                       '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
-                        border: searchChk === false || null ? '1px solid red' : null,
                         width: '165px',
                       },
                       '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
@@ -202,7 +196,7 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
                       },
                     }}
                     onAccept={handleAcceptStart}
-                    value={dayjs(searchKw.startdt) || null}
+                    value={searchKw.startdt === '' ? dayjs().subtract(6, 'day') : dayjs(searchKw.startdt)}
                   ></DatePicker>
                   <span>~</span>
                   <DatePicker
@@ -228,7 +222,6 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
                         marginLeft: '10px',
                       },
                       '& .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root': {
-                        border: searchChk === false || null ? '1px solid red' : null,
                         width: '165px',
                       },
                       '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
@@ -236,9 +229,8 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
                         height: '35px',
                       },
                     }}
-                    minDate={minDate || null}
-                    onAccept={handleAcceptEnd}
-                    value={dayjs(searchKw.enddt) || null}
+                    minDate={searchKw.startdt || dayjs().subtract(6, 'day')}                    onAccept={handleAcceptEnd}
+                    value={searchKw.enddt === '' ? dayjs().add(6, 'day') : dayjs(searchKw.enddt)}
                   ></DatePicker>
                 </DemoContainer>
               </LocalizationProvider>
@@ -246,7 +238,7 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
               <TextField
                 type='text'
                 name='user_name'
-                onChange={changeHandler}
+                onChange={onChangeHandler}
                 size='small'
                 sx={{ paddingLeft: 2, paddingRight: 5 }}
                 InputProps={{ sx: { height: 30, width: 150 } }}
@@ -255,7 +247,7 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
               <TextField
                 type='text'
                 name='business_name'
-                onChange={changeHandler}
+                onChange={onChangeHandler}
                 size='small'
                 sx={{ paddingLeft: 2, paddingRight: 5 }}
                 InputProps={{ sx: { height: 30, width: 150 } }}
@@ -264,7 +256,7 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
               <TextField
                 type='text'
                 name='code'
-                onChange={changeHandler}
+                onChange={onChangeHandler}
                 size='small'
                 sx={{ paddingLeft: 2, paddingRight: 5 }}
                 InputProps={{ sx: { height: 30, width: 150 } }}

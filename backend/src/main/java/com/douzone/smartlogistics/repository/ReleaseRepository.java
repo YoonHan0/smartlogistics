@@ -58,11 +58,18 @@ public class ReleaseRepository {
 		return 1 == sqlSession.delete("release.stockDeleteByMasterCode", masterNo);
 	}
 
-	public void deleteStockByDetailNo(String masterCode, List<Integer> detailNo) {
+	public boolean deleteStockByDetailNo(String masterCode, List<Integer> detailNo) {
 		Map<String, Object> map = Map.of("code", masterCode, "no", detailNo);
-		sqlSession.delete("release.stockDeleteByDetailNo", map);
+		return 1 == sqlSession.delete("release.stockDeleteByDetailNo", map);
 	}
 	
+	public boolean updateReleaseCountInReceiveDetail(List<String> masterNo) {
+		return 1 == sqlSession.update("release.updateReleaseCountInReceiveByMasterCodeList", masterNo);
+	}
+	
+	public boolean updateReleaseCountInReceive(List<Integer> detailNo) {
+		return 1 == sqlSession.update("release.updateReleaseCountInReceiveByDetailNo", detailNo);
+	}
 	public int findSeqByDateAndState(String date) {
 		return sqlSession.selectOne("release.findSeqByDateAndState", date);
 	}
@@ -97,5 +104,5 @@ public class ReleaseRepository {
 	
 	public StatisticsVo findByUserId(String userId) {
 		return sqlSession.selectOne("release.findByUserId", userId);
-	}	
+	}
 }

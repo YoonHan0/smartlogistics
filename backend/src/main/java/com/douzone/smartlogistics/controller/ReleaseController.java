@@ -49,20 +49,11 @@ public class ReleaseController {
 			startDate = DateUtil.minusDays(6);
 			endDate = DateUtil.addDays(6);
 		}
-		System.out.println(startDate + " : " + endDate);
-
-		List<ReleaseMasterVo> dataList = releaseService.findByKeyword(releaseCode, businessName, startDate, endDate);
-		// 이 부분 필요 없지 않나?? / responseData, sDate, eDate
-		String sDate = startDate;
-		String eDate = endDate;
-
-		Map<String, Object> responseData = new HashMap<>();
-		responseData.put("dataList", dataList);
-		responseData.put("sDate", sDate);
-		responseData.put("eDate", eDate);
-
+		System.out.println(releaseCode + " : " + businessName + " : " + startDate + " : " + endDate);
+		System.out.println("========= ======== ");
+		System.out.println(releaseService.findByKeyword(releaseCode, businessName, startDate, endDate));
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(responseData));
+				.body(JsonResult.success(releaseService.findByKeyword(releaseCode, businessName, startDate, endDate)));
 	}
 	
 	// release detail list
@@ -80,6 +71,8 @@ public class ReleaseController {
 	// releae master item delete
 	@PostMapping("/deleteMaster")
 	public ResponseEntity<JsonResult> deleteReleaseMaster(@RequestBody List<String> masterNo) {
+		System.out.println("백으로 넘어온 NO 값 ");
+		System.out.println(masterNo);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(JsonResult.success(releaseService.deleteMasterItem(masterNo)));
 	}

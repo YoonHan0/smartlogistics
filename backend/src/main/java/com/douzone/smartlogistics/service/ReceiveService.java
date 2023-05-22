@@ -23,12 +23,12 @@ public class ReceiveService {
 		return receiveRepository.findByKeyword(receiveCode, businessName,startDate, endDate,offset,limit);
 	}
 	
-	public List<ReceiveMasterVo> modalfindByKeyword(String receiveCode, String businessName,String startDate, String endDate) {
-		return receiveRepository.modalfindByKeyword(receiveCode, businessName,startDate, endDate);
+	public List<ReceiveMasterVo> modalfindByKeyword(String receiveCode, String businessName,String startDate, String endDate, Long offset, Long limit) {
+		return receiveRepository.modalfindByKeyword(receiveCode, businessName,startDate, endDate,offset,limit);
 	}
 
-	public List<ReceiveDetailVo> findByMasterNo(String receiveCode,Long offset,Long limit) {
-		return receiveRepository.findByMasterNo(receiveCode,offset,limit);
+	public List<ReceiveDetailVo> findByMasterNo(String receiveCode) {
+		return receiveRepository.findByMasterNo(receiveCode);
 	}
 	
 	public List<ReceiveDetailVo> modalfindByMasterNo(String receiveCode) {
@@ -77,22 +77,33 @@ public class ReceiveService {
 	}
 
 	@Transactional
-	public boolean deleteMasterItem(List<String> masterNo) {
-		boolean isDeleteMasterSuccess = receiveRepository.deleteMasterItem(masterNo);
-		boolean isDeleteDetailSuccess = receiveRepository.deleteDetailByMasterNo(masterNo);
-		return isDeleteMasterSuccess && isDeleteDetailSuccess;
+	public boolean deleteMasterItem(List<String> masterCode) {
+		if(receiveRepository.checkStateReceiveByMasterCode(masterCode)) {		// release_count가 0이 아니면 대기가 아니라는 말이니까 동작X
+			System.out.println("===== 대기 상태가 아닌 데이터가 존재함! ===== ");
+			return false;
+		} else {
+			boolean isDeleteMasterSuccess = receiveRepository.deleteMasterItem(masterCode);
+			boolean isDeleteDetailSuccess = receiveRepository.deleteDetailByMasterNo(masterCode);
+			boolean isDeleteStock = receiveRepository.deleteStockByMasterCode(masterCode);
+			return isDeleteMasterSuccess && isDeleteDetailSuccess && isDeleteStock;
+		}
+		
 	}
 
 	@Transactional
 	public boolean deleteDetailItem(List<Integer> detailNo, String masterCode, int length) {
 		System.out.println("선택된 detail no값: " + detailNo.size());
 		System.out.println(detailNo.size() == length);
-		boolean isDeleteDetailSuccess = receiveRepository.deleteDetailItem(detailNo);
-
-		return (detailNo.size() == length)
-				? (isDeleteDetailSuccess && receiveRepository.deleteMasterByDetailNo(masterCode))
-				: receiveRepository.deleteDetailItem(detailNo);
+		
+		if(receiveRepository.checkStateReceiveByDetailNo(detailNo)) {
+			System.out.println("===== 대기 상태가 아닌 데이터가 존재함! ===== ");
+			return false;
+		} else {
+			boolean isDeleteDetailSuccess = receiveRepository.deleteDetailItem(detailNo);
+			boolean isDeleteStock = receiveRepository.deleteStockByDetailNo(masterCode, detailNo);
+			return (detailNo.size() == length)
+					? (isDeleteDetailSuccess && receiveRepository.deleteMasterByDetailNo(masterCode) && isDeleteStock)
+					: isDeleteDetailSuccess && isDeleteStock;
+		}
 	}
-
-
 }

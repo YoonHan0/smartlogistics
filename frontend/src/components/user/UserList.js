@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -28,17 +28,10 @@ const UserList = ({
   itemAddHandler,
   setItem,
   setDetail,
+  searchKeyword,
 }) => {
   const [checkedButtons, setCheckedButtons] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
-
-  /**scroll 미완 */
-  const [scrollTop, setScrollTop] = useState(0);
-
-  const handleScroll = (event) => {
-    setScrollTop(event.currentTarget.scrollTop);
-    console.log(event.currentTarget.scrollTop);
-  };
 
   /** Delete를 체크박스 Handler  */
   const changeHandler = (checked, id) => {
@@ -119,6 +112,23 @@ const UserList = ({
     setDetail([]);
   };
 
+  const handleWindowScroll = (event) => {
+    const { scrollTop, clientHeight, scrollHeight } = event.target;
+
+    if (clientHeight + scrollTop + 10 > scrollHeight) {
+      searchKeyword.call(this);
+    }
+  };
+
+  useEffect(async () => {
+    const tablePro = document.getElementById("table");
+    tablePro.addEventListener("scroll", handleWindowScroll);
+    await searchKeyword.call(this);
+    await searchKeyword.call(this);
+    return () => {
+      tablePro.removeEventListener("scroll", handleWindowScroll);
+    };
+  }, []);
   return (
     <Grid
       item
@@ -170,7 +180,7 @@ const UserList = ({
           />
         </Box>
 
-        <FormControl component="form">
+        <FormControl component="form" id="table">
           <TableContainer
             component={Paper}
             sx={{
@@ -180,7 +190,7 @@ const UserList = ({
               boxShadow: "none",
               height: 550,
             }}
-            onScroll={handleScroll}
+            onScroll={handleWindowScroll}
           >
             <Table stickyHeader size="small">
               <TableHead>

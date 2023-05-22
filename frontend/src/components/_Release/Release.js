@@ -149,17 +149,15 @@ const Release = () => {
       )}&edt=${format(searchKw.enddt.$d, 'yyyy-MM-dd')}`;
     }
     await customFetch(url, { method: 'get' }).then((json) => {
-      const { dataList } = json.data; // dataList: 기존에 불러오던 data, sDate, eDate: 오늘 날짜를 기준으로 -7, +7일 date 값
-      setreleaseMaster(dataList);
-      
+      setreleaseMaster(json.data);
+
       // 넘어온 데이터의 master code 값 담기
-      
       rowColor.current = ''; // Master 행 선택 시 Background Color 변경했던 거 Clear
       if (json.data !== null) {
         setLoading(false);
       }
 
-      setCheckedRow(dataList.map((item) => ({ master: item.code, state: 'f', detail: [{ no: '', state: 'f' }] })));
+      setCheckedRow(json.data.map((item) => ({ master: item.code, state: 'f', detail: [{ no: '', state: 'f' }] })));
       setreleaseDetail([{}]); // 검색 했을 때 기존에 있는 releaseDetail List Clear
     });
   };

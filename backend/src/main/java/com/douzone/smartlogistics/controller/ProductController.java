@@ -59,7 +59,7 @@ public class ProductController {
 	@PostMapping("/data")
 	public ResponseEntity<JsonResult> insertProduct(@RequestBody ProductVo vo, @DBLog DBLogVo logVO) {
 		System.out.println(vo);
-		Map<String, Object> map = Map.of("vo", vo, "state", "false");
+		Map<String, Object> map = Map.of("vo", productService.findByCode(vo.getCode()), "state", "false");
 		// productcode 중복체크
 		System.out.println("///"+productService.findByCode(vo.getCode()) );
 		if (productService.findByCode(vo.getCode()) == null) {

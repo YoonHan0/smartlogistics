@@ -1,12 +1,18 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from 'react';
 import {
   Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Button,
   FormControl,
   Grid,
   TextField,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 
 function BusinessUpdate({ itemUpdateHandler, businessDetail, item, setItem }) {
   const refForm = useRef(null);
@@ -25,14 +31,14 @@ function BusinessUpdate({ itemUpdateHandler, businessDetail, item, setItem }) {
 
   const changeHandler = (e) => {
     let { value, name } = e.target;
-    if (name === "phone") {
+    if (name === 'phone') {
       if (value.length > 13) {
         return;
       }
       value = value
-        .replace(/[^0-9]/g, "")
-        .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
-        .replace(/(\-{1,2})$/g, "");
+        .replace(/[^0-9]/g, '')
+        .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, '$1-$2-$3')
+        .replace(/(\-{1,2})$/g, '');
     }
     setItem({ ...item, [name]: value });
   };
@@ -40,7 +46,7 @@ function BusinessUpdate({ itemUpdateHandler, businessDetail, item, setItem }) {
     e.preventDefault();
     console.log(item, target);
     itemUpdateHandler(item, target);
-    setItem({ code: "", name: "", phone: "" }); // update form data 초기화
+    setItem({ code: '', name: '', phone: '' }); // update form data 초기화
   };
   //
   return (
@@ -49,121 +55,86 @@ function BusinessUpdate({ itemUpdateHandler, businessDetail, item, setItem }) {
       xs={4}
       sx={{
         padding: 3,
-        backgroundColor: "#FFF",
-        borderRadius: "8px",
-        boxShadow: "5px 5px 5px rgba(0, 0, 0, 0.1)",
+        backgroundColor: '#FFF',
+        borderRadius: '8px',
+        boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.1)',
       }}
     >
       <span
         style={{
-          fontSize: "18px",
+          fontSize: '18px',
           fontWeight: 800,
         }}
       >
         상세보기
       </span>
-      <FormControl
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          marginTop: 3,
-        }}
-        component="form"
-        ref={refForm}
-        onSubmit={onSubmitHandler}
-      >
-        <Grid container>
-          <Grid
-            item
-            xs={4}
-            sm={4}
-            md={4}
-            sx={{
-              backgroundColor: "#F6F7F9",
-              textAlign: "center",
-              paddingTop: "8px",
-            }}
-          >
-            <Typography sx={{ fontSize: "0.9rem" }}>거래처코드</Typography>
-          </Grid>
-          <Grid item xs={8} sm={8} md={8}>
-            <TextField
-              id="code"
-              name="code"
-              type="text"
-              variant="outlined"
-              size="small"
-              value={item.code || ""}
-              disabled
-              sx={{ width: "100%" }}
-            />
-          </Grid>
+      <TableContainer sx={{ marginTop: 3 }}>
+        <Table size="small" sx={{ width: '100%' }}>
+          <TableBody>
+            <TableRow>
+              <TableCell
+                component="th"
+                scope="row"
+                sx={{ backgroundColor: '#F6F7F9', width: '70%', textAlign: 'center', fontWeight: '800' }}
+              >
+                거래처코드
+              </TableCell>
 
-          <Grid
-            item
-            xs={4}
-            sm={4}
-            md={4}
-            sx={{
-              backgroundColor: "#F6F7F9",
-              textAlign: "center",
-              paddingTop: "8px",
-            }}
-          >
-            <Typography sx={{ fontSize: "0.9rem" }}>거래처명</Typography>
-          </Grid>
-          <Grid item xs={8} sm={8} md={8}>
-            <TextField
-              id="name"
-              name="name"
-              type="text"
-              variant="outlined"
-              size="small"
-              value={item.name || ""}
-              onChange={changeHandler}
-              sx={{ width: "100%" }}
-            />
-          </Grid>
+              <TableCell align="left">
+                <TextField
+                  id="code"
+                  name="code"
+                  type="text"
+                  variant="outlined"
+                  size="small"
+                  value={item.code || ''}
+                  disabled
+                  InputProps={{ sx: { height: 30, width: 260 } }}
+                />
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell component="th" scope="row" sx={{ backgroundColor: '#F6F7F9', textAlign: 'center', fontWeight: '800' }}>
+                거래처명
+              </TableCell>
 
-          <Grid
-            item
-            xs={4}
-            sm={4}
-            md={4}
-            sx={{
-              backgroundColor: "#F6F7F9",
-              textAlign: "center",
-              paddingTop: "8px",
-            }}
-          >
-            <Typography sx={{ fontSize: "0.9rem" }}>전화번호</Typography>
-          </Grid>
+              <TableCell align="left" sx={{ display: 'flex' }}>
+                <TextField
+                  id="name"
+                  name="name"
+                  type="text"
+                  variant="outlined"
+                  size="small"
+                  value={item.name || ''}
+                  onChange={changeHandler}
+                  InputProps={{ sx: { height: 30, width: 260 } }}
+                />
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell component="th" scope="row" sx={{ backgroundColor: '#F6F7F9', textAlign: 'center', fontWeight: '800' }}>
+                전화번호
+              </TableCell>
 
-          <Grid item xs={8} sm={8} md={8}>
-            <TextField
-              id="phone"
-              name="phone"
-              type="text"
-              variant="outlined"
-              size="small"
-              value={item.phone || ""}
-              onChange={changeHandler}
-              sx={{ width: "100%" }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12}>
-            <Button
-              type="submit"
-              name="submit"
-              variant="outlined"
-              sx={{ marginTop: 2, width: "100%" }}
-            >
-              수정
-            </Button>
-          </Grid>
-        </Grid>
-      </FormControl>
+              <TableCell align="left" sx={{ display: 'flex' }}>
+                <TextField
+                  id="phone"
+                  name="phone"
+                  type="text"
+                  variant="outlined"
+                  size="small"
+                  value={item.phone || ''}
+                  onChange={changeHandler}
+                  InputProps={{ sx: { height: 30, width: 260 } }}
+                />
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Button type="submit" name="submit" variant="outlined" sx={{ marginTop: 2, width: '100%' }} onClick={onSubmitHandler}>
+        수정
+      </Button>
     </Grid>
   );
 }

@@ -97,7 +97,7 @@ const ReceiveMaster = ({
     const { scrollTop, clientHeight, scrollHeight } = event.target;
 
     if (clientHeight + scrollTop + 10 > scrollHeight) {
-      receiveMasterSearch(null);
+      receiveMasterSearch(null, 'load');
     }
   };
 
@@ -193,12 +193,12 @@ const ReceiveMaster = ({
                       checked={checkedRow.length !== 0 && checkedRow.every((row) => row.state === 't')}
                     />
                   </TableCell>
-                  <TableCell sx={{ width: '18%', backgroundColor: '#F6F7F9' }}>입고번호</TableCell>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9' }}>입고일</TableCell>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9' }}>담당자</TableCell>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9' }}>거래처</TableCell>
-                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9' }}>진행상태</TableCell>
-                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', p: 0 }}>비고</TableCell>
+                  <TableCell sx={{ width: '18%', backgroundColor: '#F6F7F9', fontWeight: '800' }}>입고번호</TableCell>
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>입고일</TableCell>
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>담당자</TableCell>
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>거래처</TableCell>
+                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', fontWeight: '800' }}>진행상태</TableCell>
+                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', p: 0, fontWeight: '800' }}>비고</TableCell>
                 </TableRow>
                 <TableRow sx={{ height: 2, p: 0 }}>
                   <TableStickyTypeCell></TableStickyTypeCell>
@@ -315,7 +315,7 @@ const ReceiveMaster = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {loading ? (
+                {loading.current ? (
                   <Box
                     sx={{
                       position: 'absolute',

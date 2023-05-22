@@ -492,7 +492,7 @@ const UserMain = ({ info }) => {
                 >
                   <Box>출고 현황</Box>
                 </Typography>
-                <a style={{ textDecoration: 'none' }} href="/receive">
+                <a style={{ textDecoration: 'none' }} href="/release">
                   <Box sx={{ color: 'gray' }}>자세히</Box>
                 </a>
               </Box>
@@ -586,15 +586,26 @@ const UserMain = ({ info }) => {
             }}
           >
             <Box>
-              <Typography
+              <Box
                 sx={{
-                  fontSize: '23px',
-                  fontWeight: 800,
-                  marginRight: '15px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
                 }}
               >
-                <Box>일일 현황</Box>
-              </Typography>
+                <Typography
+                  sx={{
+                    fontSize: '23px',
+                    fontWeight: 800,
+                    marginRight: '15px',
+                  }}
+                >
+                  <Box>일일 현황</Box>
+                </Typography>
+                <a style={{ textDecoration: 'none', marginLeft: 'auto' }} href="/inquiry">
+                  <Box sx={{ color: 'gray' }}>자세히</Box>
+                </a>
+              </Box>
               <Typography
                 sx={{
                   fontSize: '15px',

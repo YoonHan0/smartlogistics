@@ -52,7 +52,7 @@
 	
 	<select id="findByCode" resultType="businessvo" parameterType="string">
 		<![CDATA[	
-			SELECT code, name, phone 
+			SELECT code, name, phone,state 
 			FROM business
 			WHERE code = #{code}
 		]]>

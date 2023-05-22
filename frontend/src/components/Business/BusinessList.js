@@ -1,43 +1,29 @@
-import React, { useRef, useState, useEffect } from "react";
-import BusinessItem from "./BusinessItem";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import {
-  TextField,
-  Box,
-  FormControl,
-  Checkbox,
-  Grid,
-  CircularProgress,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import styled from "styled-components";
-import { customFetch } from "../custom/customFetch";
-import SelectedDataDeleteModal from "../Modal/SelectedDataDeleteModal";
+import React, { useRef, useState, useEffect } from 'react';
+import BusinessItem from './BusinessItem';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { TextField, Box, FormControl, Checkbox, Grid, CircularProgress } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import styled from 'styled-components';
+import { customFetch } from '../custom/customFetch';
+import SelectedDataDeleteModal from '../Modal/SelectedDataDeleteModal';
 
 /** 테이블 Header 고정을 위한 styled component 사용 */
 // top의 px값은 첫 행의 높이와 같게
 const TableStickyTypeCell = styled(TableCell)`
   && {
-    top: 50.5px;
+    top: 38.5px;
+    padding: 4px;
   }
 `;
 
 /** 조건에 맞는 리스트 주르륵 출력 */
-function List({
-  businesses,
-  setBusinesses,
-  fetchBusinessList,
-  businessDetail,
-  setItem,
-  searchEvent,
-  loading,
-}) {
+function List({ businesses, setBusinesses, fetchBusinessList, businessDetail, setItem, searchEvent, loading }) {
   // const [newDatas, setNewDats] = useState({code: '', name:'', phone:''});
   /** fetch, 즉 list를 출력하기 위한 state */
   const refForm = useRef(null);
@@ -47,7 +33,7 @@ function List({
   const [codeChk, setCodeChk] = useState();
   /**  submit하기위한 check여부 */
   const isCheck = useRef(true);
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState('');
   const handlePhoneChange = (e) => {
     const value = e.target.value;
     if (value.length > 13) {
@@ -55,9 +41,9 @@ function List({
     }
     setPhone(
       value
-        .replace(/[^0-9]/g, "")
-        .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
-        .replace(/(\-{1,2})$/g, "")
+        .replace(/[^0-9]/g, '')
+        .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, '$1-$2-$3')
+        .replace(/(\-{1,2})$/g, '')
     );
   };
 
@@ -75,9 +61,7 @@ function List({
     }
     if (checked) {
       if (!isChecked) {
-        businesses.length === checkedButtons.length + 1
-          ? setIsChecked((prev) => !prev)
-          : null;
+        businesses.length === checkedButtons.length + 1 ? setIsChecked((prev) => !prev) : null;
       }
     }
   };
@@ -100,12 +84,12 @@ function List({
   /** 삭제 api */
   const deleteItemHandler = async (data) => {
     await customFetch(`/api/business/delete`, {
-      method: "post",
+      method: 'post',
       body: JSON.stringify(data),
     }).then((json) => {
-      json.data === null 
-      ? alert("사용되고 있는 데이터입니다. 입﹒출고를 완료한 후 삭제를 해주세요.")
-      : setBusinesses(businesses.filter((business) => json.data.indexOf(business.code) == -1));
+      json.data === null
+        ? alert('사용되고 있는 데이터입니다. 입﹒출고를 완료한 후 삭제를 해주세요.')
+        : setBusinesses(businesses.filter((business) => json.data.indexOf(business.code) == -1));
     });
   };
   // ================================================================================
@@ -121,22 +105,30 @@ function List({
   useEffect(() => {
     if (codeChk) {
       refForm.current.reset();
-      setPhone("");
+      setPhone('');
     }
   }, [codeChk]);
 
   // =================================== ADD =======================================
   /** 데이터를 리스트에 추가하는 Handler */
   const addItemHandler = async function (data) {
-    await customFetch("/api/business/add", {
-      method: "post",
+    await customFetch('/api/business/add', {
+      method: 'post',
       body: JSON.stringify(data),
     }).then((json) => {
-      if (json.data.state === "true") {
+      console.log(json.data.state);
+      if (json.data.state === 'true') {
         setBusinesses((prev) => [...prev, json.data.vo]);
         setCodeChk(true);
+        alert('등록되었습니다.');
       } else {
         setCodeChk(false);
+        console.log(json.data.vo.state);
+        if (json.data.vo.state === '1') {
+          alert('이미 등록되어 있는 데이터 입니다');
+        } else if (json.data.vo.state === '0') {
+          alert('삭제된 데이터 거래처코드와 동일합니다.');
+        }
       }
     });
   };
@@ -148,10 +140,10 @@ function List({
     const data = Array.from(refForm.current.elements, (input) => {
       return { n: input.name, v: input.value };
     })
-      .filter(({ n }) => n !== "")
+      .filter(({ n }) => n !== '')
       .reduce((res, { n, v }) => {
         // console.log(`res: ${res}, n: ${n}, v: ${v}`);
-        if (v === "") {
+        if (v === '') {
           if (isCheck.current) {
             isCheck.current = false;
             document.getElementById(n).focus();
@@ -165,7 +157,7 @@ function List({
     if (isCheck.current) {
       addItemHandler(data);
       if (!codeChk) {
-        document.getElementById("code").focus();
+        document.getElementById('code').focus();
       }
     }
     isCheck.current = true;
@@ -173,20 +165,20 @@ function List({
 
   /** 마지막행에서 Enter 누르면 */
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       handleSubmit(e);
     }
   };
   // ================================================================================
   const handleCheckboxClick = (event) => {
     event.stopPropagation();
-    setItem({ code: "", name: "", phone: "" });
+    setItem({ code: '', name: '', phone: '' });
   };
 
   //삭제 모달 관련
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
-    setItem({ code: "", name: "", phone: "" });
+    setItem({ code: '', name: '', phone: '' });
     setOpen(true);
   };
 
@@ -197,16 +189,16 @@ function List({
   const modalMessage = () => {
     const length = checkedButtons.length;
     if (isChecked) {
-      return "거래처 전체를 삭제하시겠습니까?";
+      return '거래처 전체를 삭제하시겠습니까?';
     }
     if (length === 0) {
-      return "선택한 데이터가 없습니다.";
+      return '선택한 데이터가 없습니다.';
     }
     if (length === 1) {
       console.log(checkedButtons);
-      return checkedButtons[0] + "을 삭제하시겠습니까?";
+      return checkedButtons[0] + '을 삭제하시겠습니까?';
     }
-    return length + "개의 거래처를 삭제하시겠습니까?";
+    return length + '개의 거래처를 삭제하시겠습니까?';
   };
 
   const onDeleteButton = () => {
@@ -219,12 +211,12 @@ function List({
       item
       xs={8}
       sx={{
-        width: "100%",
-        height: "730px",
+        width: '100%',
+        height: '730px',
         marginRight: 4,
-        backgroundColor: "#FFF",
-        borderRadius: "8px",
-        boxShadow: "5px 5px 5px rgba(0, 0, 0, 0.1)",
+        backgroundColor: '#FFF',
+        borderRadius: '8px',
+        boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.1)',
       }}
     >
       <SelectedDataDeleteModal
@@ -236,38 +228,36 @@ function List({
       />
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
         }}
       >
         <Box
           sx={{
-            width: "97%",
-            display: "flex",
+            width: '97%',
+            display: 'flex',
           }}
         >
-          <DeleteIcon
-            sx={{ padding: "7px", cursor: "pointer", marginLeft: "auto" }}
-            onClick={handleOpen}
-          />
+          <DeleteIcon sx={{ padding: '7px', cursor: 'pointer', marginLeft: 'auto' }} onClick={handleOpen} />
         </Box>
         <FormControl component="form" onSubmit={handleSubmit} ref={refForm}>
           <TableContainer
             component={Paper}
             sx={{
-              width: "94%",
+              width: '94%',
               padding: 3,
               paddingTop: 0,
-              boxShadow: "none",
+              boxShadow: 'none',
               height: 550,
             }}
           >
             <Table stickyHeader size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', textAlign: 'center', p: 0 }}>
                     <Checkbox
+                      align="center"
                       size="small"
                       onChange={(e) => {
                         allCheckBox(e);
@@ -275,18 +265,10 @@ function List({
                       checked={isChecked}
                     />
                   </TableCell>
-                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
-                    순번
-                  </TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
-                    거래처 아이디
-                  </TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
-                    거래처명
-                  </TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
-                    연락처
-                  </TableCell>
+                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', fontWeight: '800' }}>순번</TableCell>
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>거래처 아이디</TableCell>
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>거래처명</TableCell>
+                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>연락처</TableCell>
                 </TableRow>
 
                 <TableRow sx={{ height: 2, p: 0 }}>
@@ -301,12 +283,7 @@ function List({
                       variant="outlined"
                       size="small"
                       onKeyPress={handleKeyDown}
-                      error={
-                        (data && data.code === "") ||
-                        (!codeChk && codeChk != null)
-                          ? true
-                          : false
-                      }
+                      error={(data && data.code === '') || (!codeChk && codeChk != null) ? true : false}
                       InputProps={{ sx: { height: 30 } }}
                     ></TextField>
                   </TableStickyTypeCell>
@@ -319,7 +296,7 @@ function List({
                       variant="outlined"
                       size="small"
                       onKeyPress={handleKeyDown}
-                      error={data && data.name === "" ? true : false}
+                      error={data && data.name === '' ? true : false}
                       InputProps={{ sx: { height: 30 } }}
                     ></TextField>
                   </TableStickyTypeCell>
@@ -332,7 +309,7 @@ function List({
                       variant="outlined"
                       size="small"
                       onKeyPress={handleKeyDown}
-                      error={data && data.phone === "" ? true : false}
+                      error={data && data.phone === '' ? true : false}
                       InputProps={{ sx: { height: 30 } }}
                       value={phone}
                       onChange={handlePhoneChange}
@@ -344,10 +321,10 @@ function List({
                 {loading ? (
                   <Box
                     sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
                     }}
                   >
                     <CircularProgress />
@@ -368,7 +345,7 @@ function List({
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={5} sx={{ textAlign: "center" }}>
+                    <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
                       등록된 거래처가 없습니다.
                     </TableCell>
                   </TableRow>

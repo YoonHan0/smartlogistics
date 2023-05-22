@@ -1,5 +1,7 @@
 package com.douzone.smartlogistics.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +42,18 @@ public class UserController {
 	
 	@GetMapping("list")
 	public ResponseEntity<JsonResult> readUser(
+			@RequestParam(value = "offset", required = true, defaultValue = "0") Long offset,
+			@RequestParam(value = "limit", required = true, defaultValue = "0") Long limit,
 			@RequestParam(value = "uk", required = true, defaultValue = "") String Userkeywd,
-			@RequestParam(value = "us", required = true, defaultValue = "") String UserSize) {
+			@RequestParam(value = "up", required = true, defaultValue = "") String UserPhone) {
 		
-		 System.out.println(Userkeywd+":"+UserSize);
+		 System.out.println(Userkeywd+":"+UserPhone);
+		 System.out.println(offset + ":" + limit);
 
+		Map<String, Object> map = Map.of("ukeywd",Userkeywd,"uphone",UserPhone,"offset",offset,"limit",limit);
+		System.out.println(userService.findByKeyword(map));
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(userService.findByKeyword(Userkeywd, UserSize)));
+				.body(JsonResult.success(userService.findByKeyword(map)));
 	}
 	
 	@GetMapping("/detail")

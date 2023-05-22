@@ -42,8 +42,8 @@ public class BusinessController {
 	
 	@PostMapping("/add")
 	public ResponseEntity<JsonResult> add(@RequestBody BusinessVo businessVo, @DBLog DBLogVo logVo) {
-		Map<String, Object> map = Map.of("vo", businessVo, "state", "false");
-
+		Map<String, Object> map = Map.of("vo", businessService.findByCode(businessVo.getCode()), "state", "false");
+		System.out.println(businessService.findByCode(businessVo.getCode()));
 		if (businessService.findByCode(businessVo.getCode()) == null) {
 			businessService.addBusinessItem(businessVo, logVo);
 			map = Map.of("vo", businessVo, "state", "true");

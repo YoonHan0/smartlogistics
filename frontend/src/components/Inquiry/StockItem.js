@@ -24,7 +24,7 @@ const StockItem = ({
     }}>
       <TableCell>{date}</TableCell>
       <TableCell>{code}</TableCell>
-      <TableCell>{userName}</TableCell>
+      {userName.length > 5 ? userName.substr(0, 5) + '...' : userName}
       <TableCell>
         {businessName.length > 5 ? businessName.substr(0, 5) + '...' : businessName}
       </TableCell>

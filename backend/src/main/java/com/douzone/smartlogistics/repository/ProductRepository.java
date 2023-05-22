@@ -43,5 +43,4 @@ public class ProductRepository {
 		return sqlSession.selectList("product.checkInRelease",deleteItem);
 	}
 
-
 }

@@ -151,13 +151,12 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
               품목
             </Box>
           </Box>
-          <Grid container sx={{ height: '40px' }}>
+          <Grid container sx={{ height: '40px', marginBottom: '15px' }}>
             <Grid
               item
               md={4}
               sx={{
                 fontSize: '15px',
-                mt: 1,
                 marginTop: '15px',
               }}
             >
@@ -206,138 +205,138 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
               </FormControl>
             </Grid>
           </Grid>
-
-          <TableContainer sx={{ mt: 1, height: 200 }}>
-            <Table sx={{ width: '100%' }} aria-labelledby="tableTitle" size="small">
-              <TableHead>
-                <TableRow
-                  sx={{
-                    backgroundColor: '#F6F7F9',
-                  }}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      color="primary"
-                      onChange={(event) => {
-                        handleSelectAllClick(event, products, addList, setSelectList);
-                      }}
-                      inputProps={{
-                        'aria-label': 'select all desserts',
-                      }}
-                      checked={
-                        products.filter((item) => !addList.some((addItem) => addItem.productCode === item.productCode)).length ===
-                        selectList.filter((item) => !addList.some((addItem) => addItem.productCode === item.productCode)).length
-                      }
-                    />
-                  </TableCell>
-                  <TableCell align="center">
-                    <strong>품번</strong>
-                  </TableCell>
-                  <TableCell align="center">
-                    <strong>품명</strong>
-                  </TableCell>
-                  <TableCell align="center">
-                    <strong>규격</strong>
-                  </TableCell>
-                  <TableCell align="center">
-                    <strong>단위</strong>
-                  </TableCell>
-                  <TableCell align="center">
-                    <strong>선택</strong>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {products.map((data, index) => {
-                  const isItemSelected =
-                    addList.map((item) => item.productCode).indexOf(data.productCode) !== -1 ||
-                    selectList.map((item) => item.productCode).indexOf(data.productCode) !== -1;
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={data.productCode}
-                      selected={isItemSelected}
-                      sx={{
-                        ':hover': isItemSelected
-                          ? ''
-                          : {
-                              background: '#EFF8FF',
-                              fontWeight: 600,
-                            },
-
-                        backgroundColor: isItemSelected ? '#DCF1FF' : '#FFF',
-                      }}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          disabled={addList.map((item) => item.productCode).indexOf(data.productCode) !== -1}
-                          onClick={(event) => {
-                            handleClick(event, data, selectList, setSelectList);
-                          }}
-                          onChange={(e) => (e.target.checked = true)}
-                          checked={isItemSelected === true}
-                          color="primary"
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell align="center" size="small">
-                        {data.productCode}
-                      </TableCell>
-                      <TableCell align="center" size="small">
-                        {data.productName}
-                      </TableCell>
-                      <TableCell align="center" size="small">
-                        {data.productSize}
-                      </TableCell>
-                      <TableCell align="center" size="small">
-                        {data.productUnit}
-                      </TableCell>
-                      <TableCell align="center" size="small">
-                        <Box
-                          sx={{
-                            cursor: 'pointer',
-                            zIndex: 999,
-                          }}
-                        >
-                          추가
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-                {
-                  <TableRow>
-                    <TableCell colSpan={6} />
+          <Box sx={{ border: '1px solid #D1D1D1' }}>
+            <TableContainer sx={{ height: 200 }}>
+              <Table sx={{ width: '100%' }} aria-labelledby="tableTitle" size="small">
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      backgroundColor: '#F6F7F9',
+                    }}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        onChange={(event) => {
+                          handleSelectAllClick(event, products, addList, setSelectList);
+                        }}
+                        inputProps={{
+                          'aria-label': 'select all desserts',
+                        }}
+                        checked={
+                          products.filter((item) => !addList.some((addItem) => addItem.productCode === item.productCode))
+                            .length ===
+                          selectList.filter((item) => !addList.some((addItem) => addItem.productCode === item.productCode)).length
+                        }
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <strong>품번</strong>
+                    </TableCell>
+                    <TableCell align="center">
+                      <strong>품명</strong>
+                    </TableCell>
+                    <TableCell align="center">
+                      <strong>규격</strong>
+                    </TableCell>
+                    <TableCell align="center">
+                      <strong>단위</strong>
+                    </TableCell>
+                    <TableCell align="center">
+                      <strong>선택</strong>
+                    </TableCell>
                   </TableRow>
-                }
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Button
-            sx={{
-              mt: 2,
-              color: '#41719C',
-              border: '2px solid #41719C',
-              borderRadius: '5px',
-              float: 'right',
-              ':hover': {
-                color: '#fff',
-                backgroundColor: '#41719C',
-              },
-              height: '36px',
-            }}
-            onClick={() => {
-              const filtered = selectList.filter((item) => !addList.some((addItem) => addItem.productCode === item.productCode));
-              setAddList([...addList, ...filtered]);
-            }}
-          >
-            <strong>추가</strong>
-          </Button>
+                </TableHead>
+                <TableBody>
+                  {products.map((data, index) => {
+                    const isItemSelected =
+                      addList.map((item) => item.productCode).indexOf(data.productCode) !== -1 ||
+                      selectList.map((item) => item.productCode).indexOf(data.productCode) !== -1;
+                    const labelId = `enhanced-table-checkbox-${index}`;
+                    return (
+                      <TableRow
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={data.productCode}
+                        selected={isItemSelected}
+                        sx={{
+                          ':hover': isItemSelected
+                            ? ''
+                            : {
+                                background: '#EFF8FF',
+                                fontWeight: 600,
+                              },
+
+                          backgroundColor: isItemSelected ? '#DCF1FF' : '#FFF',
+                        }}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            disabled={addList.map((item) => item.productCode).indexOf(data.productCode) !== -1}
+                            onClick={(event) => {
+                              handleClick(event, data, selectList, setSelectList);
+                            }}
+                            onChange={(e) => (e.target.checked = true)}
+                            checked={isItemSelected === true}
+                            color="primary"
+                            inputProps={{
+                              'aria-labelledby': labelId,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell align="center" size="small">
+                          {data.productCode}
+                        </TableCell>
+                        <TableCell align="center" size="small">
+                          {data.productName}
+                        </TableCell>
+                        <TableCell align="center" size="small">
+                          {data.productSize}
+                        </TableCell>
+                        <TableCell align="center" size="small">
+                          {data.productUnit}
+                        </TableCell>
+                        <TableCell align="center" size="small">
+                          <Box
+                            sx={{
+                              cursor: 'pointer',
+                              zIndex: 999,
+                            }}
+                          >
+                            추가
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {
+                    <TableRow>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  }
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+          <Box sx={{ display: 'flex' }}>
+            <Button
+              variant="outlined"
+              sx={{
+                mt: 2,
+                height: '36px',
+                marginLeft: 'auto',
+              }}
+              onClick={() => {
+                const filtered = selectList.filter(
+                  (item) => !addList.some((addItem) => addItem.productCode === item.productCode)
+                );
+                setAddList([...addList, ...filtered]);
+              }}
+            >
+              <strong>추가</strong>
+            </Button>
+          </Box>
           <Box
             sx={{
               mt: 10,
@@ -363,132 +362,125 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
               <DeleteIcon sx={{ color: 'black' }} onClick={deleteProduct} />
             </Button>
           </Box>
-
-          <TableContainer sx={{ height: 200 }}>
-            <Table sx={{ width: '100%' }} aria-labelledby="tableTitle" size="small">
-              <TableHead>
-                <TableRow
-                  sx={{
-                    backgroundColor: '#F6F7F9',
-                    p: 0,
-                  }}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      color="primary"
-                      onChange={(event) => {
-                        handleSelectAllClick(event, addList, details, setDeleteList);
-                      }}
-                      inputProps={{
-                        'aria-label': 'select all desserts',
-                      }}
-                      checked={
-                        addList.filter((item) => !details.some((addItem) => addItem.productCode === item.productCode)).length ===
-                          deleteList.length && deleteList.length > 0
-                      }
-                    />
-                  </TableCell>
-                  <TableCell align="center">
-                    <strong>품번</strong>
-                  </TableCell>
-                  <TableCell align="center">
-                    <strong>품명</strong>
-                  </TableCell>
-                  <TableCell align="center">
-                    <strong>규격</strong>
-                  </TableCell>
-                  <TableCell align="center">
-                    <strong>단위</strong>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {addList.length > 0 ? (
-                  addList.map((data, index) => {
-                    const isItemSelected = deleteList.map((item) => item.productCode).indexOf(data.productCode) !== -1;
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    return (
-                      <TableRow
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={data.productCode}
-                        selected={isItemSelected}
-                        sx={{
-                          ':hover':
-                            details.map((item) => item.productCode).indexOf(data.productCode) !== -1
-                              ? ''
-                              : {
-                                  background: '#EFF8FF',
-                                  fontWeight: 600,
-                                },
-
-                          backgroundColor:
-                            details.map((item) => item.productCode).indexOf(data.productCode) !== -1 ? '#DCF1FF' : '#FFF',
+          <Box sx={{ border: '1px solid #D1D1D1', marginTop: '5PX' }}>
+            <TableContainer sx={{ height: 200 }}>
+              <Table sx={{ width: '100%' }} aria-labelledby="tableTitle" size="small">
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      backgroundColor: '#F6F7F9',
+                      p: 0,
+                    }}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        onChange={(event) => {
+                          handleSelectAllClick(event, addList, details, setDeleteList);
                         }}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            disabled={details.map((item) => item.productCode).indexOf(data.productCode) !== -1}
-                            onClick={(event) => handleClick(event, data, deleteList, setDeleteList)}
-                            onChange={(e) => (e.target.checked = true)}
-                            checked={isItemSelected}
-                            color="primary"
-                            inputProps={{
-                              'aria-labelledby': labelId,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell align="center" size="small">
-                          {data.productCode}
-                        </TableCell>
-                        <TableCell align="center" size="small">
-                          {data.productName}
-                        </TableCell>
-                        <TableCell align="center" size="small">
-                          {data.productSize}
-                        </TableCell>
-                        <TableCell align="center" size="small">
-                          {data.productUnit}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                      등록된 품목이 없습니다.
+                        inputProps={{
+                          'aria-label': 'select all desserts',
+                        }}
+                        checked={
+                          addList.filter((item) => !details.some((addItem) => addItem.productCode === item.productCode))
+                            .length === deleteList.length && deleteList.length > 0
+                        }
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <strong>품번</strong>
+                    </TableCell>
+                    <TableCell align="center">
+                      <strong>품명</strong>
+                    </TableCell>
+                    <TableCell align="center">
+                      <strong>규격</strong>
+                    </TableCell>
+                    <TableCell align="center">
+                      <strong>단위</strong>
                     </TableCell>
                   </TableRow>
-                )}
-                {
-                  <TableRow>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                }
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Button
-            sx={{
-              mt: 2,
-              color: '#41719C',
-              border: '2px solid #41719C',
-              borderRadius: '5px',
-              float: 'right',
-              ':hover': {
-                color: '#fff',
-                backgroundColor: '#41719C',
-              },
-              height: '36px',
-            }}
-            onClick={() => {
-              receiveAdd(addList.filter((itemA) => !details.find((itemB) => itemB.productCode === itemA.productCode)));
-              handleButtonClick('product', null);
-            }}
-          >
-            <strong>등록</strong>
-          </Button>
+                </TableHead>
+                <TableBody>
+                  {addList && addList.length > 0 ? (
+                    addList.map((data, index) => {
+                      console.log('data', data);
+                      const isItemSelected = deleteList.map((item) => item.productCode).indexOf(data.productCode) !== -1;
+                      const labelId = `enhanced-table-checkbox-${index}`;
+                      return (
+                        <TableRow
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={data.productCode}
+                          selected={isItemSelected}
+                          sx={{
+                            ':hover':
+                              details.map((item) => item.productCode).indexOf(data.productCode) !== -1
+                                ? ''
+                                : {
+                                    background: '#EFF8FF',
+                                    fontWeight: 600,
+                                  },
+
+                            backgroundColor:
+                              details.map((item) => item.productCode).indexOf(data.productCode) !== -1 ? '#DCF1FF' : '#FFF',
+                          }}
+                        >
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              disabled={details.map((item) => item.productCode).indexOf(data.productCode) !== -1}
+                              onClick={(event) => handleClick(event, data, deleteList, setDeleteList)}
+                              onChange={(e) => (e.target.checked = true)}
+                              checked={isItemSelected}
+                              color="primary"
+                              inputProps={{
+                                'aria-labelledby': labelId,
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell align="center" size="small">
+                            {data.productCode}
+                          </TableCell>
+                          <TableCell align="center" size="small">
+                            {data.productName}
+                          </TableCell>
+                          <TableCell align="center" size="small">
+                            {data.productSize}
+                          </TableCell>
+                          <TableCell align="center" size="small">
+                            {data.productUnit}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
+                        등록된 품목이 없습니다.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+          <Box sx={{ display: 'flex' }}>
+            <Button
+              variant="outlined"
+              sx={{
+                mt: 2,
+                height: '36px',
+                marginLeft: 'auto',
+              }}
+              onClick={() => {
+                receiveAdd(addList.filter((itemA) => !details.find((itemB) => itemB.productCode === itemA.productCode)));
+                handleButtonClick('product', null);
+              }}
+            >
+              <strong>등록</strong>
+            </Button>
+          </Box>
         </Box>
       </Modal>
     </Box>

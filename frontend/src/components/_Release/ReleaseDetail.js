@@ -154,28 +154,28 @@ const ReleaseDetail = ({
                           disabled={checkedRow.filter(row => row.master === masterCode && row.state === "t" && !row.detail.every(item => item.state === "t")).length > 0 ? true : false}
                       />
                     </TableCell>
-                    <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                    <TableCell sx={{ width: "8%", backgroundColor: "#F6F7F9", fontWeight: '800' }}>
                       순번
                     </TableCell>
-                    <TableCell sx={{ width: "15%", backgroundColor: "#F6F7F9" }}>
+                    <TableCell sx={{ width: "15%", backgroundColor: "#F6F7F9", fontWeight: '800' }}>
                       입고번호
                     </TableCell>
-                    <TableCell sx={{ width: "15%", backgroundColor: "#F6F7F9" }}>
+                    <TableCell sx={{ width: "15%", backgroundColor: "#F6F7F9", fontWeight: '800' }}>
                       품번
                     </TableCell>
-                    <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
+                    <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: '800' }}>
                       품명
                     </TableCell>
-                    <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
-                      규격
-                    </TableCell>
-                    <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                    <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9", fontWeight: '800' }}>
                       단위
                     </TableCell>
-                    <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                    <TableCell sx={{ width: "12%", backgroundColor: "#F6F7F9", fontWeight: '800' }}>
+                      규격
+                    </TableCell>
+                    <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9", fontWeight: '800' }}>
                       수량
                     </TableCell>
-                    <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                    <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9", fontWeight: '800' }}>
                       진행상태
                     </TableCell>
                   </TableRow>
@@ -237,8 +237,8 @@ const ReleaseDetail = ({
                         mcode={detail.masterCode}
                         pcode={detail.productCode}
                         pname={detail.productName}
-                        psize={detail.productSize}
-                        putil={detail.productUnit}
+                        psize={detail.productUnit}
+                        putil={detail.productSize}
                         releasecnt={detail.count}
                         checkedRow={checkedRow}
                         setCheckedRow={setCheckedRow}

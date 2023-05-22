@@ -16,9 +16,9 @@
 		]]>
 		 <where>
             <choose>
-                <when test='usize!=""'>
+                <when test='uphone!=""'>
                     <![CDATA[
-                        phone LIKE CONCAT('%',#{usize },'%')
+                        phone LIKE CONCAT('%',#{uphone },'%')
                     ]]>
                 </when>
                 <otherwise>
@@ -29,7 +29,7 @@
                     ]]>
                 </otherwise>
             </choose>
-            <if test='ukeywd!="" and usize!=""'>
+            <if test='ukeywd!="" and uphone!=""'>
                 <![CDATA[
                     AND (id LIKE CONCAT('%',#{ukeywd },'%')
                     OR name LIKE CONCAT('%',#{ukeywd },'%'))
@@ -37,6 +37,10 @@
                 ]]>
             </if>
         </where>
+        <![CDATA[
+        OFFSET #{offset} ROWS
+ 		FETCH NEXT #{limit} ROWS ONLY
+        ]]>
 	</select>
 	
 	<select id="findByCode" resultType="uservo"

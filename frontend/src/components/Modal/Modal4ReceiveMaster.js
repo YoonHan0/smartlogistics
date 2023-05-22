@@ -14,8 +14,10 @@ import {
   TextField,
 } from "@mui/material";
 import styled from "styled-components";
-import React from "react";
+import React, {useEffect} from "react";
 import Modal4MasterItem from "./Modal4MasterItem";
+import { customFetch } from '../custom/customFetch';
+
 import checkImg from "../../assets/img/checkmark.png";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -29,11 +31,37 @@ const TableStickyTypeCell = styled(TableCell)`
   }
 `;
 const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
-  setCheckedRow,rowColor }) => {
+  setCheckedRow,rowColor, updatePumokList, setPumokList,modal4receiveMasterSearch }) => {
 
-    
+
+
+    const handleWindowScroll = (event) => {
+      const { scrollTop, clientHeight, scrollHeight } = event.target;
+      // console.log('scrollTop', scrollTop)
+      // console.log('clientHeight', clientHeight)
+      // console.log('scrollHeight', scrollHeight)
+  
+      if (clientHeight + scrollTop + 10 > scrollHeight) {
+        console.log("masters",masters)
+        modal4receiveMasterSearch(null,'load');
+      }
+    }
+  
+    useEffect(() => {
+      const tablePro = document.getElementById('table');
+      tablePro.addEventListener('scroll', handleWindowScroll);
+      return () => {
+        tablePro.removeEventListener('scroll', handleWindowScroll);
+      }
+    }, []);
+  
+
+  // useEffect(() => {
+  //   //console.log('checkedRow', checkedRow);
+  //   }, [checkedRow]);
+
     const masterAllCheckBox = (checked) => {
-      
+
       const updatedCheckedRow = checkedRow.map(row => {
         return {
           ...row,
@@ -41,9 +69,36 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
         };
       });
       setCheckedRow(updatedCheckedRow);
+      // pumokList 수정
+      if(!checked)
+        setPumokList([]);
+      else
+      {
+        let promiseList = [];
+        masters.forEach((ipgoItem, index) => {
+          //console.log(ipgoItem.code);
+          let code = ipgoItem.code;
+          const resultOrPromise = customFetch(`/api/receive/detail1?rc=${code}`, { method: 'get' })
+          promiseList.push(resultOrPromise);
+        })
+        Promise.all(promiseList).then((allList) => {
+            //console.log('allList', allList);
+            let pumokListTemp = allList.map((ipgoItem) => {
+                let pumokListOfOneIpgoItem = ipgoItem.data;
+                return pumokListOfOneIpgoItem;
+            });
+            let pumokList = [];
+            pumokListTemp.forEach((element) => {
+                pumokList = [...pumokList, ...element];
+            })
+            //console.log('pumokList', pumokList);
+            setPumokList(pumokList);
+        });
+      }
     }
     /** 체크박스 클릭 시 master state의 값을 true, false로 변경해주는 함수 */
     const masterStateUpdate = (checked, code) => {
+      console.log('masterStateUpdate', checked, code);
       setCheckedRow(checkedRow.map((row) => {
         if (row.master === code) {
           const newState = checked ? 't' : 'f';
@@ -57,6 +112,12 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
           return row;
         }
       }));
+
+      // 내가 하고싶은 일 기술
+      customFetch(`/api/receive/detail1?rc=${code}`, { method: 'get' }).then((json) => {
+        //console.log('-----------------------------품목리스트', json.data);
+        updatePumokList(checked, json.data);
+      });
     }
 
 
@@ -96,7 +157,7 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
           width: "100%",
         }}
       >
-        <FormControl component="form">
+        <FormControl component="form" id="table">
           <TableContainer
             component={Paper}
             sx={{
@@ -107,7 +168,7 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
               height: 157,
               // marginLeft: "40px",
             }}
-            // onScroll={handleScroll}
+             onScroll={handleWindowScroll}
           >
             <Table stickyHeader size="small">
               <TableHead>
@@ -146,7 +207,7 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
                 </TableRow>
               </TableHead>
               <TableBody>
-                {masters.length > 0 ? (
+                {masters && masters.length > 0 ? (
                   masters.map((master, index) => (
                     <Modal4MasterItem
                       key={index}
@@ -161,7 +222,7 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
                       masterStateUpdate={masterStateUpdate}
                       rowColor={rowColor}
                       state={master.state}
-                      
+
                     />
                   ))
                 ) : (
