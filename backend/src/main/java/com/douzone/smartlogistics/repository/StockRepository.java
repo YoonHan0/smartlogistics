@@ -23,14 +23,15 @@ public class StockRepository {
 		return sqlSession.selectList("stock.getdata", map);
 	}
 
-	public List<StockVo> findByKeyword(Long offset, Long limit, String user_name, String business_name, String code,
+	public List<StockVo> findByKeyword(Long offset, Long limit, String user_name, String business_name, String st, String code,
 			String startDate, String endDate) {
 		HashMap<String, Object> map = new HashMap();	
 		map.put("offset",offset);
 		map.put("limit",limit);
 		map.put("sdate",startDate);
 		map.put("edate",endDate);
-		map.put("code",code);
+		map.put("code",code);		
+		map.put("st",st);
 		map.put("user_name",user_name);
 		map.put("business_name",business_name);
 

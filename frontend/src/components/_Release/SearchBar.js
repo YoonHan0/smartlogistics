@@ -10,37 +10,35 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
 
-const SerchBar = ({ callback }) => {
-  const [searchKw, setSearchKw] = useState({ 
-    rcode: '', 
-    bname: '', 
-    startdt: dayjs().subtract(6, 'day'), 
-    enddt: dayjs().add(6, 'day'),
+const SerchBar = ({ callback, searchKw }) => {
+
+  const [searchTextFiled, setSearchTextFiled] = useState({
+    rcode: '',
+    bname: '',
+    startdt: '',
+    enddt: '',
   });
+
   const refForm = useRef(null);
 
   const changeHandler = (e) => {
     const { value, name } = e.target;
-    setSearchKw((prev) => ({ ...prev, [name]: value }));
+    setSearchTextFiled((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAcceptStart = (date) => {
-    setSearchKw({ ...searchKw, startdt: date });
+    setSearchTextFiled({ ...searchTextFiled, startdt: date });
   };
   const handleAcceptEnd = (date) => {
-    setSearchKw({ ...searchKw, enddt: date });
+    setSearchTextFiled({ ...searchTextFiled, enddt: date });
   };
   const submit = (e) => {
     e.preventDefault();
     console.log(searchKw);
-    callback(searchKw);
-    setSearchKw({ rcode: '', bname: '', startdt: dayjs().subtract(6, 'day'), enddt: dayjs().add(6, 'day') });
+    searchKw.current = searchTextFiled;
+    callback('search');
+    setSearchTextFiled({ ...searchTextFiled, rcode: '', bname: '' });
   };
-
-  useEffect(() => {
-    return () => {};
-  }, [searchKw]);
-
 
   return (
     <Grid
@@ -123,7 +121,7 @@ const SerchBar = ({ callback }) => {
             size="small"
             sx={{ paddingLeft: 2, paddingRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
-            value={searchKw.rcode}
+            value={searchTextFiled.rcode}
           />
           <label style={{ fontSize: '0.9rem' }}>거래처</label>
           <TextField
@@ -133,7 +131,7 @@ const SerchBar = ({ callback }) => {
             size="small"
             sx={{ paddingLeft: 2, paddingRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
-            value={searchKw.bname}
+            value={searchTextFiled.bname}
           />
           <label style={{ fontSize: '0.9rem' }}>기간</label>
           <LocalizationProvider dateAdapter={AdapterDayjs} sx={{ height: '60px' }}>
@@ -172,12 +170,17 @@ const SerchBar = ({ callback }) => {
                     height: '35px',
                   },
                 }}
-                value={searchKw.startdt === '' ? dayjs().subtract(6, 'day') : dayjs(searchKw.startdt)}
+                value={searchTextFiled.startdt === '' ? dayjs().subtract(6, 'day') : dayjs(searchTextFiled.startdt)}
                 onAccept={handleAcceptStart}
               ></DatePicker>
               <span>~</span>
               <DatePicker
-                readOnly={searchKw.startdt === '' || searchKw.startdt === null}
+                // style={{
+                //   '& .css-3tvb69-MuiStack-root>.MuiTextField-root': {
+                //     minWidth: 0,
+                //     backgroundColor: '#333',
+                //   },
+                // }}
                 format="YYYY-MM-DD"
                 slotProps={{
                   textField: { size: 'small' },
@@ -201,7 +204,7 @@ const SerchBar = ({ callback }) => {
                   },
                 }}
                 minDate={searchKw.startdt || null}
-                value={searchKw.enddt === '' ? dayjs().add(6, 'day') : dayjs(searchKw.enddt)}
+                value={searchTextFiled.enddt === '' ? dayjs().add(6, 'day') : dayjs(searchTextFiled.enddt)}
                 onAccept={handleAcceptEnd}
               ></DatePicker>
             </DemoContainer>

@@ -50,9 +50,6 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
 
 
 
-
-
-
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [checkedRow, setCheckedRow] = useState([{master: "", state:"f",detail: [{no:"",state:"f"}]}]);
@@ -312,6 +309,7 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
   // 출고 체크 박스 선택
   const chulgoItemOnChangeCheck = (no) => { // [1, 2]
     //console.log('no', no);
+  
     let changedData = data.map((item, index) => {
       if (item.no === no) {
         return {...item, checked: !item.checked};
@@ -618,7 +616,8 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
               checkedRow={checkedRow}
               handleButtonClick={handleButtonClick}
               releaseAdd={releaseAdd}
-              details={modal4receiveDetail}
+              // details={modal4receiveDetail}
+              outdetails={details}
               // setIsButtonDisabled={setIsButtonDisabled}
               // isButtonDisabled={isButtonDisabled}
             />

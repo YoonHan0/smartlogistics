@@ -162,23 +162,25 @@ const Modal4DetailItem = ({
       <TableCell>{pname}</TableCell>
       <TableCell>{psize}</TableCell>
       <TableCell>{putil}</TableCell>
-      <TableCell>{stockcnt}</TableCell>
-      {/* <TableCell>
-      <TextField
-  type="number"
-  id="stockcnt"
-  name="stockcnt"
-  placeholder={receivecnt}
-  onChange={(e) => {
-    setCount(e.target.value);
-  }}
-  onBlur={handleBlur}
-  InputProps={{
-    sx: { height: 30 },
-    inputProps: { min: 0, max: receivecnt},
-  }}
-></TextField>
-      </TableCell> */}
+      <TableCell>{receivecnt}</TableCell>
+      <TableCell>
+        {stockcnt}
+      {/* <TextField
+  // type="number"
+  // id="stockcnt"
+  // name="stockcnt"
+  // placeholder={receivecnt}
+  // onChange={(e) => {
+  //   setCount(e.target.value);
+  // }}
+  // onBlur={handleBlur}
+  // InputProps={{
+  //   sx: { height: 30 },
+  //   inputProps: { min: 0, max: receivecnt},
+  // }}
+ 
+></TextField> */}
+      </TableCell>
           {/* <Button onClick={() => {
             // const isDuplicateNo = clickedItems.some(item => item.no === no);
           if ( receivecnt >= stockcnt) {

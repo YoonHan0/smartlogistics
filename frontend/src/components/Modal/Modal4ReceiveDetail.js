@@ -193,11 +193,11 @@ const filteredRows = checkedRow.filter(row =>
                     단위
                   </TableCell>
                   <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
-                    잔량
+                    수량
                   </TableCell>
-                  {/* <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
-                    출고할잔량
-                  </TableCell> */}
+                   <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                    잔량
+                  </TableCell> 
                 </TableRow>
               </TableHead>
               <TableBody>

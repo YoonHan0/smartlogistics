@@ -11,7 +11,40 @@
 	
 	<select id="findByKeyword" resultType="uservo" parameterType="map">
 		<![CDATA[	
-			SELECT id,name,phone,password,profile
+			SELECT id,name,phone,profile
+			FROM user
+		]]>
+		 <where>
+            <choose>
+                <when test='uphone!=""'>
+                    <![CDATA[
+                        phone LIKE CONCAT('%',#{uphone },'%')
+                    ]]>
+                </when>
+                <otherwise>
+                    <![CDATA[
+                        (id LIKE CONCAT('%',#{ukeywd },'%')
+                        OR name LIKE CONCAT('%',#{ukeywd },'%'))
+                        AND state=true
+                    ]]>
+                </otherwise>
+            </choose>
+            <if test='ukeywd!="" and uphone!=""'>
+                <![CDATA[
+                    AND (id LIKE CONCAT('%',#{ukeywd },'%')
+                    OR name LIKE CONCAT('%',#{ukeywd },'%'))
+                    AND state=true
+                ]]>
+            </if>
+        </where>
+        <![CDATA[
+        OFFSET #{offset} ROWS
+ 		FETCH NEXT #{limit} ROWS ONLY
+        ]]>
+	</select>
+	<select id="findUserModalByKeyword" resultType="uservo" parameterType="map">
+		<![CDATA[	
+			SELECT id,name,phone,profile
 			FROM user
 		]]>
 		 <where>

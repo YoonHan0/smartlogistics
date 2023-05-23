@@ -97,7 +97,7 @@ const ReceiveMaster = ({
     const { scrollTop, clientHeight, scrollHeight } = event.target;
 
     if (clientHeight + scrollTop + 10 > scrollHeight) {
-      receiveMasterSearch(null, 'load');
+      receiveMasterSearch('load');
     }
   };
 

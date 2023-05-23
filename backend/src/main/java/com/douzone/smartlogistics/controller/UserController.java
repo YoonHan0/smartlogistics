@@ -55,6 +55,22 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(userService.findByKeyword(map)));
 	}
+	@GetMapping("modallist")
+	public ResponseEntity<JsonResult> readUserModal(
+			@RequestParam(value = "offset", required = true, defaultValue = "0") Long offset,
+			@RequestParam(value = "limit", required = true, defaultValue = "0") Long limit,
+			@RequestParam(value = "uk", required = true, defaultValue = "") String Userkeywd,
+			@RequestParam(value = "up", required = true, defaultValue = "") String UserPhone) {
+		
+		 System.out.println(Userkeywd+":"+UserPhone);
+		 System.out.println(offset + ":" + limit);
+
+		Map<String, Object> map = Map.of("ukeywd",Userkeywd,"uphone",UserPhone,"offset",offset,"limit",limit);
+		System.out.println(userService.findUserModalByKeyword(map));
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(JsonResult.success(userService.findUserModalByKeyword(map)));
+	}
+	
 	
 	@GetMapping("/detail")
 	public ResponseEntity<JsonResult> readUser(

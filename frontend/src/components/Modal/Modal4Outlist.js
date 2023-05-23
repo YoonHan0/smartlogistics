@@ -40,9 +40,11 @@ const Modal4Outlist = ({
   details,
   releaseAdd,
   setIsButtonDisabled,
-  isButtonDisabled }) => {
+  isButtonDisabled,
+  outdetails }) => {
 
 
+    console.log("아웃",outdetails);
 
   const isAnyCheckedFalse = data.some(item => item.checked === false);
   // console.log(outdtail)
@@ -221,39 +223,57 @@ const Modal4Outlist = ({
                     품명
                   </TableCell>
                   <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                    수량
+                  </TableCell>
+                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                    잔량
+                  </TableCell>
+                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
                     출고할잔량
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-              {data.length > 0 ? (
-                  data.map((datas) => (
-                    
-                    <Modal4OutItem
-                        key={datas.no}
-                        no={datas.no}
-                        mcode={datas.mcode}
-                        pcode={datas.pcode}
-                        pname={datas.pname}
-                        stockcnt={datas.stockcnt}
-                        receivecnt={datas.receivecnt}
-                        selectedRowData={selectedRowData} // 수정된 부분
-                        checked={datas.checked}
-                        chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}
-                        checkedButtons={checkedButtons}
-                        changeHandler={changeHandler}
-                        data={data}
-                        setData={setData}
-                       
-                      />
-                  ))
-                ) : (
-                    <TableRow>
-                  <TableCell colSpan={5} sx={{ textAlign: "center" }}>
-                    등록된 품목이 없습니다.
-                  </TableCell>
-                </TableRow>
-              )}
+              {outdetails && outdetails.length > 0 ? (
+  outdetails.map((detail) => (
+    <Modal4OutItem
+      key={detail.no}
+      no1={detail.no}
+      mcode={detail.masterCode}
+      pcode={detail.productCode}
+      pname={detail.productName}
+      stockcnt={detail.count}
+      receivecnt={detail.productSize}
+    />
+  ))
+) : data && data.length > 0 ? (
+  data.map((datas) => (
+    <Modal4OutItem
+      key={datas.no}
+      no={datas.no}
+      mcode={datas.mcode}
+      pcode={datas.pcode}
+      pname={datas.pname}
+      stockcnt={datas.stockcnt}
+      receivecnt={datas.receivecnt}
+      selectedRowData={selectedRowData}
+      checked={datas.checked}
+      chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}
+      checkedButtons={checkedButtons}
+      changeHandler={changeHandler}
+      data={data}
+      setData={setData}
+      outdetails={outdetails}
+    />
+  ))
+) : (
+  <TableRow>
+    <TableCell colSpan={7} sx={{ textAlign: "center" }}>
+      등록된 품목이 없습니다.
+    </TableCell>
+  </TableRow>
+)}
+
               {/* {Object.keys(data).length > 0 ? (
                 // Object.values(data).map((data) => {
                       <Modal4OutItem
@@ -293,10 +313,8 @@ const Modal4Outlist = ({
           }}
 
           onClick={() => {
-            if ( receivecnt >= stockcnt) {
             releaseAdd(data.filter((itemA) => !details.find((itemB) => itemB.productCode === itemA.productCode)))
             handleButtonClick('releaseInsert', data)
-            }
           }}>
           <strong>추가</strong>
         </Button>

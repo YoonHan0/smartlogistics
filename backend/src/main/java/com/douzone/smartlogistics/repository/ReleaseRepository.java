@@ -23,16 +23,14 @@ public class ReleaseRepository {
 	private SqlSession sqlSession;
 
 	/* Master List 출력 */
-	public List<ReleaseMasterVo> findByKeyword(String releaseCode, String businessName, String startDate,String endDate) {
+	public List<ReleaseMasterVo> findByKeyword(String releaseCode, String businessName, String startDate, String endDate, Long offset, Long limit) {
 		System.out.println(releaseCode + " : " + businessName + " : " + startDate + " : " + endDate);
-		Map<String, Object> map = Map.of("rcode",releaseCode,"bname", businessName, "startdt", startDate, "enddt",endDate);
+		Map<String, Object> map = Map.of("rcode", releaseCode, "bname", businessName, "startdt", startDate, "enddt", endDate, "offset", offset, "limit", limit);
 		return sqlSession.selectList("release.findByKeyword",map);
 	}
 
 	/* Master no에 해당하는 detail List 출력 */
 	public List<ReleaseDetailVo> findByMasterNo(String releaseCode) {
-		System.out.println(" ==== repo ===");
-		System.out.println(sqlSession.selectList("release.findByMasterNo",releaseCode));
 		return sqlSession.selectList("release.findByMasterNo",releaseCode);
 	}
 	/* Master Item 삭제 */

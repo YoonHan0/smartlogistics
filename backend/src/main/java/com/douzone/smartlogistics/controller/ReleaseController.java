@@ -39,7 +39,9 @@ public class ReleaseController {
 			@RequestParam(value = "ic", required = true, defaultValue = "") String releaseCode,
 			@RequestParam(value = "bn", required = true, defaultValue = "") String businessName,
 			@RequestParam(value = "sdt", required = true, defaultValue = "") String startDate,
-			@RequestParam(value = "edt", required = true, defaultValue = "") String endDate) {
+			@RequestParam(value = "edt", required = true, defaultValue = "") String endDate,
+			@RequestParam(value = "o", required = true, defaultValue = "0") Long offset,
+			@RequestParam(value = "l", required = true, defaultValue = "0") Long limit) {
 		if (!startDate.equals("") && endDate.equals("")) {
 			// startDate만 선택했을 시
 			endDate = startDate;
@@ -49,20 +51,19 @@ public class ReleaseController {
 			startDate = DateUtil.minusDays(6);
 			endDate = DateUtil.addDays(6);
 		}
-		System.out.println(releaseCode + " : " + businessName + " : " + startDate + " : " + endDate);
-		System.out.println("========= ======== ");
-		System.out.println(releaseService.findByKeyword(releaseCode, businessName, startDate, endDate));
+		for(ReleaseMasterVo vo:releaseService.findByKeyword(releaseCode, businessName, startDate, endDate, offset, limit)) {
+			System.out.println(vo);
+		}
+		System.out.println("넘어와라 궁탁!");
+		System.out.println(releaseService.findByKeyword(releaseCode, businessName, startDate, endDate, offset, limit));
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(releaseService.findByKeyword(releaseCode, businessName, startDate, endDate)));
+				.body(JsonResult.success(releaseService.findByKeyword(releaseCode, businessName, startDate, endDate, offset, limit)));
 	}
 	
 	// release detail list
 	@GetMapping("/detail")
 	public ResponseEntity<JsonResult> readReleaseDetail(
 			@RequestParam(value = "ic", required = true, defaultValue = "") String releaseCode) {
-		
-		System.out.println("===== release Detail ===== ");
-		System.out.println(releaseService.findByMasterNo(releaseCode));
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult.success(releaseService.findByMasterNo(releaseCode)));

@@ -14,6 +14,8 @@
 			AND r.code LIKE CONCAT('%',#{rcode },'%')) 
 			AND DATE_FORMAT(r.date, '%Y-%m-%d') BETWEEN #{startdt} AND #{enddt}		
 			ORDER BY r.code
+			OFFSET #{offset} ROWS 
+			FETCH NEXT #{limit} ROWS ONLY
 		]]>
 		
 	</select>
@@ -27,7 +29,6 @@
 			INNER JOIN receive_detail rv
 			ON r.receive_detail_no = rv.no
 			WHERE r.master_code=#{rcode }
-			AND (rv.receive_count - rv.release_count) > 0;
 		]]>
 	</select>
 	

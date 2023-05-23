@@ -41,13 +41,16 @@ public class BusinessController {
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<JsonResult> add(@RequestBody BusinessVo businessVo, @DBLog DBLogVo logVo) {
-		Map<String, Object> map = Map.of("vo", businessService.findByCode(businessVo.getCode()), "state", "false");
-		System.out.println(businessService.findByCode(businessVo.getCode()));
-		if (businessService.findByCode(businessVo.getCode()) == null) {
-			businessService.addBusinessItem(businessVo, logVo);
-			map = Map.of("vo", businessVo, "state", "true");
+	public ResponseEntity<JsonResult> add(@RequestBody BusinessVo vo, @DBLog DBLogVo logVo) {
+		String state="false";
+		BusinessVo businessVo = businessService.findByCode(vo.getCode());
+		
+		if (businessService.findByCode(vo.getCode()) == null) {
+		state="true";
+		businessVo = vo;
+		businessService.addBusinessItem(vo, logVo);
 		}
+		Map<String, Object> map = Map.of("vo", businessVo, "state", state);
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(map));
 	}
 	

@@ -47,7 +47,18 @@ export default function UserUpdate({
   const onSubmitHandler = (e) => {
     e.preventDefault();
     const obj = { ...item };
-    if (obj.password !== undefined) {
+    if (
+      obj.password !== "" &&
+      obj.password !== undefined &&
+      !/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{9,20}$/g.test(obj.password)
+    ) {
+      alert(
+        "비밀번호 양식 오류!\n영어, 숫자를 포함한 최소 9자 최대 20자여야 합니다."
+      );
+      return;
+    }
+
+    if (obj.password !== "" && obj.password !== undefined) {
       obj.password = sha256(obj.password);
     }
     itemUpdateHandler(obj, target);

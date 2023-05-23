@@ -1,47 +1,95 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Button, FormControl, Modal, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  Modal,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { customFetch } from '../custom/customFetch';
 
 const ManagerModal = ({ open, onClose, handleButtonClick }) => {
+  const onCloseAndClear = () => {
+    setPerson([]);
+    setSearchTextFiled({ keywd: '', phone: '' });
+    startIndex.current = 0;
+    searchKw.current = { keywd: '', phone: '' };
+    console.log('close modal');
+    onClose();
+  };
+
   useEffect(() => {
-    searchKWDfetch();
+    const tablePro = document.getElementById('table');
+    tablePro.addEventListener('scroll', handleWindowScroll);
+    if (open === true) {
+      searchKWDfetch();
+    }
+
     return () => {
-      setPerson([]);
-      setSearchKWD({ keywd: '', phone: '' });
-      setModal({
-        isLoading: false,
-        hasMore: true,
-        isChange: false,
-      });
-      page.current = 0;
-      console.log('close modal');
+      tablePro.removeEventListener('scroll', handleWindowScroll);
     };
   }, [open]);
-  const page = useRef(0);
 
   const [person, setPerson] = useState([]);
-  const [searchKWD, setSearchKWD] = useState({ keywd: '', phone: '' });
-  const [modal, setModal] = useState({
-    isLoading: false,
-    hasMore: true,
-    isChange: false,
-  });
+  const [searchTextFiled, setSearchTextFiled] = useState({ keywd: '', phone: '' });
+  const searchKw = useRef({ keywd: '', phone: '' });
 
+  const [isFetching, setIsFetching] = useState(false);
+  const startIndex = useRef(0);
+  const isNotDataMore = useRef(false);
+  const form = useRef();
+  const loading = useRef(true);
   const onChangeHandler = (e) => {
     const { value, name } = e.target;
-    setSearchKWD((prev) => ({ ...prev, [name]: value }));
+    setSearchTextFiled((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleWindowScroll = (event) => {
+    const { scrollTop, clientHeight, scrollHeight } = event.target;
+
+    if (clientHeight + scrollTop + 10 > scrollHeight) {
+      searchKWDfetch();
+    }
   };
 
   const searchKWDfetch = async () => {
     //console.log(searchKWD);
-    var url = `/api/user/list?uk=${searchKWD.keywd}&us=${searchKWD.phone}`;
-    await customFetch(url, { method: 'get' }).then((json) => setPerson(json.data));
+    if (isFetching) {
+      return;
+    }
+    if (isNotDataMore.current) {
+      return;
+    }
+    const limit = 10;
+    var url = `/api/user/list?uk=${searchKw.current.keywd}&us=${searchKw.current.phone}&offset=${startIndex.current}&limit=${limit}`;
+    setIsFetching(true);
+    await customFetch(url, { method: 'get' }).then((json) => {
+      if (json.data.length === limit) {
+        startIndex.current += limit;
+      } else {
+        isNotDataMore.current = true;
+      }
+      if (json.data !== null) {
+        loading.current = false;
+      }
+      console.log('==================================');
+      console.log(json.data);
+      setPerson((prev) => [...prev, ...json.data]);
+      setIsFetching(false);
+      // setPerson(json.data);
+    });
   };
 
   return (
     <Box>
-      <Modal open={open} onClose={onClose}>
+      <Modal open={open} onClose={onCloseAndClear}>
         <Box
           sx={{
             position: 'absolute',
@@ -68,9 +116,17 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
           </Box>
           <Box>
             <FormControl
+              ref={form}
               component="form"
               onSubmit={(e) => {
                 e.preventDefault();
+                startIndex.current = 0;
+                searchKw.current = searchTextFiled;
+                isNotDataMore.current = false;
+                loading.current = true;
+                setPerson([]);
+                setSearchTextFiled({ keywd: '', phone: '' });
+                form.current.reset();
                 searchKWDfetch();
               }}
               sx={{
@@ -89,6 +145,7 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
                   paddingRight: '40px',
                 }}
                 onChange={onChangeHandler}
+                value={searchTextFiled.keywd || null}
                 name="keywd"
                 InputProps={{ sx: { height: 30, width: 150 } }}
               ></TextField>
@@ -102,6 +159,7 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
                 onChange={onChangeHandler}
                 name="phone"
                 InputProps={{ sx: { height: 30, width: 150 } }}
+                value={searchTextFiled.phone || null}
               ></TextField>
               <Button type="submit" variant="outlined" sx={{ marginRight: 'auto' }}>
                 <SearchIcon />
@@ -129,60 +187,83 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
               border: '1px solid #D1D1D1',
             }}
           >
-            <Table stickyHeader size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
-                    순번
-                  </TableCell>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
-                    아이디
-                  </TableCell>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
-                    이름
-                  </TableCell>
-                  <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
-                    전화번호
-                  </TableCell>
-                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
-                    선택
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {person.map((data, index) => (
-                  <TableRow
-                    key={index}
-                    sx={{
-                      height: 2,
-                      p: 0,
-                      ':hover': {
-                        background: '#EFF8FF',
-                        fontWeight: 600,
-                      },
-                    }}
-                  >
-                    <TableCell align="center">{index + 1}</TableCell>
-                    <TableCell align="center">{data.id}</TableCell>
-                    <TableCell align="center">{data.name}</TableCell>
-                    <TableCell align="center">{data.phone}</TableCell>
-                    <TableCell align="center">
-                      <Button
-                        sx={{ width: '100%', p: 0 }}
-                        onClick={() => {
-                          handleButtonClick('manager', {
-                            userId: data.id,
-                            userName: data.name,
-                          });
+            <FormControl component="form" id="table">
+              <TableContainer
+                onScroll={handleWindowScroll}
+                sx={{
+                  width: '900px',
+                  height: '221px',
+                }}
+              >
+                <Table stickyHeader size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
+                        순번
+                      </TableCell>
+                      <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
+                        아이디
+                      </TableCell>
+                      <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
+                        이름
+                      </TableCell>
+                      <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
+                        전화번호
+                      </TableCell>
+                      <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', fontWeight: '800' }} align="center">
+                        선택
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {loading.current ? (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
                         }}
                       >
-                        선택
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                        <CircularProgress />
+                      </Box>
+                    ) : (
+                      person.map((data, index) => (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            height: 2,
+                            p: 0,
+                            ':hover': {
+                              background: '#EFF8FF',
+                              fontWeight: 600,
+                            },
+                          }}
+                        >
+                          <TableCell align="center">{index + 1}</TableCell>
+                          <TableCell align="center">{data.id}</TableCell>
+                          <TableCell align="center">{data.name}</TableCell>
+                          <TableCell align="center">{data.phone}</TableCell>
+                          <TableCell align="center">
+                            <Button
+                              sx={{ width: '100%', p: 0 }}
+                              onClick={() => {
+                                handleButtonClick('manager', {
+                                  userId: data.id,
+                                  userName: data.name,
+                                });
+                              }}
+                            >
+                              선택
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </FormControl>
           </Box>
         </Box>
       </Modal>

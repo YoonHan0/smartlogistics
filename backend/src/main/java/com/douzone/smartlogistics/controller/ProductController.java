@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.douzone.smartlogistics.annotation.DBLog;
 import com.douzone.smartlogistics.dto.JsonResult;
 import com.douzone.smartlogistics.service.ProductService;
+import com.douzone.smartlogistics.vo.BusinessVo;
 import com.douzone.smartlogistics.vo.DBLogVo;
 import com.douzone.smartlogistics.vo.ProductVo;
 
@@ -58,14 +59,15 @@ public class ProductController {
 	// product insert
 	@PostMapping("/data")
 	public ResponseEntity<JsonResult> insertProduct(@RequestBody ProductVo vo, @DBLog DBLogVo logVO) {
-		System.out.println(vo);
-		Map<String, Object> map = Map.of("vo", productService.findByCode(vo.getCode()), "state", "false");
+		String state="false";
+		ProductVo productVo = productService.findByCode(vo.getCode());
 		// productcode 중복체크
-		System.out.println("///"+productService.findByCode(vo.getCode()) );
 		if (productService.findByCode(vo.getCode()) == null) {
+			state="true";
+			productVo = vo;
 			productService.insert(vo, logVO);
-			map = Map.of("vo", vo, "state", "true");
 		}
+		Map<String, Object> map = Map.of("vo", productVo, "state", state);
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(map));
 	}
 

@@ -11,13 +11,13 @@ const Inquiry = () => {
   const [state, setState] = useState(true);
   const [list, setList] = useState([]);
   const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
-  const [searchKw, setSearchKw] = useState({ user_name: '', business_name: '', code: '', startdt: '', enddt: '' });
+  const [searchKw, setSearchKw] = useState({ user_name: '', business_name: '', code: '', startdt: '', enddt: '', st:'ALL' });
   const [isFetching, setIsFetching] = useState(false);
   const startIndex = useRef(0);
   const scrollend = useRef(false);
   const loading = useRef(true);
   useEffect(() => {
-    searchKeyword(null, 'load');
+    searchKeyword(searchKw, 'load');
   }, []);
 
   const searchKeyword = async (searchKw, _state) => {
@@ -55,9 +55,9 @@ const Inquiry = () => {
     console.log('startIndex', startIndex.current);
     console.log('limit', limit);
 
-    var url = `/api/inquiry/list?offset=${startIndex.current}&limit=${limit}`;
+    var url = `/api/inquiry/list?offset=${startIndex.current}&limit=${limit}&st=${searchKw.st}`;
     if (searchKw) {
-      url = `/api/inquiry/list?offset=${startIndex.current}&limit=${limit}&sdt=${startdt}&edt=${enddt}&user_name=${searchKw.user_name}&business_name=${searchKw.business_name}&code=${searchKw.code}`;
+      url = `/api/inquiry/list?offset=${startIndex.current}&limit=${limit}&sdt=${startdt}&edt=${enddt}&st=${searchKw.st}&user_name=${searchKw.user_name}&business_name=${searchKw.business_name}&code=${searchKw.code}`;
     }
 
     console.log(url);
@@ -95,7 +95,7 @@ const Inquiry = () => {
 
   return (
     <Box>
-      <Grid container sx={{ marginLeft: "0px" }}>
+      <Grid container sx={{ width: '101%', marginLeft: "0px" }}>
         <SearchBar
           seDate={seDate}
           state={state}
@@ -109,6 +109,7 @@ const Inquiry = () => {
             ?
             <List
               list={list}
+              setList={setList}
               searchKw={searchKw}
               searchKeyword={searchKeyword}
               setSearchKw={setSearchKw}

@@ -1,4 +1,4 @@
-import { Box, Checkbox, TableCell, TableRow, checkboxClasses } from "@mui/material";
+import { TextField,Box, Checkbox, TableCell, TableRow, checkboxClasses } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 import Modal4Outlist from "./Modal4Outlist";
 import Modal4DetailItem from "./Modal4DetailItem";
@@ -17,7 +17,9 @@ const Modal4OutItem = ({
   chulgoItemOnChangeCheck,
   changeHandler,
   checkedButtons,
-  data
+  data,
+  outdetails,
+  no1
   
 }) => {
   console.log(checked)
@@ -43,12 +45,12 @@ const Modal4OutItem = ({
 
   console.log("뛔스트",receivecnt,stockcnt);
 
-
+ const [count, setCount] = useState(stockcnt);
 
   
   return (
     <TableRow
-      key={no}
+      key={no||no1}
       sx={{
         ":hover": {
           background: "#EFF8FF",
@@ -75,14 +77,32 @@ const Modal4OutItem = ({
           chulgoItemOnChangeCheck(no);
           changeHandler(e.currentTarget.checked, no);
         }}  
-        checked={data.find(item => item.no===no).checked} 
+        checked={data && data.find(item => item.no === no)?.checked}
+        disabled={no1 ? true : false}
+        
         ref = {checkboxRef}
       />
       </TableCell>
       <TableCell>{mcode}</TableCell>
       <TableCell>{pcode}</TableCell>
       <TableCell>{pname}</TableCell>
+      <TableCell >{receivecnt}</TableCell>
       <TableCell >{stockcnt}</TableCell> {/* 주석은 이렇게 */}
+      <TextField
+  type="number"
+  id="stockcnt"
+  name="stockcnt"
+  placeholder={receivecnt}
+  onChange={(e) => {
+    setCount(e.target.value);
+  }}
+  // onBlur={handleBlur}
+  InputProps={{
+    sx: { height: 30 },
+    inputProps: { min: 0, max: receivecnt},
+  }}
+ 
+></TextField>
     </TableRow>
   );
 };
