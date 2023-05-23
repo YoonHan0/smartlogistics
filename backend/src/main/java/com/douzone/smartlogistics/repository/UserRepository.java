@@ -19,6 +19,9 @@ public class UserRepository {
 	public List<UserVo> findByKeyword(Map<String, Object> map) {
 		return sqlSession.selectList("user.findByKeyword",map);
 	}
+	public List<UserVo> findUserModalByKeyword(Map<String, Object> map) {
+		return sqlSession.selectList("user.findUserModalByKeyword",map);
+	}
 
 	public List<UserVo> findAll() {
 		return sqlSession.selectList("user.findAll");
@@ -68,5 +71,6 @@ public class UserRepository {
 		}
 		return true;
 	}
+
 	
 }

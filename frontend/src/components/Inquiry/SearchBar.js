@@ -46,10 +46,9 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
       xs={12}
       md={12}
       sx={{
-        width: '100%',
         display: 'flex',
-        padding: '16px 0 0 16px',
         flexDirection: 'column',
+        marginTop: -2,
         marginBottom: 3,
         backgroundColor: '#FFF',
         borderRadius: '8px',
@@ -68,7 +67,9 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
           sx={{
             display: 'flex',
             alignItems: 'center',
+            p:'16px 0 0 16px',
             marginLeft: '30px',
+            marginTop: '6px',
             marginBottom: '10px',
           }}
         >
@@ -85,7 +86,7 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
           <span
             style={{
               backgroundColor: '#EBF2FF',
-              padding: '3px 8px',
+              padding: '2px 5px 4.5px 0',
             }}
           >
             <span

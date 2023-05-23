@@ -49,6 +49,7 @@ const ReceiveMaster = ({
   setInputMaster,
   masterStateT,
   loading,
+  releaseMasterSearch
 }) => {
   useEffect(() => {
     nullChkHandler(inputMaster);
@@ -95,6 +96,21 @@ const ReceiveMaster = ({
     );
   };
 
+  const handleWindowScroll = (event) => {
+    const { scrollTop, clientHeight, scrollHeight } = event.target;
+
+    if (clientHeight + scrollTop + 10 > scrollHeight) {
+      releaseMasterSearch('load');
+    }
+  };
+
+  useEffect(() => {
+    const tablePro = document.getElementById('table');
+    tablePro.addEventListener('scroll', handleWindowScroll);
+    return () => {
+      tablePro.removeEventListener('scroll', handleWindowScroll);
+    };
+  }, []);
   return (
     <Grid
       item
@@ -147,7 +163,7 @@ const ReceiveMaster = ({
           width: '100%',
         }}
       >
-        <FormControl component="form">
+        <FormControl component="form" id="table">
           <TableContainer
             component={Paper}
             sx={{
@@ -157,7 +173,7 @@ const ReceiveMaster = ({
               boxShadow: 'none',
               height: 300,
             }}
-            // onScroll={handleScroll}
+            onScroll={handleWindowScroll}
           >
             <Table stickyHeader size="small">
               <TableHead>
@@ -309,7 +325,7 @@ const ReceiveMaster = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {loading ? (
+                {loading.current ? (
                   <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                     <CircularProgress />
                   </Box>

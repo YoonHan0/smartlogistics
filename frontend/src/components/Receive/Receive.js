@@ -48,6 +48,7 @@ const Receive = () => {
   const [checkedRow, setCheckedRow] = useState([{ master: '', state: 'f', detail: [{ no: '', state: 'f' }] }]);
   const totalCount = useRef(0);
   const rowColor = useRef();
+  const searchKw = useRef({ rcode: '', bname: '', startdt: '', enddt: '' });
 
   const masterStateT = checkedRow.filter((row) => row.state === 't').map((row) => row.master);
   // checkedRow에 detail 프로퍼티가 없어서 에러가 계속 발생 -> filter로 detail 프로퍼티가 존재하는지 먼저 거르고 시작
@@ -69,11 +70,12 @@ const Receive = () => {
   const limit = 10;
   const scrollend = useRef(false);
   useEffect(() => {
-    receiveMasterSearch(null, 'load');
+    receiveMasterSearch('load');
   }, []);
 
   const toggleModal = (open, modal) => {
     if (modal === 'manager') {
+      console.log(open);
       open ? setOpenManager(false) : setOpenManager(true);
     } else if (modal === 'product') {
       open ? setOpenProduct(false) : setOpenProduct(true);
@@ -108,7 +110,8 @@ const Receive = () => {
   };
 
   // ReceiveMaster검색
-  const receiveMasterSearch = async (searchKw, state) => {
+  const receiveMasterSearch = async (state) => {
+    console.log(searchKw);
     if (state === 'search') {
       startIndexMaster.current = 0;
       setreceiveMaster([]);
@@ -124,23 +127,27 @@ const Receive = () => {
     //etLoading(true);
     let startdt = '';
     let enddt = '';
-    if (searchKw && searchKw.startdt === '' && searchKw.enddt !== '') {
+    if (searchKw.current && searchKw.current.startdt === '' && searchKw.current.enddt !== '') {
       startdt = format(dayjs().subtract(6, 'day').$d, 'yyyy-MM-dd');
       enddt = format(searchKw.enddt.$d, 'yyyy-MM-dd');
-    } else if (searchKw && searchKw.enddt === '' && searchKw.startdt !== '') {
-      startdt = format(searchKw.startdt.$d, 'yyyy-MM-dd');
+    } else if (searchKw.current && searchKw.current.enddt === '' && searchKw.current.startdt !== '') {
+      console.log('여기');
+      startdt = format(searchKw.current.startdt.$d, 'yyyy-MM-dd');
       enddt = format(dayjs().add(6, 'day').$d, 'yyyy-MM-dd');
-    } else if (searchKw && searchKw.startdt !== '' && searchKw.enddt !== '') {
-      startdt = format(searchKw.startdt.$d, 'yyyy-MM-dd');
-      enddt = format(searchKw.enddt.$d, 'yyyy-MM-dd');
-    } else if ((searchKw != null && searchKw.startdt === '' && searchKw.enddt === '') || searchKw === null) {
+    } else if (searchKw.current && searchKw.current.startdt !== '' && searchKw.current.enddt !== '') {
+      startdt = format(searchKw.current.startdt.$d, 'yyyy-MM-dd');
+      enddt = format(searchKw.current.enddt.$d, 'yyyy-MM-dd');
+    } else if (
+      (searchKw.current != null && searchKw.current.startdt === '' && searchKw.current.enddt === '') ||
+      searchKw.current === null
+    ) {
       startdt = format(dayjs().subtract(6, 'day').$d, 'yyyy-MM-dd');
       enddt = format(dayjs().add(6, 'day').$d, 'yyyy-MM-dd');
     }
     console.log(startdt, enddt);
     var url = `/api/receive/list?o=${startIndexMaster.current}&l=${limit}`;
     if (searchKw) {
-      url = `/api/receive/list?o=${startIndexMaster.current}&l=${limit}&rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${startdt}&edt=${enddt}`;
+      url = `/api/receive/list?o=${startIndexMaster.current}&l=${limit}&rc=${searchKw.current.rcode}&bn=${searchKw.current.bname}&sdt=${startdt}&edt=${enddt}`;
     }
     console.log(scrollend.current);
     if (scrollend.current === true) {
@@ -326,11 +333,10 @@ const Receive = () => {
       method: 'post',
       body: JSON.stringify(masterNo),
     }).then((json) => {
-      if(!json.data) {
-        alert("입고를 진행 중이거나 완료인 경우에는 삭제를 할 수 없습니다!")
+      if (!json.data) {
+        alert('입고를 진행 중이거나 완료인 경우에는 삭제를 할 수 없습니다!');
         toggleModal(true, 'deleteMater');
-      }
-      else {
+      } else {
         setOpenDeleteModalInMaster(false); // 삭제 완료 후 모달창 제거
         setreceiveDetail([{}]); // detail 리스트도 clear
         receiveMasterSearch(null); // master 리스트 update
@@ -362,11 +368,10 @@ const Receive = () => {
         throw new Error(`${json.result} ${json.message}`);
       }
 
-      if(!json.data) {
-        alert("입고를 진행 중이거나 완료인 경우에는 삭제를 할 수 없습니다!")
+      if (!json.data) {
+        alert('입고를 진행 중이거나 완료인 경우에는 삭제를 할 수 없습니다!');
         toggleModal(true, 'deleteDetail');
-      }
-      else {
+      } else {
         setOpenDeleteModalInDetail(false); // 모달창 제거
         if (detail.no.length === detail.length) {
           setreceiveDetail([{}]);
@@ -433,7 +438,7 @@ const Receive = () => {
       />
       <NullModal open={openNullModal} onClose={() => setOpenNullModal(false)} />
       <Grid container spacing={2} style={{ marginLeft: '0px' }}>
-        <SearchBar callback={receiveMasterSearch} />
+        <SearchBar callback={receiveMasterSearch} searchKw={searchKw} />
         <ReceiveMaster
           masters={receiveMaster}
           receiveDetail={receiveDetailSearch}

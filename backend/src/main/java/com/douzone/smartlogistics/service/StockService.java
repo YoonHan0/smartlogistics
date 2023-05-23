@@ -29,7 +29,16 @@ public class StockService {
 
 	}
 
-	public List<StockVo> findByKeyword(Long offset, Long limit, String user_name, String business_name, String code, String startDate, String endDate) {
-		return stockRepository.findByKeyword(offset, limit, user_name, business_name, code, startDate, endDate);
+	public List<StockVo> findByKeyword(
+			Long offset, 
+			Long limit, 
+			String user_name, 
+			String business_name, 
+			String st,
+			String code, 
+			String startDate, 
+			String endDate
+			) {
+		return stockRepository.findByKeyword(offset, limit, user_name, business_name, st, code, startDate, endDate);
 	}
 }

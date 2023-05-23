@@ -31,11 +31,13 @@ public class StockController {
 			@RequestParam(value = "limit", required = true, defaultValue = "0") Long limit,
 			@RequestParam(value = "sdt", required = true, defaultValue = "") String startDate,
 			@RequestParam(value = "edt", required = true, defaultValue = "") String endDate,
+			@RequestParam(value = "st", required = true, defaultValue = "ALL") String st,
 			@RequestParam(value = "user_name", required = true, defaultValue = "") String user_name,
 			@RequestParam(value = "business_name", required = true, defaultValue = "") String business_name,
 			@RequestParam(value = "code", required = true, defaultValue = "") String code) {
+	
 		System.out.println("inquiry method 실행!!!!");
-		System.out.println(offset+","+startDate+","+endDate+","+user_name+","+business_name+","+code);
+		System.out.println(offset+","+startDate+","+endDate+","+st+","+user_name+","+business_name+","+code);
 		if (!startDate.equals("") && endDate.equals("")) {
 			// startDate만 선택했을 시
 			endDate = startDate;
@@ -45,9 +47,11 @@ public class StockController {
 			startDate = DateUtil.minusDays(6);
 			endDate = DateUtil.addDays(6);
 		}
+		
+		
 		System.out.println(startDate+"///"+endDate);
 		System.out.println(offset+"///"+limit);
-		List<StockVo> dataList = stockService.findByKeyword(offset,limit, user_name, business_name, code, startDate, endDate);
+		List<StockVo> dataList = stockService.findByKeyword(offset,limit, user_name, business_name, st, code, startDate, endDate);
 		String sDate = startDate;
 		String eDate = endDate;
 

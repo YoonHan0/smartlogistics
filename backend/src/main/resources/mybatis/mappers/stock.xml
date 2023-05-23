@@ -22,12 +22,21 @@ INNER JOIN business b
 		ON tmp.business_code = b.code
 INNER JOIN product p
 		ON tmp.product_code = p.code
-	 WHERE (u.name LIKE CONCAT('%',#{user_name},'%')
-	   AND b.name LIKE CONCAT('%',#{business_name},'%')
-	   AND master_code LIKE CONCAT('%',#{code},'%'))
   ORDER BY tmp.date, tmp.insert_dt) A
-	 WHERE (A.date >= #{sdate}
-	   AND A.date <= #{edate})
+	 WHERE (date >= #{sdate}
+	   AND date <= #{edate}
+	   AND user_name LIKE CONCAT('%',#{user_name},'%')
+	   AND business_name LIKE CONCAT('%',#{business_name},'%')
+	   AND code LIKE CONCAT('%',#{code},'%')]]>
+		<choose>
+			<when test='!"ALL".equals(st)'>
+				<![CDATA[
+					AND state = #{st}
+                ]]>
+			</when>
+		</choose>
+	<![CDATA[
+       )
  	OFFSET #{offset} ROWS
 FETCH NEXT #{limit} ROWS ONLY
 	]]>

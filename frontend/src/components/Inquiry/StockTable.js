@@ -3,7 +3,7 @@ import { Table, TableHead, TableRow, TableCell, TableBody, FormControl, TableCon
 import StockItem from './StockItem';
 import { Box } from '@mui/system';
 
-const StockTable = ({ list, searchKeyword, loading }) => {
+const StockTable = ({ list, searchKw, searchKeyword, loading }) => {
   const handleWindowScroll = (event) => {
     const { scrollTop, clientHeight, scrollHeight } = event.target;
     // console.log('scrollTop', scrollTop)
@@ -11,7 +11,7 @@ const StockTable = ({ list, searchKeyword, loading }) => {
     // console.log('scrollHeight', scrollHeight)
 
     if (clientHeight + scrollTop + 10 > scrollHeight) {
-      searchKeyword(null,'load');
+      searchKeyword(searchKw,'load');
     }
   }
 
@@ -32,9 +32,8 @@ const StockTable = ({ list, searchKeyword, loading }) => {
       <TableContainer
         component={Paper}
         sx={{
-          width: "94%",
-          width: '94%',
-          paddingLeft: 3,
+          width: '100%',
+          paddingLeft: 5  ,
           paddingTop: 0,
           boxShadow: "none",
           height: 550,

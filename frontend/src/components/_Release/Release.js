@@ -12,6 +12,7 @@ import NullModal from '../Modal/NullModal';
 import { customFetch } from '../custom/customFetch';
 import Modal4 from '../Modal/Modal4';
 import { format } from 'date-fns';
+import dayjs from 'dayjs';
 
 const Release = () => {
   /* 화면에 랜더링되는 state */
@@ -22,7 +23,7 @@ const Release = () => {
   const [masterCode, setMasterCode] = useState();
   /* 체크박스를 다루기 위한 state */
   const [checkedRow, setCheckedRow] = useState([{ master: '', state: 'f', detail: [{ no: '', state: 'f' }] }]);
-  const [loading, setLoading] = useState(true);
+  const loading = useRef(true);
   /* Modal */
   const [openDeleteModalInMaster, setOpenDeleteModalInMaster] = useState(false); // 삭제할 것인지 확인하는 모달창(Master)
   const [openDeleteModalInDetail, setOpenDeleteModalInDetail] = useState(false); // 삭제할 것인지 확인하는 모달창(Detail)
@@ -44,7 +45,7 @@ const Release = () => {
   const [detailInput, setDetailInput] = useState(false);
 
   const rowColor = useRef(); // Master 행 클릭 시 background 색상 변경 Ref
-
+  const searchKw = useRef({ rcode: '', bname: '', startdt: '', enddt: '' });
   const masterStateT = checkedRow.filter((row) => row.state === 't').map((row) => row.master);
 
   // checkedRow에 detail 프로퍼티가 없어서 에러가 계속 발생 -> filter로 detail 프로퍼티가 존재하는지 먼저 거르고 시작
@@ -59,6 +60,18 @@ const Release = () => {
     masterCode: masterCode, // 화면에 표시되는 detail List들의 공통된 master code값
     length: releaseDetail.length, // 화면에 표시되는 detail List들의 길이
   };
+
+  const [isFetchingMaster, setIsFetchingMaster] = useState(false);
+  const startIndexMaster = useRef(0);
+  const [isFetchingDetail, setIsFetchingDetail] = useState(false);
+  const startIndexDetail = useRef(0);
+  const limit = 10;
+  const scrollend = useRef(false);
+
+  useEffect(() => {
+    releaseMasterSearch('load');
+  }, []);
+
   const toggleModal = (open, modal) => {
     if (modal === 'manager') {
       open ? setOpenManager(false) : setOpenManager(true);
@@ -74,11 +87,6 @@ const Release = () => {
       open ? setOpenNullModal(false) : setOpenNullModal(true);
     }
   };
-
-  useEffect(() => {
-    releaseMasterSearch(null);
-    console.log(releaseDetail);
-  }, []);
 
   /** checkedRow 수정을 확인하기 위한 useEffect - 별다른 기능 없음 */
   useEffect(() => {
@@ -138,54 +146,95 @@ const Release = () => {
   };
 
   // ============================ release Master검색 ============================
-  const releaseMasterSearch = async (searchKw) => {
-    setLoading(true);
-
-    var url = `/api/release/list`;
-    if (searchKw) {
-      url = `/api/release/list?ic=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${format(
-        searchKw.startdt.$d,
-        'yyyy-MM-dd'
-      )}&edt=${format(searchKw.enddt.$d, 'yyyy-MM-dd')}`;
+  const releaseMasterSearch = async (state) => {
+    if (state === 'search') {
+      startIndexMaster.current = 0;
+      setreleaseMaster([]);
+      loading.current = true;
+      scrollend.current = false;
+      setIsFetchingMaster(false);
     }
-    await customFetch(url, { method: 'get' }).then((json) => {
-      setreleaseMaster(json.data);
+    console.log(isFetchingMaster);
+    if (isFetchingMaster) {
+      return;
+    }
+    setIsFetchingMaster(true);
+    //etLoading(true);
+    let startdt = '';
+    let enddt = '';
 
+    if (searchKw.current && searchKw.current.startdt === '' && searchKw.current.enddt !== '') {
+      startdt = format(dayjs().subtract(6, 'day').$d, 'yyyy-MM-dd');
+      enddt = format(searchKw.enddt.$d, 'yyyy-MM-dd');
+    } else if (searchKw.current && searchKw.current.enddt === '' && searchKw.current.startdt !== '') {
+      startdt = format(searchKw.current.startdt.$d, 'yyyy-MM-dd');
+      enddt = format(dayjs().add(6, 'day').$d, 'yyyy-MM-dd');
+    } else if (searchKw.current && searchKw.current.startdt !== '' && searchKw.current.enddt !== '') {
+      startdt = format(searchKw.current.startdt.$d, 'yyyy-MM-dd');
+      enddt = format(searchKw.current.enddt.$d, 'yyyy-MM-dd');
+    } else if (
+      (searchKw.current != null && searchKw.current.startdt === '' && searchKw.current.enddt === '') ||
+      searchKw.current === null
+    ) {
+      startdt = format(dayjs().subtract(6, 'day').$d, 'yyyy-MM-dd');
+      enddt = format(dayjs().add(6, 'day').$d, 'yyyy-MM-dd');
+    }
+
+    var url = `/api/release/list?o=${startIndexMaster.current}&l=${limit}`;
+
+    if (searchKw) {
+      url = `/api/release/list?o=${startIndexMaster.current}&l=${limit}&ic=${searchKw.current.rcode}&bn=${searchKw.current.bname}&sdt=${startdt}&edt=${enddt}`;
+    }
+
+    if (scrollend.current === true) {
+      return;
+    }
+
+    await customFetch(url, { method: 'get' }).then((json) => {
+      console.log("==== JSON DATA ===== ");
+      console.log(json.data);
+      setreleaseMaster((pre) => [...pre, ...json.data]);
+      setCheckedRow(json.data.map((item) => ({ master: item.code, state: 'f', detail: [{ no: '', state: 'f' }] })));
       // 넘어온 데이터의 master code 값 담기
-      rowColor.current = ''; // Master 행 선택 시 Background Color 변경했던 거 Clear
+      // rowColor.current = ''; // Master 행 선택 시 Background Color 변경했던 거 Clear
+  
       if (json.data !== null) {
-        setLoading(false);
+        loading.current = false;
+      }
+      if (json.data.length === 0) {
+        scrollend.current = true;
       }
 
-      setCheckedRow(json.data.map((item) => ({ master: item.code, state: 'f', detail: [{ no: '', state: 'f' }] })));
-      setreleaseDetail([{}]); // 검색 했을 때 기존에 있는 releaseDetail List Clear
+      if (state === 'search') {
+        rowColor.current = '';
+        setreleaseDetail([{}]); // 검색 했을 때 기존에 있는 releaseDetail List Clear
+      } 
+    })
+    .finally(() => {
+      startIndexMaster.current += 10;
+      setIsFetchingMaster(false);
     });
   };
 
-  // ============================ release Detail ============================
+  // ============================ Release Detail ============================
   const releaseDetailSearch = async (code) => {
     //선택한 출고의 출고번호 저장
-    setMasterCode(code);
-    setInputMaster({ date: '', businessCode: '', businessName: '', userId: '', userName: '' });
-    try {
-      const response = await fetch(`/api/release/detail?ic=${code}`, {
-        method: 'get',
-        headers: {
-          Accept: 'application/json',
-          Authorization: localStorage.getItem('token'),
-        },
+    setIsFetchingDetail(true);
+    await customFetch(`/api/release/detail?ic=${code}`, { method: 'get' }).then((json) => {
+      // console.log(json.data);
+      setreleaseDetail(json.data);
+      const isAnyNull = json.data.some((item) => item.state === null); // status 배열에서 하나라도 null이 있는지 확인합니다.
+      // console.log(isAnyNull);
+      setreleaseMaster((prevDataList) => {
+        return prevDataList.map((item) => {
+          if (item.code === code) {
+            return { ...item, disable: isAnyNull ? 'true' : 'false' }; // disable 값을 isAnyNull에 따라 설정합니다.
+          }
+          return item;
+        });
       });
 
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-
-      const json = await response.json();
-      if (json.result !== 'success') {
-        throw new Error(`${json.result} ${json.message}`);
-      }
-      setreleaseDetail(json.data);
-      rowColor.current = code; // 선택된 행 background 색상 변경
+      rowColor.current = code;
       const data = addDetailArrayHandler(json.data);
       const filteredCheckedRow = data.map((row) => {
         // detail [] 배열 중 no가 빈 값인 거 제외
@@ -193,10 +242,9 @@ const Release = () => {
         return { ...row, detail: filteredDetail };
       });
 
+      setMasterCode(code);
       setCheckedRow(filteredCheckedRow);
-    } catch (err) {
-      console.log(err);
-    }
+    });
   };
 
   // ============================ release insert ============================
@@ -310,7 +358,7 @@ const Release = () => {
       }
       setOpenDeleteModalInMaster(false); // 삭제 완료 후 모달창 제거
       setreleaseDetail([{}]); // detail 리스트도 clear
-      releaseMasterSearch(null); // master 리스트 update
+      releaseMasterSearch('load'); // master 리스트 update
     } catch (err) {
       console.log(err);
     }
@@ -401,7 +449,7 @@ const Release = () => {
       <NullModal open={openNullModal} onClose={() => setOpenNullModal(false)} />
 
       <Grid container spacing={2} style={{ marginLeft: '0px' }}>
-        <SearchBar callback={releaseMasterSearch} />
+        <SearchBar callback={releaseMasterSearch} searchKw={searchKw} />
         <ReleaseMaster
           masters={releaseMaster}
           releaseDetail={releaseDetailSearch}
@@ -418,6 +466,7 @@ const Release = () => {
           setInputMaster={setInputMaster}
           masterStateT={masterStateT}
           loading={loading}
+          releaseMasterSearch={releaseMasterSearch}
         />
         <ReleaseDetail
           details={releaseDetail}

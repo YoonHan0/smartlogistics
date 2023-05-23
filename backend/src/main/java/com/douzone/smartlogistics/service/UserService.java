@@ -24,6 +24,8 @@ public class UserService {
 		return userRepository.findByKeyword(map);
 	}
 	
+	public List<UserVo> findUserModalByKeyword(Map<String, Object> map) {
+		return userRepository.findUserModalByKeyword(map);	}
 	
 	public Boolean addUser(UserVo userVo) {
 		return userRepository.addUser(userVo);
