@@ -31,7 +31,8 @@ const TableStickyTypeCell = styled(TableCell)`
   }
 `;
 const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
-  setCheckedRow,rowColor, updatePumokList, setPumokList,modal4receiveMasterSearch }) => {
+  setCheckedRow,rowColor, updatePumokList, setPumokList,modal4receiveMasterSearch,
+  loading }) => {
 
 
 
@@ -207,7 +208,19 @@ const Modal4ReceiveMaster = ({ masters, modal4receiveDetail,checkedRow,
                 </TableRow>
               </TableHead>
               <TableBody>
-                {masters && masters.length > 0 ? (
+              {loading.current ? (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                    }}
+                  >
+                    <CircularProgress />
+                  </Box>
+                ) :
+                masters && masters.length > 0 ? (
                   masters.map((master, index) => (
                     <Modal4MasterItem
                       key={index}

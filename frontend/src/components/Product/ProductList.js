@@ -29,6 +29,7 @@ const ProductList = ({
   codeChk,
   searchEvent,
   loading,
+  productSearch,
 }) => {
   /** fetch, 즉 list를 출력하기 위한 state */
   const refForm = useRef(null);
@@ -158,7 +159,19 @@ const ProductList = ({
     setItem({ code: '', name: '', phone: '' });
     handleClose();
   };
-
+  const handleWindowScroll = (event) => {
+    const { scrollTop, clientHeight, scrollHeight } = event.target;
+    if (clientHeight + scrollTop + 10 > scrollHeight) {
+      productSearch('load');
+    }
+  };
+  useEffect(() => {
+    const tablePro = document.getElementById('table');
+    tablePro.addEventListener('scroll', handleWindowScroll);
+    return () => {
+      tablePro.removeEventListener('scroll', handleWindowScroll);
+    };
+  }, []);
   return (
     <Grid
       item
@@ -189,7 +202,7 @@ const ProductList = ({
         <Box sx={{ width: '97%', display: 'flex' }}>
           <DeleteIcon sx={{ padding: '7px', cursor: 'pointer', marginLeft: 'auto' }} onClick={handleOpen} />
         </Box>
-        <FormControl component="form" onSubmit={handleSubmit} ref={refForm}>
+        <FormControl component="form" id="table" onSubmit={handleSubmit} ref={refForm}>
           <TableContainer
             component={Paper}
             sx={{
@@ -198,9 +211,8 @@ const ProductList = ({
               paddingTop: 0,
               boxShadow: 'none',
               height: 550,
-              // marginLeft: "40px",
             }}
-            // onScroll={handleScroll}
+            onScroll={handleWindowScroll}
           >
             <Table stickyHeader size="small">
               <TableHead>

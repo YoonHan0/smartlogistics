@@ -47,29 +47,23 @@
 			SELECT id,name,phone,profile
 			FROM user
 		]]>
-		 <where>
             <choose>
                 <when test='uphone!=""'>
                     <![CDATA[
-                        phone LIKE CONCAT('%',#{uphone },'%')
+                    	WHERE (id LIKE CONCAT('%',#{ukeywd },'%')
+                        OR name LIKE CONCAT('%',#{ukeywd },'%'))
+                        AND phone LIKE CONCAT('%',#{uphone },'%')
+                    	AND state=true
                     ]]>
                 </when>
                 <otherwise>
                     <![CDATA[
-                        (id LIKE CONCAT('%',#{ukeywd },'%')
+                        WHERE (id LIKE CONCAT('%',#{ukeywd },'%')
                         OR name LIKE CONCAT('%',#{ukeywd },'%'))
                         AND state=true
                     ]]>
                 </otherwise>
             </choose>
-            <if test='ukeywd!="" and uphone!=""'>
-                <![CDATA[
-                    AND (id LIKE CONCAT('%',#{ukeywd },'%')
-                    OR name LIKE CONCAT('%',#{ukeywd },'%'))
-                    AND state=true
-                ]]>
-            </if>
-        </where>
         <![CDATA[
         OFFSET #{offset} ROWS
  		FETCH NEXT #{limit} ROWS ONLY

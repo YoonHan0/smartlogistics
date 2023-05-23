@@ -2,12 +2,12 @@ import { Button, FormControl, TextField, Box, Grid } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SerchBar = ({ callback }) => {
-  const [searchKw, setSearchKw] = useState({ pkeywd: '', psize: '' });
+const SerchBar = ({ callback, searchKw }) => {
+  const [searchTextFiled, setSearchTextFiled] = useState({ pkeywd: '', psize: '' });
   const refForm = useRef(null);
   const changeHandler = (e) => {
     const { value, name } = e.target;
-    setSearchKw((prev) => ({ ...prev, [name]: value }));
+    setSearchTextFiled((prev) => ({ ...prev, [name]: value }));
   };
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const SerchBar = ({ callback }) => {
         <span
           style={{
             backgroundColor: '#EBF2FF',
-            padding: '3px 8px',
+            padding: '2px 5px 4.5px 0',
           }}
         >
           <span
@@ -72,8 +72,9 @@ const SerchBar = ({ callback }) => {
         ref={refForm}
         onSubmit={(e) => {
           e.preventDefault();
-          callback(searchKw);
-          setSearchKw({ pkeywd: '', psize: '' });
+          searchKw.current = searchTextFiled;
+          callback('search');
+          setSearchTextFiled({ pkeywd: '', psize: '' });
         }}
         sx={{
           display: 'flex',
@@ -98,7 +99,7 @@ const SerchBar = ({ callback }) => {
             size="small"
             sx={{ paddingLeft: 2, paddingRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
-            value={searchKw.pkeywd}
+            value={searchTextFiled.pkeywd}
           />
           <label style={{ fontSize: '0.9rem' }}>규격</label>
           <TextField
@@ -108,7 +109,7 @@ const SerchBar = ({ callback }) => {
             size="small"
             sx={{ paddingLeft: 2, paddingRight: 5 }}
             InputProps={{ sx: { height: 30, width: 150 } }}
-            value={searchKw.psize}
+            value={searchTextFiled.psize}
           />
         </Box>
         <Button type="submit" variant="outlined" sx={{ marginRight: 6 }}>

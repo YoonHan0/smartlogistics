@@ -35,7 +35,7 @@ public class StockController {
 			@RequestParam(value = "user_name", required = true, defaultValue = "") String user_name,
 			@RequestParam(value = "business_name", required = true, defaultValue = "") String business_name,
 			@RequestParam(value = "code", required = true, defaultValue = "") String code) {
-	
+	if(offset <0) offset =0L;
 		System.out.println("inquiry method 실행!!!!");
 		System.out.println(offset+","+startDate+","+endDate+","+st+","+user_name+","+business_name+","+code);
 		if (!startDate.equals("") && endDate.equals("")) {
@@ -51,15 +51,8 @@ public class StockController {
 		
 		System.out.println(startDate+"///"+endDate);
 		System.out.println(offset+"///"+limit);
-		List<StockVo> dataList = stockService.findByKeyword(offset,limit, user_name, business_name, st, code, startDate, endDate);
-		String sDate = startDate;
-		String eDate = endDate;
 
-		Map<String, Object> responseData = new HashMap<>();
-		responseData.put("dataList", dataList);
-		responseData.put("sDate", sDate);
-		responseData.put("eDate", eDate);
-		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(responseData));
+		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(stockService.findByKeyword(offset,limit, user_name, business_name, st, code, startDate, endDate)));
 	}
 
 	@PostMapping("graph")

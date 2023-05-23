@@ -232,12 +232,12 @@ const MyData = ({ info, setUserInfo }) => {
     <Box
       sx={{
         display: "flex",
+
         alignItems: "center",
         marginLeft: "30px",
         marginTop: "5px",
         height: "300px",
         padding: "1%",
-        width: "95%",
       }}
     >
       <Box sx={{ width: "100%", height: "95%", display: "flex" }}>
@@ -262,7 +262,7 @@ const MyData = ({ info, setUserInfo }) => {
                 marginTop: "50px",
                 marginLeft: "15px",
                 height: "160px",
-                width: "160px",
+                width: "160px"
               }}
             />
           )}
@@ -280,7 +280,7 @@ const MyData = ({ info, setUserInfo }) => {
               position: "absolute",
               bottom: "80px",
               right: "10px",
-              cursor: "pointer",
+              cursor: "pointer"
             }}
           >
             <TextField
@@ -292,6 +292,7 @@ const MyData = ({ info, setUserInfo }) => {
               sx={{
                 marginTop: 1,
                 visibility: "hidden",
+                float: 'right'
               }}
               onChange={handleFileChange}
             />
@@ -312,22 +313,24 @@ const MyData = ({ info, setUserInfo }) => {
             marginTop: "15px",
             flex: 1,
             marginLeft: "140px",
-            width: "100%",
+            width: "100%"
           }}
         >
-          <TableContainer>
+          <TableContainer sx={{width: '70%'
+          // , float: 'right'
+          }}>
             <Table size="small" sx={{ width: "100%" }}>
               <TableBody>
                 <TableRow>
                   <TableCell
                     component="th"
                     scope="row"
-                    sx={{ backgroundColor: "#F6F7F9" }}
+                    sx={{ backgroundColor: "#F6F7F9", width: '30%' }}
                   >
                     아이디
                   </TableCell>
 
-                  <TableCell align="left">
+                  <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', width: '70%'}}>
                     <TextField
                       disabled
                       type="text"
@@ -335,7 +338,8 @@ const MyData = ({ info, setUserInfo }) => {
                       name="id"
                       variant="outlined"
                       size="small"
-                      InputProps={{ sx: { height: 30, width: 300 } }}
+                      InputProps={{ sx: { height: 30, width: '100%' } }}
+                      sx={{width: '100%'}}
                       value={info.user.sub}
                     />
                   </TableCell>
@@ -349,14 +353,15 @@ const MyData = ({ info, setUserInfo }) => {
                     비밀번호
                   </TableCell>
 
-                  <TableCell align="left" sx={{ display: "flex" }}>
+                  <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', width: '70%'}}>
                     <TextField
                       type="password"
                       id="password"
                       name="password"
                       variant="outlined"
                       size="small"
-                      InputProps={{ sx: { height: 30, width: 300 } }}
+                      InputProps={{ sx: { height: 30, width: '100%' } }}
+                      sx={{width: '100%'}}
                       onChange={(e) => onChangeHandle(e)}
                       placeholder="영어,숫자 포함 최소 9자~최대20자"
                     />
@@ -378,14 +383,15 @@ const MyData = ({ info, setUserInfo }) => {
                     비밀번호 확인
                   </TableCell>
 
-                  <TableCell align="left" sx={{ display: "flex" }}>
+                  <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', width: '70%' }}>
                     <TextField
                       type="password"
                       id="check-password"
                       name="check-password"
                       variant="outlined"
                       size="small"
-                      InputProps={{ sx: { height: 30, width: 300 } }}
+                      InputProps={{ sx: { height: 30, width: '100%' } }}
+                      sx={{width: '100%'}}
                       onChange={(e) => onChangeHandle(e)}
                       placeholder="영어,숫자 포함 최소 9자~최대20자"
                     />
@@ -407,13 +413,14 @@ const MyData = ({ info, setUserInfo }) => {
                     이름
                   </TableCell>
 
-                  <TableCell align="left" sx={{ display: "flex" }}>
+                  <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', width: '70%' }}>
                     <TextField
                       type="text"
                       id="name"
                       name="name"
                       size="small"
-                      InputProps={{ sx: { height: 30, width: 300 } }}
+                      InputProps={{ sx: { height: 30, width: '100%'} }}
+                      sx={{width: '100%'}}
                       value={userData.name || ""}
                       onChange={(e) => onChangeHandle(e)}
                     />
@@ -436,7 +443,7 @@ const MyData = ({ info, setUserInfo }) => {
                     전화번호
                   </TableCell>
 
-                  <TableCell align="left" sx={{ display: "flex" }}>
+                  <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', width: '70%' }}>
                     <TextField
                       type="text"
                       id="phone"
@@ -444,7 +451,8 @@ const MyData = ({ info, setUserInfo }) => {
                       size="small"
                       value={userData.phone || ""}
                       onChange={(e) => onChangeHandle(e)}
-                      InputProps={{ sx: { height: 30, width: 300 } }}
+                      InputProps={{ sx: { height: 30, width: '100%' } }}
+                      sx={{width: '100%'}}
                     />
                     {messages.phone != "" && (
                       <Typography
@@ -457,15 +465,16 @@ const MyData = ({ info, setUserInfo }) => {
                 </TableRow>
               </TableBody>
             </Table>
-          </TableContainer>
-          <Button
+            <Button
             type="submit"
             variant="outlined"
-            sx={{ width: 100, marginLeft: "90%", marginTop: "10px" }}
+            sx={{ float:'right', width: 100, marginTop:1}}
             onClick={validateForm}
           >
             수정
           </Button>
+          </TableContainer>
+
         </Box>
       </Box>
     </Box>

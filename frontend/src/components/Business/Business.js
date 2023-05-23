@@ -10,6 +10,7 @@ const Business = () => {
   const [businesses, setBusinesses] = useState([]);
   const [Detail, setDetail] = useState([]);
   const [item, setItem] = useState({ code: "", name: "", phone: "" });
+  const rowColor = useRef(); // 행 클릭 시 background 색상 변경 Ref
 
   /** 들어오는 값이 빈 값이면 모든 리스트 출력 / 아니면 검색어에 대한 결과값 출력 */
   const textHandleChanges = (e) => {
@@ -71,7 +72,6 @@ const Business = () => {
 
   /** Update Handler */
   const itemUpdateHandler = async (item, target) => {
-    console.log("===== update =====");
     await customFetch(`/api/business/update?bc=${target}`, {
       method: "post",
       body: JSON.stringify(item),
@@ -85,6 +85,7 @@ const Business = () => {
 
   const businessDetail = async (code) => {
     setDetail(...businesses.filter((business) => business.code === code));
+    rowColor.current = code;
   };
 
   return (
@@ -105,6 +106,7 @@ const Business = () => {
             setItem={setItem}
             searchKeyword={searchKeyword}
             loading={isFetching.current}
+            rowColor={rowColor}
           />
           <BusinessUpdate
             businessDetail={Detail}

@@ -77,10 +77,9 @@ const UserMain = ({ info }) => {
               style={{
                 marginTop: 1,
                 backgroundColor: '#EBF2FF',
-                padding: '3px',
+                padding: '2px 5px 4.5px 0',
               }}
             >
-              {/* <FontAwesomeIcon icon={faVolumeHigh} /> */}
               <span
                 style={{
                   color: 'gray',
@@ -157,74 +156,76 @@ const UserMain = ({ info }) => {
                   sx={{
                     marginLeft: '5%',
                     height: '30%',
-                    display: 'flex',
                     borderBottom: '1px solid #D9D9D9',
                     paddingBottom: '10px',
                     width: '90%',
                     paddingTop: '5%',
                   }}
                 >
-                  가장 최근 입고
-                  {receive.latestCode ? (
-                    <Typography
-                      sx={{
-                        marginLeft: 'auto',
-                        fontSize: '20px',
-                        marginTop: '6%',
-                        marginRight: '10%',
-                      }}
-                    >
-                      {receive.latestCode}
-                    </Typography>
-                  ) : (
-                    <Typography
-                      sx={{
-                        marginLeft: 'auto',
-                        fontSize: '12px',
-                        marginTop: '6%',
-                        marginRight: '10%',
-                        color: 'gray',
-                      }}
-                    >
-                      존재하는 내역이 없습니다
-                    </Typography>
-                  )}
+                  <Box sx={{ fontSize: '15px' }}>가장 최근 입고</Box>
+                  <Box>
+                    {receive.latestCode ? (
+                      <Typography
+                        sx={{
+                          textAlign: 'end',
+                          fontSize: '20px',
+                          marginTop: '1%',
+                          marginRight: '10%',
+                        }}
+                      >
+                        {receive.latestCode}
+                      </Typography>
+                    ) : (
+                      <Typography
+                        sx={{
+                          textAlign: 'end',
+                          fontSize: '10px',
+                          marginTop: '5%',
+                          marginRight: '10%',
+                          color: 'gray',
+                        }}
+                      >
+                        존재하는 내역이 없습니다
+                      </Typography>
+                    )}
+                  </Box>
                 </Box>
 
                 <Box
                   sx={{
                     marginLeft: '5%',
                     height: '30%',
-                    display: 'flex',
                     width: '90%',
                     paddingTop: '3%',
                   }}
                 >
-                  가장 오래된 입고
-                  {receive.oldestCode ? (
-                    <Typography
-                      sx={{
-                        marginLeft: 'auto',
-                        fontSize: '20px',
-                        marginTop: '6%',
-                        marginRight: '10%',
-                      }}
-                    >
-                      {receive.oldestCode}
-                    </Typography>
-                  ) : (
-                    <Typography
-                      sx={{
-                        marginLeft: 'auto',
-                        fontSize: '12px',
-                        marginTop: '8%',
-                        marginRight: '10%',
-                        color: 'gray',
-                      }}
-                    >
-                      존재하는 내역이 없습니다
-                    </Typography>
-                  )}
+                  <Box sx={{ fontSize: '15px' }}>가장 오래된 입고</Box>
+                  <Box>
+                    {receive.oldestCode ? (
+                      <Typography
+                        sx={{
+                          textAlign: 'end',
+                          fontSize: '20px',
+                          marginTop: '3%',
+                          marginRight: '10%',
+                        }}
+                      >
+                        {receive.oldestCode}
+                      </Typography>
+                    ) : (
+                      <Typography
+                        sx={{
+                          textAlign: 'end',
+                          fontSize: '10px',
+                          marginTop: '6%',
+                          marginRight: '10%',
+                          color: 'gray',
+                        }}
+                      >
+                        존재하는 내역이 없습니다
+                      </Typography>
+                    )}
+                  </Box>
                 </Box>
               </Box>
             </Box>
@@ -287,74 +288,76 @@ const UserMain = ({ info }) => {
                   sx={{
                     marginLeft: '5%',
                     height: '30%',
-                    display: 'flex',
                     borderBottom: '1px solid #D9D9D9',
                     paddingBottom: '10px',
                     width: '90%',
                     paddingTop: '5%',
                   }}
                 >
-                  가장 최근 출고
-                  {release.latestCode ? (
-                    <Typography
-                      sx={{
-                        marginLeft: 'auto',
-                        fontSize: '20px',
-                        marginTop: '6%',
-                        marginRight: '10%',
-                      }}
-                    >
-                      {release.latestCode}
-                    </Typography>
-                  ) : (
-                    <Typography
-                      sx={{
-                        marginLeft: 'auto',
-                        fontSize: '12px',
-                        marginTop: '6%',
-                        marginRight: '10%',
-                        color: 'gray',
-                      }}
-                    >
-                      존재하는 내역이 없습니다.
-                    </Typography>
-                  )}
+                  <Box sx={{ fontSize: '15px' }}>가장 최근 출고</Box>
+                  <Box>
+                    {release.latestCode ? (
+                      <Typography
+                        sx={{
+                          textAlign: 'end',
+                          fontSize: '20px',
+                          marginTop: '1%',
+                          marginRight: '10%',
+                        }}
+                      >
+                        {release.latestCode}
+                      </Typography>
+                    ) : (
+                      <Typography
+                        sx={{
+                          textAlign: 'end',
+                          fontSize: '10px',
+                          marginTop: '5%',
+                          marginRight: '10%',
+                          color: 'gray',
+                        }}
+                      >
+                        존재하는 내역이 없습니다.
+                      </Typography>
+                    )}
+                  </Box>
                 </Box>
 
                 <Box
                   sx={{
                     marginLeft: '5%',
                     height: '30%',
-                    display: 'flex',
                     width: '90%',
                     paddingTop: '3%',
                   }}
                 >
-                  가장 오래된 출고
-                  {release.oldestCode ? (
-                    <Typography
-                      sx={{
-                        marginLeft: 'auto',
-                        fontSize: '20px',
-                        marginTop: '6%',
-                        marginRight: '10%',
-                      }}
-                    >
-                      {release.oldestCode}
-                    </Typography>
-                  ) : (
-                    <Typography
-                      sx={{
-                        marginLeft: 'auto',
-                        fontSize: '12px',
-                        marginTop: '8%',
-                        marginRight: '10%',
-                        color: 'gray',
-                      }}
-                    >
-                      존재하는 내역이 없습니다.
-                    </Typography>
-                  )}
+                  <Box sx={{ fontSize: '15px' }}>가장 오래된 출고</Box>
+                  <Box>
+                    {release.oldestCode ? (
+                      <Typography
+                        sx={{
+                          textAlign: 'end',
+                          fontSize: '20px',
+                          marginTop: '3%',
+                          marginRight: '10%',
+                        }}
+                      >
+                        {release.oldestCode}
+                      </Typography>
+                    ) : (
+                      <Typography
+                        sx={{
+                          textAlign: 'end',
+                          fontSize: '10px',
+                          marginTop: '6%',
+                          marginRight: '10%',
+                          color: 'gray',
+                        }}
+                      >
+                        존재하는 내역이 없습니다.
+                      </Typography>
+                    )}
+                  </Box>
                 </Box>
               </Box>
             </Box>
@@ -387,7 +390,7 @@ const UserMain = ({ info }) => {
                   }}
                 >
                   <Box>입고 현황</Box>
-                </Typography>{' '}
+                </Typography>
                 <a style={{ textDecoration: 'none' }} href="/receive">
                   <Box sx={{ color: 'gray' }}>자세히</Box>
                 </a>
@@ -420,46 +423,46 @@ const UserMain = ({ info }) => {
                   sx={{
                     marginLeft: '5%',
                     height: '30%',
-                    display: 'flex',
                     borderBottom: '1px solid #D9D9D9',
                     paddingBottom: '10px',
                     width: '90%',
                     paddingTop: '5%',
                   }}
                 >
-                  금일 입고 건수
-                  <Typography
-                    sx={{
-                      marginLeft: 'auto',
-                      fontSize: '25px',
-                      marginTop: '6%',
-                      marginRight: '10%',
-                    }}
-                  >
-                    {receive.todayCount || 0}건
-                  </Typography>
+                  <Box sx={{ fontSize: '15px' }}>금일 입고 건수</Box>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontSize: '25px',
+                        marginRight: '10%',
+                        textAlign: 'end',
+                      }}
+                    >
+                      {receive.todayCount || 0}건
+                    </Typography>
+                  </Box>
                 </Box>
-
                 <Box
                   sx={{
                     marginLeft: '5%',
                     height: '30%',
-                    display: 'flex',
                     width: '90%',
                     paddingTop: '3%',
                   }}
                 >
-                  누적 입고 건수{' '}
-                  <Typography
-                    sx={{
-                      marginLeft: 'auto',
-                      fontSize: '25px',
-                      marginTop: '7%',
-                      marginRight: '10%',
-                    }}
-                  >
-                    {receive.totalCount || 0}건
-                  </Typography>
+                  <Box sx={{ fontSize: '15px' }}>누적 입고 건수</Box>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontSize: '25px',
+                        marginRight: '10%',
+                        textAlign: 'end',
+                        marginTop: '2%',
+                      }}
+                    >
+                      {receive.totalCount || 0}건
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
             </Box>
@@ -523,42 +526,40 @@ const UserMain = ({ info }) => {
                   sx={{
                     marginLeft: '5%',
                     height: '30%',
-                    display: 'flex',
                     borderBottom: '1px solid #D9D9D9',
                     paddingBottom: '10px',
                     width: '90%',
                     paddingTop: '5%',
                   }}
                 >
-                  금일 출고 건수
-                  <Typography
-                    sx={{
-                      marginLeft: 'auto',
-                      fontSize: '25px',
-                      marginTop: '6%',
-                      marginRight: '10%',
-                    }}
-                  >
-                    {release.todayCount || 0}건
-                  </Typography>
+                  <Box sx={{ fontSize: '15px' }}> 금일 출고 건수</Box>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontSize: '25px',
+                        marginRight: '10%',
+                        textAlign: 'end',
+                      }}
+                    >
+                      {release.todayCount || 0}건
+                    </Typography>
+                  </Box>
                 </Box>
-
                 <Box
                   sx={{
                     marginLeft: '5%',
                     height: '30%',
-                    display: 'flex',
                     width: '90%',
                     paddingTop: '3%',
                   }}
                 >
-                  누적 출고 건수{' '}
+                  <Box sx={{ fontSize: '15px' }}>누적 출고 건수</Box>
                   <Typography
                     sx={{
-                      marginLeft: 'auto',
                       fontSize: '25px',
-                      marginTop: '7%',
                       marginRight: '10%',
+                      textAlign: 'end',
+                      marginTop: '2%',
                     }}
                   >
                     {release.totalCount || 0}건

@@ -13,16 +13,20 @@ const Modal4OutItem = ({
   receivecnt,
   stockcnt,
   selectedData,
+  receiveCode,
   checked,
   chulgoItemOnChangeCheck,
   changeHandler,
   checkedButtons,
   data,
+  setData,
   outdetails,
-  no1
+  mcode1,
+  updateReceiveCnt,
+  pcode1,
   
 }) => {
-  console.log(checked)
+  console.log(mcode);
   console.log(pcode, pname, stockcnt);
   const [isOpen, setIsOpen] = useState(true);
   const handleClose = () => {
@@ -42,15 +46,36 @@ const Modal4OutItem = ({
   }, [checked]);
 
 
+  const handleBlur = () => {
+    updateReceiveCnt(count,no);
+    console.log("테에스트",count,no);
+  }
 
   console.log("뛔스트",receivecnt,stockcnt);
 
  const [count, setCount] = useState(stockcnt);
 
-  
+  const onChangeCnt=(e)=>{
+    const updatedData = data.map((item) => {
+      if (item.no === no) {
+        return {
+          ...item,
+          releaseCnt: e.target.value
+        };
+      }
+    });
+    setData(updatedData)
+    updatedData.map((a)=>{console.log("0000000", a)})
+    }
+
+
+//  const handleInputChange = (e) => {
+//   handleInputChanges(no, e.target.value);
+// };
+
   return (
     <TableRow
-      key={no||no1}
+      key={no}
       sx={{
         ":hover": {
           background: "#EFF8FF",
@@ -78,31 +103,30 @@ const Modal4OutItem = ({
           changeHandler(e.currentTarget.checked, no);
         }}  
         checked={data && data.find(item => item.no === no)?.checked}
-        disabled={no1 ? true : false}
+        // disabled={no? true : false}
         
         ref = {checkboxRef}
       />
       </TableCell>
       <TableCell>{mcode}</TableCell>
+      <TableCell>{receiveCode||""}</TableCell>
       <TableCell>{pcode}</TableCell>
       <TableCell>{pname}</TableCell>
-      <TableCell >{receivecnt}</TableCell>
       <TableCell >{stockcnt}</TableCell> {/* 주석은 이렇게 */}
+      <TableCell >
       <TextField
-  type="number"
-  id="stockcnt"
-  name="stockcnt"
-  placeholder={receivecnt}
-  onChange={(e) => {
-    setCount(e.target.value);
-  }}
-  // onBlur={handleBlur}
-  InputProps={{
-    sx: { height: 30 },
-    inputProps: { min: 0, max: receivecnt},
-  }}
+        type="number"
+        id='releaseCnt'
+        name='releaseCnt'
+        placeholder={stockcnt}
+        onChange={(e) => {onChangeCnt(e)}}
+        InputProps={{
+          sx: { height: 30 },
+          inputProps: { min: 0, max: stockcnt},
+        }}
  
 ></TextField>
+</TableCell>
     </TableRow>
   );
 };

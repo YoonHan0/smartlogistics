@@ -34,7 +34,12 @@ public class BusinessController {
 			@RequestParam(value = "offset", required = true, defaultValue = "0") Long offset,
 			@RequestParam(value = "limit", required = true, defaultValue = "0") Long limit,
 			@RequestBody BusinessVo businessVo) {
+		System.out.println(offset+"/"+limit+"/"+businessVo);
 		Map<String, Object> map = Map.of("vo",businessVo,"offset",offset,"limit",limit);
+		for(BusinessVo vo:businessService.getBusinessListByKeyword(map)) {
+			
+			System.out.println(vo);
+		}
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(JsonResult
 				.success(businessService.getBusinessListByKeyword(map)));

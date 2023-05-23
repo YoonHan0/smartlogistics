@@ -36,11 +36,10 @@
 		<![CDATA[
 			ORDER BY code ASC
 		]]>	
-		<if test='limit > 0'>
 		<![CDATA[
-		LIMIT #{offset}, #{limit}
+		OFFSET #{offset} ROWS
+		FETCH NEXT #{limit} ROWS ONLY
 		]]>	
-		</if>
 	</select>
 	
 	<insert id="insert" parameterType="map">

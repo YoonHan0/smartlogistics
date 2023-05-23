@@ -8,38 +8,40 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import dayjs from 'dayjs';
-import { format } from 'date-fns';
 
-const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearchKw }) => {
-  const [minDate, setMindate] = useState();
+const SearchBar = ({ state, setState, searchKeyword, searchKw }) => {
+  const [searchTextFiled, setSearchTextFiled] = useState({
+    startdt: '',
+    enddt: '',
+    user_name: '',
+    business_name: '',
+    code: '',
+    st:searchKw.current.st
+  });
   const refForm = useRef(null);
 
   const onChangeHandler = (e) => {
     const { value, name } = e.target;
-    setSearchKw((prev) => ({ ...prev, [name]: value }));
+    setSearchTextFiled((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAcceptStart = (date) => {
-    setSearchKw({ ...searchKw, startdt: date });
+    setSearchTextFiled({ ...searchTextFiled, startdt: date });
   };
 
   const handleAcceptEnd = (date) => {
-    setSearchKw({ ...searchKw, enddt: date });
+    setSearchTextFiled({ ...searchTextFiled, enddt: date });
   };
 
   const submit = (e) => {
     e.preventDefault();
-
+    console.log('searchTextFiled',searchTextFiled)
+    searchKw.current = searchTextFiled;
     console.log(searchKw)
-    searchKeyword(searchKw, 'search');
-    setSearchKw({ ...searchKw, user_name: '', business_name: '', code: '' });
-
-    console.log(searchKw)
+    searchKeyword('search');
+    setSearchTextFiled({ ...searchTextFiled, user_name: '', business_name: '', code: '' });
   };
 
-  useEffect(() => {
-    return () => {};
-  }, [seDate]);
   return (
     <Grid
       item
@@ -110,7 +112,7 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
           }}>
           <Button
             sx={{
-              width: '100px',
+              width: '20px',
               bgcolor: state ? '#0671F7' : '#E7E6E6',
               color: state ? '#fff' : '#000',
               borderRadius: '20px 0 0 20px',
@@ -124,7 +126,7 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
           </Button>
           <Button
             sx={{
-              width: '100px',
+              width: '20px',
               bgcolor: state ? '#E7E6E6' : '#0671F7',
               color: state ? '#000' : '#fff',
               borderRadius: '0 20px 20px 0',
@@ -197,8 +199,8 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
                       },
                     }}
                     onAccept={handleAcceptStart}
-                    value={searchKw.startdt === '' ? dayjs().subtract(6, 'day') : dayjs(searchKw.startdt)}
-                  ></DatePicker>
+                    value={searchTextFiled.startdt === '' ? dayjs().subtract(6, 'day') : dayjs(searchTextFiled.startdt)}
+                    ></DatePicker>
                   <span>~</span>
                   <DatePicker
                     readOnly={searchKw.sDate === '' || searchKw.sDate === null}
@@ -231,8 +233,8 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
                       },
                     }}
                     minDate={searchKw.startdt || dayjs().subtract(6, 'day')}                    onAccept={handleAcceptEnd}
-                    value={searchKw.enddt === '' ? dayjs().add(6, 'day') : dayjs(searchKw.enddt)}
-                  ></DatePicker>
+                    value={searchTextFiled.enddt === '' ? dayjs().add(6, 'day') : dayjs(searchTextFiled.enddt)}
+                    ></DatePicker>
                 </DemoContainer>
               </LocalizationProvider>
               <label sx={{ fontSize: '0.5rem' }}>담당자</label>
@@ -243,6 +245,7 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
                 size='small'
                 sx={{ paddingLeft: 2, paddingRight: 5 }}
                 InputProps={{ sx: { height: 30, width: 150 } }}
+                value={searchTextFiled.user_name}
               />
               <label sx={{ fontSize: '0.5rem' }}>거래처</label>
               <TextField
@@ -252,6 +255,8 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
                 size='small'
                 sx={{ paddingLeft: 2, paddingRight: 5 }}
                 InputProps={{ sx: { height: 30, width: 150 } }}
+                value={searchTextFiled.business_name}
+
               />
               <label sx={{ fontSize: '0.5rem' }}>번호</label>
               <TextField
@@ -261,10 +266,11 @@ const SearchBar = ({ seDate, state, setState, searchKeyword, searchKw, setSearch
                 size='small'
                 sx={{ paddingLeft: 2, paddingRight: 5 }}
                 InputProps={{ sx: { height: 30, width: 150 } }}
+                value={searchTextFiled.code}
               />
 
             </Box>
-            <Button type='submit' variant='outlined' sx={{ marginRight: 6 }} onClick={searchKeyword}>
+            <Button type='submit' variant='outlined' sx={{ marginRight: 6 }}>
               <SearchIcon />
             </Button>
           </FormControl>

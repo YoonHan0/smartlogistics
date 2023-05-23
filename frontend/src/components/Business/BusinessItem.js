@@ -11,16 +11,21 @@ function BusinessItem({
   checkedButtons,
   changeHandler,
   handleCheckboxClick,
+  rowColor,
 }) {
   const refCode = useRef(null);
 
   return (
     <TableRow
       sx={{
-        ":hover": {
-          background: "#EFF8FF",
-          fontWeight: 600,
-        },
+        ":hover":
+          rowColor.current === code
+            ? ""
+            : {
+                background: "#EFF8FF",
+                fontWeight: 600,
+              },
+        backgroundColor: rowColor.current === code ? "#DCF1FF" : "#FFF",
       }}
       id="searchRow"
       onClick={() => {
@@ -30,10 +35,7 @@ function BusinessItem({
       <TableCell align="center" sx={{ p: 0 }}>
         <Checkbox
           size="small"
-          onChange={(e) => {
-            console.log(`출력: ${(e.currentTarget.checked, code)}`);
-            changeHandler(e.currentTarget.checked, code);
-          }}
+          onChange={(e) => {changeHandler(e.currentTarget.checked, code)}}
           checked={checkedButtons.includes(code) ? true : false}
           onClick={handleCheckboxClick}
         />

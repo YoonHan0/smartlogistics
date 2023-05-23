@@ -31,6 +31,8 @@
 			]]>
 			</otherwise>
 		</choose>
+		OFFSET #{offset} ROWS 
+		FETCH NEXT #{limit} ROWS ONLY
 	</select>
 	
 	<select id="findByCode" resultType="productvo"

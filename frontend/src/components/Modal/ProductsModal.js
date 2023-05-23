@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   FormControl,
   Grid,
   Modal,
@@ -16,6 +17,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { customFetch } from '../custom/customFetch';
 const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }) => {
   // 추가할 List
   const [selectList, setSelectList] = React.useState([]);
@@ -25,10 +27,18 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
   const [addList, setAddList] = React.useState([]);
   // productlist
   const [products, setProducts] = useState([]);
-  const [searchKWD, setSearchKWD] = useState({ keywd: '', size: '' });
+
+  const [searchTextFiled, setSearchTextFiled] = useState({ keywd: '', size: '' });
+  const searchKw = useRef({ keywd: '', size: '' });
+
+  const [isFetching, setIsFetching] = useState(false);
+  const startIndex = useRef(0);
+  const isNotDataMore = useRef(false);
+  const form = useRef();
+  const loading = useRef(true);
 
   useEffect(() => {
-    productSearch(null);
+    productSearch();
 
     setAddList(
       // detail 객체에서 productCode, productName, productSize, productUnit  정보만 가져옴.
@@ -47,27 +57,35 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
     };
   }, [open]);
 
+  const handleWindowScroll = (event) => {
+    const { scrollTop, clientHeight, scrollHeight } = event.target;
+
+    if (clientHeight + scrollTop + 10 > scrollHeight) {
+      productSearch();
+    }
+  };
+
   // product 검색
   const productSearch = async () => {
-    var url = `/api/product/list?pk=${searchKWD.keywd}&ps=${searchKWD.size}`;
-    try {
-      const response = await fetch(url, {
-        method: 'get',
-        headers: {
-          Accept: 'application/json',
-          Authorization: localStorage.getItem('token'),
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
+    if (isFetching) {
+      return;
+    }
+    if (isNotDataMore.current) {
+      return;
+    }
+    const limit = 10;
+    var url = `/api/product/list?pk=${searchKw.current.keywd}&ps=${searchKw.current.size}&o=${startIndex.current}&l=${limit}`;
+    setIsFetching(true);
+    await customFetch(url, { method: 'get' }).then((json) => {
+      console.log(json.data);
+      if (json.data.length === limit) {
+        startIndex.current += limit;
+      } else {
+        isNotDataMore.current = true;
       }
-
-      const json = await response.json();
-      if (json.result !== 'success') {
-        throw new Error(`${json.result} ${json.message}`);
+      if (json.data !== null) {
+        loading.current = false;
       }
-      //console.log(json.data);
       const updateData = json.data.map(({ code: productCode, name: productName, size: productSize, unit: productUnit }) => ({
         productCode,
         productName,
@@ -75,24 +93,22 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
         productUnit,
       }));
       //console.log(updateData);
-      setProducts(updateData);
-    } catch (err) {
-      console.log(err);
-    }
+      setProducts((prev) => [...prev, ...updateData]);
+      setIsFetching(false);
+      // setProducts(updateData);
+    });
   };
 
   // searchbox Handler
   const onChangeHandler = (e) => {
     const { value, name } = e.target;
-    setSearchKWD((prev) => ({ ...prev, [name]: value }));
+    setSearchTextFiled((prev) => ({ ...prev, [name]: value }));
   };
 
   //selectList ,deleteList chkHandle
   const handleClick = (event, data, _list, _setList) => {
-    //console.log(data);
     let newSelected = [];
     const selectedIndex = _list.indexOf(data);
-    //console.log(`selectedIndex${selectedIndex}`);
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(_list, data);
     } else if (selectedIndex === 0) {
@@ -102,13 +118,11 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(_list.slice(0, selectedIndex), _list.slice(selectedIndex + 1));
     }
-    // console.log(`handleClick1${newSelected}`);
     _setList(newSelected);
   };
 
   // all chk
   const handleSelectAllClick = (event, _totalList, _exceptionList, _setList) => {
-    //console.log(event.target);
     if (event.target.checked) {
       const newSelected = _totalList.filter((itemA) => !_exceptionList.find((itemB) => itemB.productCode === itemA.productCode));
       _setList(newSelected);
@@ -164,9 +178,17 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
             </Grid>
             <Grid item md={8} sx={{ marginBottom: '15px' }}>
               <FormControl
+                ref={form}
                 component="form"
                 onSubmit={(e) => {
                   e.preventDefault();
+                  startIndex.current = 0;
+                  searchKw.current = searchTextFiled;
+                  isNotDataMore.current = false;
+                  loading.current = true;
+                  setProducts([]);
+                  setSearchTextFiled({ keywd: '', size: '' });
+                  form.current.reset();
                   productSearch();
                 }}
                 sx={{
@@ -186,6 +208,7 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
                   }}
                   onChange={onChangeHandler}
                   name="keywd"
+                  value={searchTextFiled.keywd || ''}
                   InputProps={{ sx: { height: 30, width: 150 } }}
                 ></TextField>
                 <label style={{ fontSize: '0.9rem' }}>규격</label>
@@ -197,6 +220,7 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
                   }}
                   onChange={onChangeHandler}
                   name="size"
+                  value={searchTextFiled.size || ''}
                   InputProps={{ sx: { height: 30, width: 150 } }}
                 ></TextField>
                 <Button type="submit" variant="outlined" sx={{ marginRight: 'auto' }}>
@@ -206,118 +230,117 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
             </Grid>
           </Grid>
           <Box sx={{ border: '1px solid #D1D1D1' }}>
-            <TableContainer sx={{ height: 200 }}>
-              <Table sx={{ width: '100%' }} aria-labelledby="tableTitle" size="small">
-                <TableHead>
-                  <TableRow
-                    sx={{
-                      backgroundColor: '#F6F7F9',
-                    }}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        onChange={(event) => {
-                          handleSelectAllClick(event, products, addList, setSelectList);
-                        }}
-                        inputProps={{
-                          'aria-label': 'select all desserts',
-                        }}
-                        checked={
-                          products.filter((item) => !addList.some((addItem) => addItem.productCode === item.productCode))
-                            .length ===
-                          selectList.filter((item) => !addList.some((addItem) => addItem.productCode === item.productCode)).length
-                        }
-                      />
-                    </TableCell>
-                    <TableCell align="center">
-                      <strong>품번</strong>
-                    </TableCell>
-                    <TableCell align="center">
-                      <strong>품명</strong>
-                    </TableCell>
-                    <TableCell align="center">
-                      <strong>규격</strong>
-                    </TableCell>
-                    <TableCell align="center">
-                      <strong>단위</strong>
-                    </TableCell>
-                    <TableCell align="center">
-                      <strong>선택</strong>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {products.map((data, index) => {
-                    const isItemSelected =
-                      addList.map((item) => item.productCode).indexOf(data.productCode) !== -1 ||
-                      selectList.map((item) => item.productCode).indexOf(data.productCode) !== -1;
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    return (
-                      <TableRow
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={data.productCode}
-                        selected={isItemSelected}
+            <FormControl component="form" id="table" sx={{ width: '100%' }}>
+              <TableContainer sx={{ height: 200 }} onScroll={handleWindowScroll}>
+                <Table stickyHeader sx={{ width: '100%' }} aria-labelledby="tableTitle" size="small">
+                  <TableHead>
+                    <TableRow
+                      sx={{
+                        backgroundColor: '#F6F7F9',
+                      }}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          onChange={(event) => {
+                            handleSelectAllClick(event, products, addList, setSelectList);
+                          }}
+                          inputProps={{
+                            'aria-label': 'select all desserts',
+                          }}
+                          checked={
+                            loading.current === false &&
+                            products.filter((item) => !addList.some((addItem) => addItem.productCode === item.productCode))
+                              .length ===
+                              selectList.filter((item) => !addList.some((addItem) => addItem.productCode === item.productCode))
+                                .length
+                          }
+                        />
+                      </TableCell>
+                      <TableCell align="center">
+                        <strong>품번</strong>
+                      </TableCell>
+                      <TableCell align="center">
+                        <strong>품명</strong>
+                      </TableCell>
+                      <TableCell align="center">
+                        <strong>규격</strong>
+                      </TableCell>
+                      <TableCell align="center">
+                        <strong>단위</strong>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {loading.current ? (
+                      <Box
                         sx={{
-                          ':hover': isItemSelected
-                            ? ''
-                            : {
-                                background: '#EFF8FF',
-                                fontWeight: 600,
-                              },
-
-                          backgroundColor: isItemSelected ? '#DCF1FF' : '#FFF',
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
                         }}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            disabled={addList.map((item) => item.productCode).indexOf(data.productCode) !== -1}
-                            onClick={(event) => {
-                              handleClick(event, data, selectList, setSelectList);
-                            }}
-                            onChange={(e) => (e.target.checked = true)}
-                            checked={isItemSelected === true}
-                            color="primary"
-                            inputProps={{
-                              'aria-labelledby': labelId,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell align="center" size="small">
-                          {data.productCode}
-                        </TableCell>
-                        <TableCell align="center" size="small">
-                          {data.productName}
-                        </TableCell>
-                        <TableCell align="center" size="small">
-                          {data.productSize}
-                        </TableCell>
-                        <TableCell align="center" size="small">
-                          {data.productUnit}
-                        </TableCell>
-                        <TableCell align="center" size="small">
-                          <Box
+                        <CircularProgress />
+                      </Box>
+                    ) : (
+                      products.map((data, index) => {
+                        const isItemSelected =
+                          addList.map((item) => item.productCode).indexOf(data.productCode) !== -1 ||
+                          selectList.map((item) => item.productCode).indexOf(data.productCode) !== -1;
+                        const labelId = `enhanced-table-checkbox-${index}`;
+                        return (
+                          <TableRow
+                            role="checkbox"
+                            aria-checked={isItemSelected}
+                            tabIndex={-1}
+                            key={data.productCode}
+                            selected={isItemSelected}
                             sx={{
-                              cursor: 'pointer',
-                              zIndex: 999,
+                              ':hover': isItemSelected
+                                ? ''
+                                : {
+                                    background: '#EFF8FF',
+                                    fontWeight: 600,
+                                  },
+
+                              backgroundColor: isItemSelected ? '#DCF1FF' : '#FFF',
                             }}
                           >
-                            추가
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {
-                    <TableRow>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  }
-                </TableBody>
-              </Table>
-            </TableContainer>
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                disabled={addList.map((item) => item.productCode).indexOf(data.productCode) !== -1}
+                                onClick={(event) => {
+                                  handleClick(event, data, selectList, setSelectList);
+                                }}
+                                onChange={(e) => (e.target.checked = true)}
+                                checked={isItemSelected === true}
+                                color="primary"
+                                inputProps={{
+                                  'aria-labelledby': labelId,
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell align="center" size="small">
+                              {data.productCode}
+                            </TableCell>
+                            <TableCell align="center" size="small">
+                              {data.productName}
+                            </TableCell>
+                            <TableCell align="center" size="small">
+                              {data.productSize}
+                            </TableCell>
+                            <TableCell align="center" size="small">
+                              {data.productUnit}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </FormControl>
           </Box>
           <Box sx={{ display: 'flex' }}>
             <Button
@@ -404,7 +427,6 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
                 <TableBody>
                   {addList && addList.length > 0 ? (
                     addList.map((data, index) => {
-                      console.log('data', data);
                       const isItemSelected = deleteList.map((item) => item.productCode).indexOf(data.productCode) !== -1;
                       const labelId = `enhanced-table-checkbox-${index}`;
                       return (

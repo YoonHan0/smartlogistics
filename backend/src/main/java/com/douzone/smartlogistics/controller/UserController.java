@@ -63,8 +63,7 @@ public class UserController {
 			@RequestParam(value = "up", required = true, defaultValue = "") String UserPhone) {
 		
 		 System.out.println(Userkeywd+":"+UserPhone);
-		 System.out.println(offset + ":" + limit);
-
+		 System.out.println(offset + ":" + limit);		 
 		Map<String, Object> map = Map.of("ukeywd",Userkeywd,"uphone",UserPhone,"offset",offset,"limit",limit);
 		System.out.println(userService.findUserModalByKeyword(map));
 		return ResponseEntity.status(HttpStatus.OK)

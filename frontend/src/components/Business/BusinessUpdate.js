@@ -75,12 +75,12 @@ function BusinessUpdate({ itemUpdateHandler, businessDetail, item, setItem }) {
               <TableCell
                 component="th"
                 scope="row"
-                sx={{ backgroundColor: '#F6F7F9', width: '70%', textAlign: 'center', fontWeight: '800' }}
+                sx={{ backgroundColor: '#F6F7F9', minWidth: '94px', width: '30%', textAlign: 'center', fontWeight: '800', padding: '6px 8px'}}
               >
                 거래처코드
               </TableCell>
 
-              <TableCell align="left">
+              <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', }}> {/* top부터 시계 방향으로 */}
                 <TextField
                   id="code"
                   name="code"
@@ -89,16 +89,21 @@ function BusinessUpdate({ itemUpdateHandler, businessDetail, item, setItem }) {
                   size="small"
                   value={item.code || ''}
                   disabled
-                  InputProps={{ sx: { height: 30, width: 260 } }}
+                  InputProps={{ sx: { height: 30, width: '100%'} }}
+                  sx={{ width: '100%', }}
+
                 />
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell component="th" scope="row" sx={{ backgroundColor: '#F6F7F9', textAlign: 'center', fontWeight: '800' }}>
+              <TableCell 
+                component="th" 
+                scope="row" 
+                sx={{ backgroundColor: '#F6F7F9', width: '30%', textAlign: 'center', fontWeight: '800' }}>
                 거래처명
               </TableCell>
 
-              <TableCell align="left" sx={{ display: 'flex' }}>
+              <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', }}>
                 <TextField
                   id="name"
                   name="name"
@@ -107,16 +112,20 @@ function BusinessUpdate({ itemUpdateHandler, businessDetail, item, setItem }) {
                   size="small"
                   value={item.name || ''}
                   onChange={changeHandler}
-                  InputProps={{ sx: { height: 30, width: 260 } }}
+                  InputProps={{ sx: { height: 30, width: '100%' } }}
+                  sx={{ width: '100%' }}
                 />
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell component="th" scope="row" sx={{ backgroundColor: '#F6F7F9', textAlign: 'center', fontWeight: '800' }}>
-                전화번호
+              <TableCell 
+                component="th" 
+                scope="row" 
+                sx={{ backgroundColor: '#F6F7F9', width: '30%', textAlign: 'center', fontWeight: '800' }}>
+                연락처
               </TableCell>
 
-              <TableCell align="left" sx={{ display: 'flex' }}>
+              <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', }}>
                 <TextField
                   id="phone"
                   name="phone"
@@ -125,7 +134,8 @@ function BusinessUpdate({ itemUpdateHandler, businessDetail, item, setItem }) {
                   size="small"
                   value={item.phone || ''}
                   onChange={changeHandler}
-                  InputProps={{ sx: { height: 30, width: 260 } }}
+                  InputProps={{ sx: { height: 30, width: '100%' } }}
+                  sx={{ width: '100%' }}
                 />
               </TableCell>
             </TableRow>
