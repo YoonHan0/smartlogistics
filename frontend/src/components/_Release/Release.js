@@ -261,7 +261,7 @@ const Release = () => {
       productName: item.pname,
       productSize: item.psize,
       productUnit: item.punit,
-      count: item.stockcnt,
+      count: item.releaseCnt,
     }));
     // 어느 Master도 클릭하지 않은 상태에서 오로지 추가만 할 때
     if (releaseDetail === null || releaseDetail === {} || releaseDetail === [] || masterCode === '') {

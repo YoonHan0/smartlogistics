@@ -30,13 +30,14 @@ const TableStickyTypeCell = styled(TableCell)`
 `;
 
 /** 조건에 맞는 리스트 주르륵 출력 */
-function List({
+function BusinessList({
   businesses,
   setBusinesses,
   businessDetail,
   setItem,
   searchKeyword,
   loading,
+  rowColor,
 }) {
   // const [newDatas, setNewDats] = useState({code: '', name:'', phone:''});
   /** fetch, 즉 list를 출력하기 위한 state */
@@ -258,12 +259,7 @@ function List({
           width: "100%",
         }}
       >
-        <Box
-          sx={{
-            width: "97%",
-            display: "flex",
-          }}
-        >
+        <Box sx={{ width: "97%", display: "flex", }}>
           <DeleteIcon
             sx={{ padding: "7px", cursor: "pointer", marginLeft: "auto" }}
             onClick={handleOpen}
@@ -279,7 +275,7 @@ function List({
             component={Paper}
             sx={{
               width: "94%",
-              padding: 3,
+              paddingLeft: 3,
               paddingTop: 0,
               boxShadow: "none",
               height: 550,
@@ -288,7 +284,7 @@ function List({
           >
             <Table stickyHeader size="small">
               <TableHead>
-                <TableRow>
+                <TableRow sx={{ height: 3 }}>
                   <TableCell
                     sx={{
                       width: "10%",
@@ -306,28 +302,16 @@ function List({
                       checked={isChecked}
                     />
                   </TableCell>
-                  <TableCell
-                    sx={{
-                      width: "10%",
-                      backgroundColor: "#F6F7F9",
-                      fontWeight: "800",
-                    }}
-                  >
+                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9", fontWeight: "800", }}>
                     순번
                   </TableCell>
-                  <TableCell
-                    sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}
-                  >
-                    거래처 아이디
+                  <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}>
+                    거래처 코드
                   </TableCell>
-                  <TableCell
-                    sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}
-                  >
+                  <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}>
                     거래처명
                   </TableCell>
-                  <TableCell
-                    sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}
-                  >
+                  <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}>
                     연락처
                   </TableCell>
                 </TableRow>
@@ -407,6 +391,7 @@ function List({
                       checkedButtons={checkedButtons}
                       changeHandler={changeHandler}
                       handleCheckboxClick={handleCheckboxClick}
+                      rowColor={rowColor}
                     />
                   ))
                 ) : (
@@ -425,4 +410,4 @@ function List({
   );
 }
 
-export default List;
+export default BusinessList;

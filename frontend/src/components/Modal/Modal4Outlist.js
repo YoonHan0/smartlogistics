@@ -41,18 +41,61 @@ const Modal4Outlist = ({
   releaseAdd,
   setIsButtonDisabled,
   isButtonDisabled,
-  outdetails }) => {
+  outdetails,
+  updateReceiveCnt }) => {
 
 
     console.log("아웃",outdetails);
 
-  const isAnyCheckedFalse = data.some(item => item.checked === false);
+  //const isAnyCheckedFalse = data.some(item => item.checked === false);
   // console.log(outdtail)
   // console.log("==== data ==== ")
   // console.log(data);
   // data: [] === checkedButtons, deleteData: [{}, {}, ...] === rendering되는 state(data)
   //  const newData = checkedButtons.filter(item => !data.some(deleteItem => deleteItem.no === item));
   // 
+
+
+  // const [stockcnt, setStockcnt] = useState(0);
+  // const [inputValue, setInputValue] = useState("");
+
+
+  // const handleInputChanges = (no, value) => {
+  //   console.log("뷀유",value);
+  //   setData((prevData) =>
+  //     prevData.map((item) => {
+  //       if (item.no === no) {
+  //         return { ...item, inputValue: value };
+
+          
+  //       }
+  //       return item;
+  //     })
+  //   );
+  // };
+
+
+
+
+
+
+  // const handleAddButtonClick = () => {
+  //   const inputNumber = parseInt(inputValue);
+  //   if (inputNumber <= stockcnt) {
+  //     setStockcnt(inputNumber);
+  //     setInputValue("");
+  //     // 추가 버튼을 눌렀을 때 stockcnt 값이 입력한 숫자보다 큰 경우에 대한 처리를 여기에 추가
+  //   } else {
+  //     alert("입력한 숫자보다 stockcnt 값이 큽니다.");
+  //   }
+  // };
+
+
+
+
+
+
+
 
   const [checkedButtons, setCheckedButtons] = useState([]); // [1, 2, 3, 4, ...]
   const [isChecked, setIsChecked] = useState(false);
@@ -62,6 +105,28 @@ const Modal4Outlist = ({
     let remainedData = data.filter((item) => !item.checked);
     setData(remainedData);
   }
+
+  // const outdata= ()=>{
+  //   if(outdetails.length > 0){
+  //     <Modal4OutItem
+  //     key={detail.no}
+  //     no1={detail.no}
+  //     mcode={detail.masterCode}
+  //     pcode={detail.productCode}
+  //     pname={detail.productName}
+  //     stockcnt={detail.count}
+  //     receivecnt={detail.receivecnt}
+  //     selectedRowData={selectedRowData}
+  //     checked={detail.checked}
+  //     chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}
+  //     checkedButtons={checkedButtons}
+  //     changeHandler={changeHandler}
+  //     data={data}
+  //     setData={setData}
+  //     outdetails={outdetails}
+  //   />
+  //   }
+  // }
 
 
 //   const filteredRows = checkedRow.filter(row =>
@@ -214,16 +279,16 @@ const Modal4Outlist = ({
                       />
                   </TableCell>
                   <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
-                    순번
+                      출고번호
+                  </TableCell>
+                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                      입고번호
                   </TableCell>
                   <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
                     품번
                   </TableCell>
                   <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
                     품명
-                  </TableCell>
-                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
-                    수량
                   </TableCell>
                   <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
                     잔량
@@ -233,39 +298,54 @@ const Modal4Outlist = ({
                   </TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
-              {outdetails && outdetails.length > 0 ? (
-  outdetails.map((detail) => (
-    <Modal4OutItem
-      key={detail.no}
-      no1={detail.no}
-      mcode={detail.masterCode}
-      pcode={detail.productCode}
-      pname={detail.productName}
-      stockcnt={detail.count}
-      receivecnt={detail.productSize}
-    />
-  ))
-) : data && data.length > 0 ? (
-  data.map((datas) => (
-    <Modal4OutItem
-      key={datas.no}
-      no={datas.no}
-      mcode={datas.mcode}
-      pcode={datas.pcode}
-      pname={datas.pname}
-      stockcnt={datas.stockcnt}
-      receivecnt={datas.receivecnt}
-      selectedRowData={selectedRowData}
-      checked={datas.checked}
-      chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}
-      checkedButtons={checkedButtons}
-      changeHandler={changeHandler}
-      data={data}
-      setData={setData}
-      outdetails={outdetails}
-    />
-  ))
+              <TableBody >
+              {data.length > 0 || outdetails.length > 0 ? (
+  <>
+    {data.map((datas) => (
+      <Modal4OutItem
+        key={datas.no}
+        no={datas.no}
+        receiveCode={datas.mcode}
+        mcode={""}
+        pcode={datas.pcode}
+        pname={datas.pname}
+        stockcnt={datas.stockcnt}
+        receivecnt={datas.receivecnt}
+        selectedRowData={selectedRowData}
+        checked={datas.checked}
+        chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}
+        checkedButtons={checkedButtons}
+        changeHandler={changeHandler}
+        data={data}
+        setData={setData}
+        outdetails={outdetails}
+        updateReceiveCnt={updateReceiveCnt}       
+        
+      />
+    ))}
+    {outdetails.map((detail) => (
+      <Modal4OutItem
+        key={detail.no}
+        no={detail.no}
+        mcode={detail.masterCode||""}
+        pcode={detail.productCode}
+        pname={detail.productName}
+        stockcnt={detail.count}
+        receivecnt={detail.receivecnt}
+        receiveCode={detail.receiveCode}
+        selectedRowData={selectedRowData}
+        checked={detail.checked}
+        chulgoItemOnChangeCheck={chulgoItemOnChangeCheck}
+        checkedButtons={checkedButtons}
+        changeHandler={changeHandler}
+        data={data}
+        setData={setData}
+        outdetails={outdetails}
+        updateReceiveCnt={updateReceiveCnt}
+        
+      />
+    ))}
+  </>
 ) : (
   <TableRow>
     <TableCell colSpan={7} sx={{ textAlign: "center" }}>
@@ -273,25 +353,6 @@ const Modal4Outlist = ({
     </TableCell>
   </TableRow>
 )}
-
-              {/* {Object.keys(data).length > 0 ? (
-                // Object.values(data).map((data) => {
-                      <Modal4OutItem
-                        key={data.no}
-                        mcode={data.mcode}
-                        pcode={data.pcode}
-                        pname={data.pname}
-                        stockcnt={data.stockcnt}
-                        selectedRowData={selectedRowData} // 수정된 부분
-                      />
-                            //  })
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} sx={{ textAlign: "center" }}>
-                    등록된 품목이 없습니다.
-                  </TableCell>
-                </TableRow>
-              )} */}
               </TableBody>
             </Table>
           </TableContainer>

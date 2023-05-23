@@ -11,7 +11,7 @@ const StockTable = ({ list, searchKw, searchKeyword, loading }) => {
     // console.log('scrollHeight', scrollHeight)
 
     if (clientHeight + scrollTop + 10 > scrollHeight) {
-      searchKeyword(searchKw,'load');
+      searchKeyword('load');
     }
   }
 
@@ -32,7 +32,7 @@ const StockTable = ({ list, searchKw, searchKeyword, loading }) => {
       <TableContainer
         component={Paper}
         sx={{
-          width: '100%',
+          width: '95%',
           paddingLeft: 5  ,
           paddingTop: 0,
           boxShadow: "none",

@@ -15,8 +15,8 @@ public class ProductService {
 	@Autowired
 	private ProductRepository productRepository;
 
-	public List<ProductVo> findByKeyword(String productkeywd, String productSize) {
-		return productRepository.findByKeyword(productkeywd, productSize);
+	public List<ProductVo> findByKeyword(String productkeywd, String productSize,Long offset,Long limit) {
+		return productRepository.findByKeyword(productkeywd, productSize,offset,limit);
 	}
 
 	public boolean insert(ProductVo vo,DBLogVo logVo) {

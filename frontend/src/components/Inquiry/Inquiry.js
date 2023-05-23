@@ -10,17 +10,19 @@ import dayjs from 'dayjs';
 const Inquiry = () => {
   const [state, setState] = useState(true);
   const [list, setList] = useState([]);
-  const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
-  const [searchKw, setSearchKw] = useState({ user_name: '', business_name: '', code: '', startdt: '', enddt: '', st:'ALL' });
+  const searchKw = useRef({ user_name: '', business_name: '', code: '', startdt: '', enddt: '', st:'ALL' });
   const [isFetching, setIsFetching] = useState(false);
   const startIndex = useRef(0);
   const scrollend = useRef(false);
   const loading = useRef(true);
-  useEffect(() => {
-    searchKeyword(searchKw, 'load');
-  }, []);
 
-  const searchKeyword = async (searchKw, _state) => {
+
+  // useEffect(() => {
+  //   searchKeyword('load')
+  // },[])
+  const searchKeyword = async (_state) => {
+    console.log('searchKw.current',searchKw.current)
+    console.log('state',_state)
     if (_state === 'search') {
       startIndex.current = 0;
       setList([]);
@@ -33,19 +35,28 @@ const Inquiry = () => {
       return;
     }
 
+    if (scrollend.current === true) {
+      return;
+    }
+
     let startdt = '';
     let enddt = '';
+    console.log(searchKw.current,searchKw.current.startdt,searchKw.current.enddt)
+    console.log(searchKw.current && searchKw.current.startdt !== '' && searchKw.current.enddt !== '')
 
-    if (searchKw && searchKw.startdt === '' && searchKw.enddt !== '') {
+    if (searchKw.current && searchKw.current.startdt === '' && searchKw.current.enddt !== '') {
       startdt = format(dayjs().subtract(6, 'day').$d, 'yyyy-MM-dd');
-      enddt = format(searchKw.enddt.$d, 'yyyy-MM-dd');
-    } else if (searchKw && searchKw.enddt === '' && searchKw.startdt !== '') {
-      startdt = format(searchKw.startdt.$d, 'yyyy-MM-dd');
+      enddt = format(searchKw.current.enddt.$d, 'yyyy-MM-dd');
+    } else if (searchKw.current && searchKw.current.enddt === '' && searchKw.current.startdt !== '') {
+      startdt = format(searchKw.current.startdt.$d, 'yyyy-MM-dd');
       enddt = format(dayjs().add(6, 'day').$d, 'yyyy-MM-dd');
-    } else if (searchKw && searchKw.startdt !== '' && searchKw.enddt !== '') {
-      startdt = format(searchKw.startdt.$d, 'yyyy-MM-dd');
-      enddt = format(searchKw.enddt.$d, 'yyyy-MM-dd');
-    } else if ((searchKw != null && searchKw.startdt === '' && searchKw.enddt === '') || searchKw === null) {
+    } else if (searchKw.current && searchKw.current.startdt !== ''&&searchKw.current.startdt && searchKw.current.enddt !== '') {
+      startdt = format(searchKw.current.startdt.$d, 'yyyy-MM-dd');
+      enddt = format(searchKw.current.enddt.$d, 'yyyy-MM-dd');
+    } else if ((searchKw.current != null && searchKw.current.startdt === '' && searchKw.current.enddt === '') || searchKw.current === null) {
+      startdt = format(dayjs().subtract(6, 'day').$d, 'yyyy-MM-dd');
+      enddt = format(dayjs().add(6, 'day').$d, 'yyyy-MM-dd');
+    }else{
       startdt = format(dayjs().subtract(6, 'day').$d, 'yyyy-MM-dd');
       enddt = format(dayjs().add(6, 'day').$d, 'yyyy-MM-dd');
     }
@@ -54,37 +65,27 @@ const Inquiry = () => {
     const limit = 20;
     console.log('startIndex', startIndex.current);
     console.log('limit', limit);
-
-    var url = `/api/inquiry/list?offset=${startIndex.current}&limit=${limit}&st=${searchKw.st}`;
+    console.log('st',searchKw.current.st)
+    var url = `/api/inquiry/list?offset=${startIndex.current}&limit=${limit}&st=${searchKw.current.st}`;
     if (searchKw) {
-      url = `/api/inquiry/list?offset=${startIndex.current}&limit=${limit}&sdt=${startdt}&edt=${enddt}&st=${searchKw.st}&user_name=${searchKw.user_name}&business_name=${searchKw.business_name}&code=${searchKw.code}`;
+      url = `/api/inquiry/list?offset=${startIndex.current}&limit=${limit}&sdt=${startdt}&edt=${enddt}&st=${searchKw.current.st}&user_name=${searchKw.current.user_name}&business_name=${searchKw.current.business_name}&code=${searchKw.current.code}`;
     }
 
     console.log(url);
 
-    if (scrollend.current === true) {
-      return;
-    }
-
     await customFetch(url, {
       method: "get",
     }).then((json) => {
-      const { dataList, sDate, eDate } = json.data;
-      console.log('dataList', dataList);
-      setList(pre => [...pre, ...dataList]);
-      setSeDate({ sDate: sDate, eDate: eDate });
+      console.log('json.data', json.data);
+      setList(pre => [...pre, ...json.data]);
 
       if (json.data !== null) {
         loading.current = false;
       }
 
       if (json.data.length === 0) {
+        
         scrollend.current = true;
-      }
-
-      if (state === 'search') {
-        rowColor.current = '';
-        setList([]);
       }
     }).finally(() => {
       startIndex.current += 20;
@@ -97,12 +98,10 @@ const Inquiry = () => {
     <Box>
       <Grid container sx={{ width: '101%', marginLeft: "0px" }}>
         <SearchBar
-          seDate={seDate}
           state={state}
           setState={setState}
           searchKeyword={searchKeyword}
           searchKw={searchKw}
-          setSearchKw={setSearchKw}
         />
         {
           state
@@ -112,7 +111,6 @@ const Inquiry = () => {
               setList={setList}
               searchKw={searchKw}
               searchKeyword={searchKeyword}
-              setSearchKw={setSearchKw}
               loading={loading}
             />
             :

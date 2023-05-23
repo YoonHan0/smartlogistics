@@ -66,7 +66,6 @@ const Receive = () => {
   const [isFetchingMaster, setIsFetchingMaster] = useState(false);
   const startIndexMaster = useRef(0);
   const [isFetchingDetail, setIsFetchingDetail] = useState(false);
-  const startIndexDetail = useRef(0);
   const limit = 10;
   const scrollend = useRef(false);
   useEffect(() => {
@@ -75,7 +74,6 @@ const Receive = () => {
 
   const toggleModal = (open, modal) => {
     if (modal === 'manager') {
-      console.log(open);
       open ? setOpenManager(false) : setOpenManager(true);
     } else if (modal === 'product') {
       open ? setOpenProduct(false) : setOpenProduct(true);
@@ -111,7 +109,6 @@ const Receive = () => {
 
   // ReceiveMaster검색
   const receiveMasterSearch = async (state) => {
-    console.log(searchKw);
     if (state === 'search') {
       startIndexMaster.current = 0;
       setreceiveMaster([]);
@@ -119,7 +116,6 @@ const Receive = () => {
       scrollend.current = false;
       setIsFetchingMaster(false);
     }
-    console.log(isFetchingMaster);
     if (isFetchingMaster) {
       return;
     }
@@ -131,7 +127,6 @@ const Receive = () => {
       startdt = format(dayjs().subtract(6, 'day').$d, 'yyyy-MM-dd');
       enddt = format(searchKw.enddt.$d, 'yyyy-MM-dd');
     } else if (searchKw.current && searchKw.current.enddt === '' && searchKw.current.startdt !== '') {
-      console.log('여기');
       startdt = format(searchKw.current.startdt.$d, 'yyyy-MM-dd');
       enddt = format(dayjs().add(6, 'day').$d, 'yyyy-MM-dd');
     } else if (searchKw.current && searchKw.current.startdt !== '' && searchKw.current.enddt !== '') {
@@ -144,19 +139,15 @@ const Receive = () => {
       startdt = format(dayjs().subtract(6, 'day').$d, 'yyyy-MM-dd');
       enddt = format(dayjs().add(6, 'day').$d, 'yyyy-MM-dd');
     }
-    console.log(startdt, enddt);
     var url = `/api/receive/list?o=${startIndexMaster.current}&l=${limit}`;
     if (searchKw) {
       url = `/api/receive/list?o=${startIndexMaster.current}&l=${limit}&rc=${searchKw.current.rcode}&bn=${searchKw.current.bname}&sdt=${startdt}&edt=${enddt}`;
     }
-    console.log(scrollend.current);
     if (scrollend.current === true) {
       return;
     }
     await customFetch(url, { method: 'get' })
       .then((json) => {
-        console.log(json.data);
-        // console.log(Array.isArray(json.data));
         setreceiveMaster((pre) => [...pre, ...json.data]);
         // 넘어온 데이터의 master code 값 담기
         setCheckedRow(
@@ -166,7 +157,6 @@ const Receive = () => {
             detail: [{ no: '', state: 'f' }],
           }))
         );
-        console.log(loading.current);
         if (json.data !== null) {
           loading.current = false;
         }
@@ -186,13 +176,11 @@ const Receive = () => {
   };
   // ReceiveDetail
   const receiveDetailSearch = async (code) => {
-    // console.log(code);
     setIsFetchingDetail(true);
     await customFetch(`/api/receive/detail?rc=${code}`, { method: 'get' }).then((json) => {
-      // console.log(json.data);
       setreceiveDetail(json.data);
       const isAnyNull = json.data.some((item) => item.state === null); // status 배열에서 하나라도 null이 있는지 확인합니다.
-      // console.log(isAnyNull);
+
       setreceiveMaster((prevDataList) => {
         return prevDataList.map((item) => {
           if (item.code === code) {
@@ -217,7 +205,6 @@ const Receive = () => {
 
   // receiveMater nullchk
   const nullChkHandler = (inputMaster) => {
-    console.log(inputMaster);
     // 아래의 값이 모두 있을경우
     if (
       inputMaster.date !== '' &&
@@ -272,7 +259,6 @@ const Receive = () => {
         /* receiveMaster,receiveDetail Add */
         // 등록 후 선택(rowColor Set)
         rowColor.current = json.data.code;
-        //console.log(json.data.receiveDetails);
         setMasterCode(json.data.code);
         setreceiveDetail(json.data.receiveDetails);
         setreceiveMaster((DetailList) => [
@@ -306,7 +292,6 @@ const Receive = () => {
         const updatedCheckedRow = checkedRow.map((row) => {
           if (row.master === masterCode) {
             const updatedDetail = row.detail.concat(json.data.map((detail) => ({ no: detail.no, state: 'f' })));
-            console.log(updatedDetail);
             return { ...row, detail: updatedDetail };
           } else {
             return row;
@@ -346,7 +331,6 @@ const Receive = () => {
   // ============================ Delete Handler ============================
   const deleteDetailHandler = async (detail) => {
     // detail: {no: [], masterCode: "", length: } / no: state가 "t"인 no값들, length: 화면에 보이는 detail의 length
-    console.log('디테일 화긴', detail);
     try {
       const response = await fetch(
         `/api/receive/deleteDetail?no=${detail.no}&masterCode=${detail.masterCode}&length=${detail.length}`,
@@ -381,9 +365,7 @@ const Receive = () => {
           setreceiveDetail(receiveDetail.filter((d) => !detail.no.includes(d.no)));
         }
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   /** Master행 클릭 시 해당하는 detail List를 불러오면서(api) checkedRow state에 데이터를 담는 함수 */

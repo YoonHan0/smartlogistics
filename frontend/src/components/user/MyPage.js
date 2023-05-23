@@ -8,7 +8,7 @@ import MyRelease from './MyRelease';
 const MyPage = ({ info, setUserInfo }) => {
   return (
     <Box>
-      <Grid container sx={{ marginLeft: '0px', marginTop: '-16px' }}>
+      <Grid container>
         <Grid item xs={12}>
           <Grid
             item
@@ -47,7 +47,7 @@ const MyPage = ({ info, setUserInfo }) => {
               <span
                 style={{
                   backgroundColor: '#EBF2FF',
-                  padding: '3px 8px',
+                  padding: '2px 5px 4.5px 0',
                 }}
               >
                 <span
@@ -63,14 +63,16 @@ const MyPage = ({ info, setUserInfo }) => {
             </Box>
           </Grid>
         </Grid>
+
         <Grid
           item
-          xs={12}
+          xs={2}
           md={12}
           sx={{
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
+            float: 'right',
             marginBottom: 3,
             backgroundColor: '#FFF',
             borderRadius: '8px',
@@ -82,26 +84,27 @@ const MyPage = ({ info, setUserInfo }) => {
             style={{
               fontSize: '18px',
               fontWeight: 800,
-              marginLeft: '380px',
+              marginLeft: '30px',
               marginTop: '30px',
             }}
           >
             나의정보
           </span>
           <MyData info={info} setUserInfo={setUserInfo} />
-          <span
-            style={{
-              fontSize: '18px',
-              fontWeight: 800,
-              marginLeft: '380px',
-              marginTop: '30px',
-            }}
-          >
-            나의활동
-          </span>
-          <Box sx={{ display: 'flex', width: '100%' }}>
-            <MyReceive info={info} />
-            <MyRelease info={info} />
+          <Box sx={{ marginLeft: "30px" }}>
+            <span
+              style={{
+                fontSize: '18px',
+                fontWeight: 800,
+                marginTop: '30px',
+              }}
+            >
+              나의활동
+            </span>
+            <Box sx={{ display: 'flex', width: '100%', marginTop:2 }}>
+              <MyReceive info={info} />
+              <MyRelease info={info} />
+            </Box>
           </Box>
         </Grid>
       </Grid>

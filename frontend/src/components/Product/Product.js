@@ -15,20 +15,49 @@ const Product = () => {
   const rowColor = useRef();
   const [codeChk, setCodeChk] = useState();
   const [loading, setLoading] = useState(true);
+
+  const [isFetching, setIsFetching] = useState(false);
+  const startIndex = useRef(0);
+  const isNotDataMore = useRef(false);
+  const form = useRef();
+  const searchKw = useRef({ pkeywd: '', psize: '' });
+
+  // const loading = useRef(true);
+
   useEffect(() => {
-    productSearch(null);
+    productSearch();
   }, []);
 
   // product 검색
-  const productSearch = async (searchKw) => {
-    var url = `/api/product/list`;
-    if (searchKw) {
-      url = `/api/product/list?pk=${searchKw.pkeywd}&ps=${searchKw.psize}`;
+  const productSearch = async (state) => {
+    if (state === 'search') {
+      startIndex.current = 0;
+      setProducts([]);
+      setLoading(true);
+      isNotDataMore.current = false;
+      setIsFetching(false);
     }
-
+    if (isFetching) {
+      return;
+    }
+    if (isNotDataMore.current) {
+      return;
+    }
+    const limit = 15;
+    var url = `/api/product/list?pk=${searchKw.current.pkeywd}&ps=${searchKw.current.psize}&o=${startIndex.current}&l=${limit}`;
+    setIsFetching(true);
     await customFetch(url, { method: 'get' }).then((json) => {
-      setProducts(json.data);
-      setLoading(false);
+      console.log(json.data);
+      if (json.data.length === limit) {
+        startIndex.current += limit;
+      } else {
+        isNotDataMore.current = true;
+      }
+      if (json.data !== null) {
+        setLoading(false);
+      }
+      setProducts((prev) => [...prev, ...json.data]);
+      setIsFetching(false);
     });
     setSearchEvent((prev) => !prev);
     setDetail([]);
@@ -47,6 +76,7 @@ const Product = () => {
           setProducts((prev) => [...prev, json.data.vo]);
           setCodeChk(true);
           alert('등록되었습니다.');
+          setSearchEvent((prev) => !prev);
         } else {
           setCodeChk(false);
           console.log(json.data.vo.state);
@@ -97,7 +127,7 @@ const Product = () => {
   return (
     <Box>
       <Grid container spacing={2} style={{ marginLeft: '0px' }}>
-        <SearchBar callback={productSearch} />
+        <SearchBar callback={productSearch} searchKw={searchKw} />
         <Box
           sx={{
             display: 'flex',
@@ -114,6 +144,7 @@ const Product = () => {
             codeChk={codeChk}
             searchEvent={searchEvent}
             loading={loading}
+            productSearch={productSearch}
           />
           <ProductUpdate productDetail={Detail} itemUpdateHandler={itemUpdateHandler} item={item} setItem={setItem} />
         </Box>

@@ -591,6 +591,7 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
               updatePumokList={updatePumokList}
               setPumokList={setPumokList}
               modal4receiveMasterSearch={modal4receiveMasterSearch}
+              loading={loading}
             />
             <Modal4ReceiveDetail details={modal4receiveDetail}
                                  pumokList={pumokList}
@@ -616,8 +617,9 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
               checkedRow={checkedRow}
               handleButtonClick={handleButtonClick}
               releaseAdd={releaseAdd}
-              // details={modal4receiveDetail}
+               details={modal4receiveDetail}
               outdetails={details}
+              updateReceiveCnt={updateReceiveCnt}
               // setIsButtonDisabled={setIsButtonDisabled}
               // isButtonDisabled={isButtonDisabled}
             />

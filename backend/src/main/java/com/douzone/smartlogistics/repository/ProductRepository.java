@@ -18,8 +18,8 @@ public class ProductRepository {
 	@Autowired
 	private SqlSession sqlSession;
 
-	public List<ProductVo> findByKeyword(String productkeywd, String productSize) {
-		Map<String, Object> map = Map.of("pkeywd",productkeywd,"psize",productSize);
+	public List<ProductVo> findByKeyword(String productkeywd, String productSize,Long offset,Long limit) {
+		Map<String, Object> map = Map.of("pkeywd",productkeywd,"psize",productSize,"offset",offset,"limit",limit);
 		return sqlSession.selectList("product.findByKeyword",map);
 	}
 	public boolean insert(ProductVo vo,DBLogVo logVo) {

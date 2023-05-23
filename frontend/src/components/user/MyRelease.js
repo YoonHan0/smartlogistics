@@ -36,7 +36,7 @@ const MyRelease = ({ info }) => {
     });
   };
   return (
-    <Grid container spacing={2} style={{ marginLeft: '30px', marginTop: '30px', width: '50%' }}>
+    <Grid item spacing={2} style={{width: '50%' }}>
       <Box sx={{ display: 'flex' }}>
         <Box
           component="img"
@@ -82,10 +82,10 @@ const MyRelease = ({ info }) => {
           <Table stickyHeader size="small">
             <TableHead>
               <TableRow sx={{ height: 3 }}>
-                <TableCell sx={{ width: '18%', backgroundColor: '#F6F7F9' }}>출고번호</TableCell>
+                <TableCell sx={{ backgroundColor: '#F6F7F9' }}>출고번호</TableCell>
                 <TableCell sx={{ backgroundColor: '#F6F7F9' }}>출고일</TableCell>
                 <TableCell sx={{ backgroundColor: '#F6F7F9' }}>거래처</TableCell>
-                <TableCell sx={{ width: '18%', backgroundColor: '#F6F7F9' }}>진행상태</TableCell>
+                <TableCell sx={{  backgroundColor: '#F6F7F9' }}>진행상태</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

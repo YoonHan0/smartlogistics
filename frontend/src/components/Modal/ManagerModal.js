@@ -17,27 +17,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import { customFetch } from '../custom/customFetch';
 
 const ManagerModal = ({ open, onClose, handleButtonClick }) => {
-  const onCloseAndClear = () => {
-    setPerson([]);
-    setSearchTextFiled({ keywd: '', phone: '' });
-    startIndex.current = 0;
-    searchKw.current = { keywd: '', phone: '' };
-    console.log('close modal');
-    onClose();
-  };
-
-  useEffect(() => {
-    const tablePro = document.getElementById('table');
-    tablePro.addEventListener('scroll', handleWindowScroll);
-    if (open === true) {
-      searchKWDfetch();
-    }
-
-    return () => {
-      tablePro.removeEventListener('scroll', handleWindowScroll);
-    };
-  }, [open]);
-
   const [person, setPerson] = useState([]);
   const [searchTextFiled, setSearchTextFiled] = useState({ keywd: '', phone: '' });
   const searchKw = useRef({ keywd: '', phone: '' });
@@ -47,8 +26,40 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
   const isNotDataMore = useRef(false);
   const form = useRef();
   const loading = useRef(true);
+
+  useEffect(() => {
+    const tablePro = document.getElementById('table');
+    tablePro.addEventListener('scroll', handleWindowScroll);
+    if (open === true) {
+      isNotDataMore.current = false;
+      searchKWDfetch();
+    }
+
+    return () => {
+      tablePro.removeEventListener('scroll', handleWindowScroll);
+    };
+  }, [open]);
+  const autoHyphen = (target) => {
+    return target
+      .replace(/[^0-9]/g, '')
+      .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, '$1-$2-$3')
+      .replace(/(\-{1,2})$/g, '');
+  };
+  const onCloseAndClear = () => {
+    setPerson([]);
+    setSearchTextFiled({ keywd: '', phone: '' });
+    startIndex.current = 0;
+    searchKw.current = { keywd: '', phone: '' };
+    onClose();
+  };
   const onChangeHandler = (e) => {
-    const { value, name } = e.target;
+    let { value, name } = e.target;
+    if (name === 'phone') {
+      if (value.length > 13) {
+        return;
+      }
+      value = autoHyphen(value);
+    }
     setSearchTextFiled((prev) => ({ ...prev, [name]: value }));
   };
   const handleWindowScroll = (event) => {
@@ -60,7 +71,6 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
   };
 
   const searchKWDfetch = async () => {
-    //console.log(searchKWD);
     if (isFetching) {
       return;
     }
@@ -68,7 +78,7 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
       return;
     }
     const limit = 10;
-    var url = `/api/user/list?uk=${searchKw.current.keywd}&us=${searchKw.current.phone}&offset=${startIndex.current}&limit=${limit}`;
+    var url = `/api/user/modallist?uk=${searchKw.current.keywd}&up=${searchKw.current.phone}&offset=${startIndex.current}&limit=${limit}`;
     setIsFetching(true);
     await customFetch(url, { method: 'get' }).then((json) => {
       if (json.data.length === limit) {
@@ -79,8 +89,6 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
       if (json.data !== null) {
         loading.current = false;
       }
-      console.log('==================================');
-      console.log(json.data);
       setPerson((prev) => [...prev, ...json.data]);
       setIsFetching(false);
       // setPerson(json.data);

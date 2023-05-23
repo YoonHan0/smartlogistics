@@ -33,11 +33,14 @@ public class ProductController {
 	@GetMapping("/list")
 	public ResponseEntity<JsonResult> readProduct(
 			@RequestParam(value = "pk", required = true, defaultValue = "") String productkeywd,
-			@RequestParam(value = "ps", required = true, defaultValue = "") String productSize) {
+			@RequestParam(value = "ps", required = true, defaultValue = "") String productSize,
+			@RequestParam(value = "o", required = true, defaultValue = "0") Long offset,
+			@RequestParam(value = "l", required = true, defaultValue = "0") Long limit
+) {
 		// System.out.println(productId+":"+productName+":"+productSize);
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(JsonResult.success(productService.findByKeyword(productkeywd, productSize)));
+				.body(JsonResult.success(productService.findByKeyword(productkeywd, productSize,offset,limit)));
 	}
 
 	// product selectDetail

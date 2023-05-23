@@ -42,7 +42,6 @@ export default function ProductUpdate({ itemUpdateHandler, productDetail, item, 
     <Grid
       item
       xs={4}
-      // boxShadow="0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)"
       sx={{
         padding: 3,
         backgroundColor: '#FFF',
@@ -66,19 +65,20 @@ export default function ProductUpdate({ itemUpdateHandler, productDetail, item, 
               <TableCell
                 component="th"
                 scope="row"
-                sx={{ backgroundColor: '#F6F7F9', width: '50%', textAlign: 'center', fontWeight: '800' }}
+                sx={{ backgroundColor: '#F6F7F9', minWidth: '94px', width: '30%', textAlign: 'center', fontWeight: '800', padding: '6px 8px' }}
               >
                 품번
               </TableCell>
 
-              <TableCell align="left">
+              <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', }}>
                 <TextField
                   type="text"
                   name="code"
                   size="small"
                   value={item.code || ''}
                   disabled
-                  InputProps={{ sx: { height: 30, width: 260 } }}
+                  InputProps={{ sx: { height: 30, width: '100%' } }}
+                  sx={{ width: '100%', }}
                 />
               </TableCell>
             </TableRow>
@@ -87,14 +87,15 @@ export default function ProductUpdate({ itemUpdateHandler, productDetail, item, 
                 품명
               </TableCell>
 
-              <TableCell align="left" sx={{ display: 'flex' }}>
+              <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', }}>
                 <TextField
                   type="text"
                   name="name"
                   value={item.name || ''}
                   onChange={changeHandler}
                   size="small"
-                  InputProps={{ sx: { height: 30, width: 260 } }}
+                  InputProps={{ sx: { height: 30, width: '100%' } }}
+                  sx={{ width: '100%' }}
                 />
               </TableCell>
             </TableRow>
@@ -103,14 +104,15 @@ export default function ProductUpdate({ itemUpdateHandler, productDetail, item, 
                 규격
               </TableCell>
 
-              <TableCell align="left" sx={{ display: 'flex' }}>
+              <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', }}>
                 <TextField
                   type="text"
                   name="size"
                   value={item.size || ''}
                   onChange={changeHandler}
                   size="small"
-                  InputProps={{ sx: { height: 30, width: 260 } }}
+                  InputProps={{ sx: { height: 30, width: '100%' } }}
+                  sx={{ width: '100%' }}
                 />
               </TableCell>
             </TableRow>
@@ -119,14 +121,15 @@ export default function ProductUpdate({ itemUpdateHandler, productDetail, item, 
                 단위
               </TableCell>
 
-              <TableCell align="left" sx={{ display: 'flex' }}>
+              <TableCell align="left" sx={{ padding: '6px 0px 6px 4px', }}>
                 <TextField
                   type="text"
                   name="unit"
                   value={item.unit || ''}
                   onChange={changeHandler}
                   size="small"
-                  InputProps={{ sx: { height: 30, width: 260 } }}
+                  InputProps={{ sx: { height: 30, width: '100%' } }}
+                  sx={{ width: '100%' }}
                 />
               </TableCell>
             </TableRow>

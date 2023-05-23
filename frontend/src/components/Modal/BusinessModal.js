@@ -24,24 +24,25 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
   const isNotDataMore = useRef(false);
   const form = useRef();
   const loading = useRef(true);
-  const [searchTextFiled, setSearchTextFiled] = useState({ keywd: '', phone: '' });
+  const [searchTextFiled, setSearchTextFiled] = useState({ code: '', phone: '' });
+
   useEffect(() => {
     const tablePro = document.getElementById('table');
     tablePro.addEventListener('scroll', handleWindowScroll);
     if (open === true) {
+      isNotDataMore.current = false;
       searchKWDfetch();
     }
-
     return () => {
       tablePro.removeEventListener('scroll', handleWindowScroll);
     };
   }, [open]);
 
   const onCloseAndClear = () => {
-    // setBusiness([]);
-    setSearchTextFiled({ keywd: '', phone: '' });
+    setBusiness([]);
+    setSearchTextFiled({ code: '', phone: '' });
     startIndex.current = 0;
-    searchKw.current = { keywd: '', phone: '' };
+    searchKw.current = { code: '', phone: '' };
     onClose();
   };
 
@@ -53,26 +54,21 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
     }
   };
 
-  const onEnterHandler = () => {
-    if (window.event.keyCode == 13) {
-      onClickHandler();
-    }
+  const autoHyphen = (target) => {
+    return target
+      .replace(/[^0-9]/g, '')
+      .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, '$1-$2-$3')
+      .replace(/(\-{1,2})$/g, '');
   };
-
-  const onClickHandler = () => {
-    startIndex.current = 0;
-    searchKw.current = searchTextFiled;
-    isNotDataMore.current = false;
-    loading.current = true;
-    setSearchTextFiled({ keywd: '', phone: '' });
-    // form.current.reset();
-
-    // setBusiness([]);
-    searchKWDfetch();
-  };
-
   const onChangeHandler = (e) => {
-    const { value, name } = e.target;
+    let { value, name } = e.target;
+
+    if (name === 'phone') {
+      if (value.length > 13) {
+        return;
+      }
+      value = autoHyphen(value);
+    }
     setSearchTextFiled((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -85,8 +81,7 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
     }
     const limit = 10;
     setIsFetching(true);
-    console.log('test');
-    await customFetch(`/api/business/search?page=${startIndex.current}&offset=${limit}`, {
+    await customFetch(`/api/business/search?offset=${startIndex.current}&limit=${limit}`, {
       method: 'post',
       body: JSON.stringify(searchKw.current),
     }).then((json) => {
@@ -98,7 +93,8 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
       if (json.data !== null) {
         loading.current = false;
       }
-      setBusiness(json.data);
+
+      setBusiness((prev) => [...prev, ...json.data]);
       setIsFetching(false);
     });
   };
@@ -131,7 +127,20 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
             거래처
           </Box>
           <Box>
-            <Box
+            <FormControl
+              ref={form}
+              component="form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                startIndex.current = 0;
+                searchKw.current = searchTextFiled;
+                isNotDataMore.current = false;
+                loading.current = true;
+                setSearchTextFiled({ code: '', phone: '' });
+                form.current.reset();
+                setBusiness([]);
+                searchKWDfetch();
+              }}
               sx={{
                 mt: 1,
                 display: 'flex',
@@ -148,8 +157,7 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
                   paddingRight: '40px',
                 }}
                 onChange={onChangeHandler}
-                onKeyUp={onEnterHandler}
-                value={setSearchTextFiled.code}
+                value={searchTextFiled.code || null}
                 name="code"
                 InputProps={{ sx: { height: 30, width: 150 } }}
               ></TextField>
@@ -161,15 +169,14 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
                   paddingRight: '40px',
                 }}
                 onChange={onChangeHandler}
-                onKeyUp={onEnterHandler}
-                value={setSearchTextFiled.phone}
+                value={searchTextFiled.phone || null}
                 name="phone"
                 InputProps={{ sx: { height: 30, width: 150 } }}
               ></TextField>
-              <Button type="submit" variant="outlined" sx={{ marginRight: 'auto' }} onClick={onClickHandler}>
+              <Button type="submit" variant="outlined" sx={{ marginRight: 'auto' }}>
                 <SearchIcon />
               </Button>
-            </Box>
+            </FormControl>
           </Box>
           <Box
             sx={{
