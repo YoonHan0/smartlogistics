@@ -6,7 +6,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import styled from "styled-components";
-import { Box, Checkbox, FormControl, Paper, Grid } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControl,
+  Paper,
+  Grid,
+  CircularProgress,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UserItem from "./Useritem";
 import AddIcon from "@mui/icons-material/Add";
@@ -29,6 +36,9 @@ const UserList = ({
   setItem,
   setDetail,
   searchKeyword,
+  loading,
+  rowColor,
+  submitError,
 }) => {
   const [checkedButtons, setCheckedButtons] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
@@ -71,10 +81,14 @@ const UserList = ({
 
   const handleClose = () => {
     setOpen(false);
+    submitError.current = "";
   };
 
   const modalMessage = () => {
     const length = checkedButtons.length;
+    if (submitError.current != "") {
+      return submitError.current;
+    }
     if (isChecked) {
       return "유저 전체를 삭제하시겠습니까?";
     }
@@ -92,7 +106,9 @@ const UserList = ({
     setCheckedButtons([]);
     setIsChecked(false);
     setItem({ id: "", name: "", phone: "" });
-    handleClose();
+    if (submitError.current == "") {
+      handleClose();
+    }
   };
 
   //회원가입 모달
@@ -120,11 +136,10 @@ const UserList = ({
     }
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     const tablePro = document.getElementById("table");
     tablePro.addEventListener("scroll", handleWindowScroll);
-    await searchKeyword.call(this);
-    await searchKeyword.call(this);
+    searchKeyword.call(this);
     return () => {
       tablePro.removeEventListener("scroll", handleWindowScroll);
     };
@@ -185,7 +200,7 @@ const UserList = ({
             component={Paper}
             sx={{
               width: "94%",
-              padding: 3,
+              paddingLeft: 3,
               paddingTop: 0,
               boxShadow: "none",
               height: 550,
@@ -194,12 +209,13 @@ const UserList = ({
           >
             <Table stickyHeader size="small">
               <TableHead>
-                <TableRow>
+                <TableRow sx={{ height: 3 }}>
                   <TableCell
                     sx={{
                       width: "10%",
                       backgroundColor: "#F6F7F9",
                       textAlignLast: "center",
+                      p: 0,
                     }}
                   >
                     <Checkbox
@@ -210,21 +226,46 @@ const UserList = ({
                       checked={isChecked}
                     />
                   </TableCell>
-                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9" }}>
+                  <TableCell
+                    sx={{
+                      width: "10%",
+                      backgroundColor: "#F6F7F9",
+                      fontWeight: "800",
+                    }}
+                  >
                     번호
                   </TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>ID</TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
+                  <TableCell
+                    sx={{ backgroundColor: "#F6F7F9", fontWeight: "600" }}
+                  >
+                    ID
+                  </TableCell>
+                  <TableCell
+                    sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}
+                  >
                     이름
                   </TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9" }}>
+                  <TableCell
+                    sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}
+                  >
                     연락처
                   </TableCell>
                 </TableRow>
                 <TableRow sx={{ height: 2, p: 0 }}></TableRow>
               </TableHead>
               <TableBody>
-                {users.length > 0 ? (
+                {loading ? (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                    }}
+                  >
+                    <CircularProgress />
+                  </Box>
+                ) : users.length > 0 ? (
                   users.map((user, index) => (
                     <UserItem
                       key={index}
@@ -236,6 +277,7 @@ const UserList = ({
                       checkedButtons={checkedButtons}
                       changeHandler={changeHandler}
                       handleCheckboxClick={handleCheckboxClick}
+                      rowColor={rowColor}
                     />
                   ))
                 ) : (

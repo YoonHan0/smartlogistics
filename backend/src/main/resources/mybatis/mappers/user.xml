@@ -38,6 +38,7 @@
             </if>
         </where>
         <![CDATA[
+        AND id!='admin'AND id!=''
         OFFSET #{offset} ROWS
  		FETCH NEXT #{limit} ROWS ONLY
         ]]>
@@ -65,6 +66,7 @@
                 </otherwise>
             </choose>
         <![CDATA[
+        AND id!='admin'AND id!=''
         OFFSET #{offset} ROWS
  		FETCH NEXT #{limit} ROWS ONLY
         ]]>
@@ -110,6 +112,11 @@
 	        SET name=#{vo.name}, phone=#{vo.phone}, profile=#{vo.profile}
 	      ]]>
 	    </when>
+	    <when test="password != '' and profile==''" >
+	      <![CDATA[
+	        SET password=#{vo.password}, name=#{vo.name}, phone=#{vo.phone}
+	      ]]>
+	    </when>
 	    <otherwise>
 	      SET id=#{ucode}, name=#{vo.name}, phone=#{vo.phone}
 	    </otherwise>
@@ -144,9 +151,17 @@
 		]]>
 	</select>
 	
+	<select id="getUserfindByIdDuplicate" resultType="uservo" parameterType="String">
+		<![CDATA[
+			SELECT id
+		    FROM user
+		    WHERE id=#{value}
+		]]>
+	</select>
+	
 	<select id="findByCodeForLocalStorage" resultType="uservo" parameterType="String">
 		<![CDATA[
-			SELECT id,password, name, profile, role
+			SELECT id, name, profile, role
 		    FROM user
 		    WHERE id=#{value} 
 		]]>

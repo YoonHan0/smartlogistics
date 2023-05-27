@@ -53,6 +53,7 @@ const ReceiveMaster = ({
   receiveMasterSearch,
 }) => {
   useEffect(() => {
+    console.log(inputMaster);
     nullChkHandler(inputMaster);
     return () => {};
   }, [inputMaster]);
@@ -198,7 +199,9 @@ const ReceiveMaster = ({
                   <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>담당자</TableCell>
                   <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>거래처</TableCell>
                   <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', fontWeight: '800' }}>진행상태</TableCell>
-                  <TableCell sx={{ width: '10%', backgroundColor: '#F6F7F9', p: 0, fontWeight: '800' }}>비고</TableCell>
+                  <TableCell sx={{ width: '15%', backgroundColor: '#F6F7F9', p: 0, fontWeight: '800', textAlign: 'center' }}>
+                    비고
+                  </TableCell>
                 </TableRow>
                 <TableRow sx={{ height: 2, p: 0 }}>
                   <TableStickyTypeCell></TableStickyTypeCell>
@@ -230,7 +233,7 @@ const ReceiveMaster = ({
                             height: '35px',
                             '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                               padding: 0,
-                              height: '30px',
+                              height: '1em',
                               width: 150,
                               marginLeft: '10px',
                             },

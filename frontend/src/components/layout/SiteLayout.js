@@ -8,7 +8,8 @@ const SiteLayout = ({ role, children, page, info }) => {
       sx={{
         position: "absolute",
         width: "100%",
-        minWidth: '1460px',
+        // minWidth: '1460px',
+        minWidth: '1634px',
         height: "100%",
         display: "flex",
         backgroundColor: "#F6F6F6",

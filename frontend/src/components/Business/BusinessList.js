@@ -7,6 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Swal from 'sweetalert2';
 import {
   TextField,
   Box,
@@ -38,6 +39,7 @@ function BusinessList({
   searchKeyword,
   loading,
   rowColor,
+  setDetail,
 }) {
   // const [newDatas, setNewDats] = useState({code: '', name:'', phone:''});
   /** fetch, 즉 list를 출력하기 위한 state */
@@ -69,8 +71,8 @@ function BusinessList({
   const changeHandler = (checked, code) => {
     checked
       ? setCheckedButtons([...checkedButtons, code])
-      : // 클릭된 'code'랑 같으면 제거해서 새로운 배열을 만듬
-        setCheckedButtons(checkedButtons.filter((el) => el !== code));
+      : setCheckedButtons(checkedButtons.filter((el) => el !== code));
+      // 클릭된 'code'랑 같으면 제거해서 새로운 배열을 만듬
     if (isChecked) {
       setIsChecked(false);
     }
@@ -147,6 +149,7 @@ function BusinessList({
         refForm.current.reset();
         setPhone("");
         alert("등록되었습니다.");
+        setDetail([]);
       } else {
         setCodeChk(false);
         console.log(json.data.vo.state);
@@ -168,11 +171,28 @@ function BusinessList({
     })
       .filter(({ n }) => n !== "")
       .reduce((res, { n, v }) => {
-        // console.log(`res: ${res}, n: ${n}, v: ${v}`);
+        
         if (v === "") {
           if (isCheck.current) {
             isCheck.current = false;
             document.getElementById(n).focus();
+          }
+        }
+        if(n === "name" && v.length > 20) {
+          if (isCheck.current) {
+            isCheck.current = false;
+            Swal.fire({
+              icon: 'warning',                         // Alert 타입
+              title: '글자 수 제한',         // Alert 제목
+              text: '거래처명은 20자 이내로 입력해주세요.',  // Alert 내용
+              width: '500px', // 너비 수정, 기본값이 500인듯
+              customClass: {
+                
+              }
+            }).then(() => {
+              document.getElementById(n).focus(); // 포커스 이동
+            });
+            document.getElementById(n).value = "";
           }
         }
         res[n] = v;
@@ -232,6 +252,14 @@ function BusinessList({
     handleClose();
   };
 
+  const swal = (icon, title, text) => {
+    Swal.fire({
+      icon: icon,                         // Alert 타입
+      title: title,         // Alert 제목
+      text: text,  // Alert 내용
+      width: '500px', // 너비 수정, 기본값이 500인듯
+    })
+  }
   return (
     <Grid
       item
@@ -259,7 +287,7 @@ function BusinessList({
           width: "100%",
         }}
       >
-        <Box sx={{ width: "97%", display: "flex", }}>
+        <Box sx={{ width: "97%", display: "flex" }}>
           <DeleteIcon
             sx={{ padding: "7px", cursor: "pointer", marginLeft: "auto" }}
             onClick={handleOpen}
@@ -302,16 +330,28 @@ function BusinessList({
                       checked={isChecked}
                     />
                   </TableCell>
-                  <TableCell sx={{ width: "10%", backgroundColor: "#F6F7F9", fontWeight: "800", }}>
+                  <TableCell
+                    sx={{
+                      width: "10%",
+                      backgroundColor: "#F6F7F9",
+                      fontWeight: "800",
+                    }}
+                  >
                     순번
                   </TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}>
+                  <TableCell
+                    sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}
+                  >
                     거래처 코드
                   </TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}>
+                  <TableCell
+                    sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}
+                  >
                     거래처명
                   </TableCell>
-                  <TableCell sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}>
+                  <TableCell
+                    sx={{ backgroundColor: "#F6F7F9", fontWeight: "800" }}
+                  >
                     연락처
                   </TableCell>
                 </TableRow>

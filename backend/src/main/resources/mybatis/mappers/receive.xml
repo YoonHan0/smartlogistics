@@ -121,16 +121,13 @@ OFFSET #{offset} ROWS
        r.receive_count, r.release_count, (r.receive_count - r.release_count) AS stock_count,
        CASE
            WHEN (r.receive_count - r.release_count > 0 AND r.release_count > 0) THEN "진행"
-           WHEN (r.receive_count > 0 AND r.receive_count - r.release_count = 0 AND r.receive_count > 0) THEN NULL
+           WHEN (r.receive_count > 0 AND r.receive_count - r.release_count = 0 AND r.receive_count > 0) THEN "완료"
            WHEN (r.receive_count > 0 AND r.release_count = 0) THEN "대기"
        END AS state
-FROM receive_detail r
-INNER JOIN product p ON r.product_code = p.code
-WHERE r.master_code = #{rcode} AND (r.receive_count - r.release_count) != 0;
-
-
-
-
+			FROM receive_detail r
+	  INNER JOIN product p ON r.product_code = p.code
+		   WHERE r.master_code = #{rcode} 
+		     AND state!="완료"
 		]]>
 	</select>
 	

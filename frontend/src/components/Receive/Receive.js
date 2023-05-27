@@ -150,13 +150,14 @@ const Receive = () => {
       .then((json) => {
         setreceiveMaster((pre) => [...pre, ...json.data]);
         // 넘어온 데이터의 master code 값 담기
-        setCheckedRow(
-          json.data.map((item) => ({
+        setCheckedRow((pre) => [
+          ...pre,
+          ...json.data.map((item) => ({
             master: item.code,
             state: 'f',
             detail: [{ no: '', state: 'f' }],
-          }))
-        );
+          })),
+        ]);
         if (json.data !== null) {
           loading.current = false;
         }
@@ -213,6 +214,7 @@ const Receive = () => {
       inputMaster.userId !== '' &&
       inputMaster.userName !== ''
     ) {
+      console.log(inputMaster);
       setInputMaster(inputMaster);
       // 새로운 product를 추가 하기 전에 reset
       setreceiveDetail([]);
@@ -324,7 +326,7 @@ const Receive = () => {
       } else {
         setOpenDeleteModalInMaster(false); // 삭제 완료 후 모달창 제거
         setreceiveDetail([{}]); // detail 리스트도 clear
-        receiveMasterSearch(null); // master 리스트 update
+        receiveMasterSearch('search'); // master 리스트 update
       }
     });
   };

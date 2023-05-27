@@ -75,36 +75,32 @@ const Header = ({ info }) => {
           }}
           // onClick={() => (window.location.href = "/mypage")}
         >
-          <ListItemButton
-            component={NavLink}
-            to={"/mypage"}
-            sx={{
-              float: "right",
-              p: 0,
-              marginRight: -1.5,
-            }}
-          >
-            {/* <span style={{ backgroundImage: `url(${info.profile})` }}/> */}
-            <Avatar
-              alt="img"
-              src={localStorage.getItem("profile")}
-              sx={{ marginRight: 1 }}
-            />
-            {/*<img src={info.profile} width="20px" height="20px" alt="img" /> */}{" "}
-            {/* 이미지는 DB에 어떻게 저장되냐에 따라서 경로를 추가해주면 될듯 */}
-            {info.user.jwt === "admin" ? (
-              <Box sx={{ display: "flex" }}>
-                <Box sx={{ fontWeight: "bold" }}>{info.name}</Box>
-                <Box sx={{ marginLeft: 1 }}>관리자님</Box>
-              </Box>
-            ) : (
+          {/* <span style={{ backgroundImage: `url(${info.profile})` }}/> */}
+          {/*<img src={info.profile} width="20px" height="20px" alt="img" /> */}{" "}
+          {/* 이미지는 DB에 어떻게 저장되냐에 따라서 경로를 추가해주면 될듯 */}
+          {info.user.jwt === "user" ? (
+            <ListItemButton
+              component={NavLink}
+              to={"/mypage"}
+              sx={{
+                float: "right",
+                p: 0,
+                marginRight: -1.5,
+              }}
+            >
+              <Avatar
+                alt="img"
+                src={localStorage.getItem("profile")}
+                sx={{ marginRight: 1 }}
+              />
+
               <Box sx={{ display: "flex" }}>
                 <Box sx={{ fontWeight: "bold" }}>{info.name}</Box>
                 <Box>님</Box>
               </Box>
-            )}
-            {/* role을 보고 'admin'이면 name+관리자님 | 'user'이면 name+사용자님 */}
-          </ListItemButton>
+            </ListItemButton>
+          ) : undefined}
+          {/* role을 보고 'admin'이면 name+관리자님 | 'user'이면 name+사용자님 */}
         </Box>
       </Box>
     </Box>

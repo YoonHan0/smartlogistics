@@ -105,8 +105,9 @@ const Business = () => {
             businessDetail={businessDetail}
             setItem={setItem}
             searchKeyword={searchKeyword}
-            loading={isFetching.current}
+            loading={isFetching}
             rowColor={rowColor}
+            setDetail={setDetail}
           />
           <BusinessUpdate
             businessDetail={Detail}

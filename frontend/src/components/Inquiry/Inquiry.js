@@ -16,10 +16,6 @@ const Inquiry = () => {
   const scrollend = useRef(false);
   const loading = useRef(true);
 
-
-  // useEffect(() => {
-  //   searchKeyword('load')
-  // },[])
   const searchKeyword = async (_state) => {
     console.log('searchKw.current',searchKw.current)
     console.log('state',_state)
@@ -102,6 +98,8 @@ const Inquiry = () => {
           setState={setState}
           searchKeyword={searchKeyword}
           searchKw={searchKw}
+          // searchTextFiled={searchTextFiled}
+          // setSearchTextFiled={setSearchTextFiled}
         />
         {
           state
@@ -112,6 +110,7 @@ const Inquiry = () => {
               searchKw={searchKw}
               searchKeyword={searchKeyword}
               loading={loading}
+              // setSearchTextFiled={setSearchTextFiled}
             />
             :
             <Graph />

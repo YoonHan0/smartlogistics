@@ -101,7 +101,7 @@ const DetailItem = ({
       </TableCell>
       <TableCell>{index + 1}</TableCell>
       <TableCell>{pcode}</TableCell>
-      <TableCell>{pname}</TableCell>
+      <TableCell title={pname}>{pname.length > 10 ? pname.substring(0, 10) + '...' : pname}</TableCell>
       <TableCell>{psize}</TableCell>
       <TableCell>{putil}</TableCell>
       <TableCell>

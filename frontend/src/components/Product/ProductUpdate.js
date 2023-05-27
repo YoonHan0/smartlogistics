@@ -36,7 +36,35 @@ export default function ProductUpdate({ itemUpdateHandler, productDetail, item, 
   };
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    itemUpdateHandler(item, target);
+    // if(Object.values(item).some(value => value === '')) {
+    //   alert("빈 값이 존재합니다!");
+    //   setItem({
+    //     code: productDetail.code,
+    //     name: productDetail.name,
+    //     size: productDetail.size,
+    //     unit: productDetail.unit,
+    //   });
+    // }
+    if(item.name === "" || item.name.length > 20) {
+      alert("품명 필수 값이며 최대 20자입니다.");
+      setItem({
+        ...item,
+        name: productDetail.name,
+      });
+    }
+    else if(item.size === "" || item.unit === "") {
+      alert("규격 또는 단위가 빈 값입니다!");
+      setItem({
+        ...item,
+        size: productDetail.size,
+        unit: productDetail.unit,
+      });
+    }
+    else {  // 빈 값이 없으면 === 모두 채워져있으면: (Object.values(item).every(value => value !== ''))
+      alert("수정이 완료되었습니다!");
+      itemUpdateHandler(item, target);
+    }
+    
   };
   return (
     <Grid

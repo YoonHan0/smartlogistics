@@ -231,7 +231,7 @@ const ReceiveMaster = ({
                             height: '35px',
                             '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                               padding: 0,
-                              height: 30,
+                              height: '1em',
                               width: 150,
                               marginLeft: '10px',
                             },

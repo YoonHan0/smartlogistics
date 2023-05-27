@@ -158,7 +158,7 @@ const SerchBar = ({ callback, searchKw }) => {
                   overflow: 'hidden',
                   '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                     padding: 0,
-                    height: 30,
+                    height: '1em',
                     width: 105,
                     marginLeft: '10px',
                   },
@@ -191,7 +191,7 @@ const SerchBar = ({ callback, searchKw }) => {
                   overflow: 'hidden',
                   '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                     padding: 0,
-                    height: 30,
+                    height: '1em',
                     width: 105,
                     marginLeft: '10px',
                   },

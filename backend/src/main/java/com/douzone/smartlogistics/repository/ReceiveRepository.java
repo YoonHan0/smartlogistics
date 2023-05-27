@@ -88,17 +88,17 @@ public class ReceiveRepository {
 
 	/* Master Item 삭제 */
 	public boolean deleteMasterItem(List<String> masterNo) {
-		return 1 == sqlSession.delete("receive.deleteMasterItem", masterNo);
+		return 0 < sqlSession.delete("receive.deleteMasterItem", masterNo);
 	}
 
 	/* Master Item이 삭제되면서 detail Item 삭제 */
 	public boolean deleteDetailByMasterNo(List<String> masterNo) {
-		return 1 == sqlSession.delete("receive.deleteDetailByMasterNo", masterNo);
+		return 0 < sqlSession.delete("receive.deleteDetailByMasterNo", masterNo);
 	}
 
 	/* Detail Item 삭제 */
 	public boolean deleteDetailItem(List<Integer> detailNo) {
-		return 1 == sqlSession.delete("receive.deleteDetailItem", detailNo);
+		return 0 < sqlSession.delete("receive.deleteDetailItem", detailNo);
 	}
 
 	public boolean deleteMasterByDetailNo(String masterCode) {
@@ -116,12 +116,12 @@ public class ReceiveRepository {
 	}
 	
 	public boolean deleteStockByMasterCode(List<String> masterCode) {
-		return 1 == sqlSession.delete("receive.stockDeleteByMasterCode", masterCode);
+		return 0 < sqlSession.delete("receive.stockDeleteByMasterCode", masterCode);
 	}
 
 	public boolean deleteStockByDetailNo(String masterCode, List<Integer> detailNo) {
 		Map<String, Object> map = Map.of("code", masterCode, "no", detailNo);
-		return 1 == sqlSession.delete("receive.stockDeleteByDetailNo", map);
+		return 0 < sqlSession.delete("receive.stockDeleteByDetailNo", map);
 	}
 
 	

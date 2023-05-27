@@ -81,8 +81,6 @@ const AdminRoute = ({ role, info, setUserInfo }) => {
               />
             </>
           ) : undefined}
-
-          <Route path="*" element={layout(<Error404 />)} />
         </Routes>
       </Router>
     </Box>

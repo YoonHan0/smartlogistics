@@ -1,4 +1,4 @@
-import { Box, Checkbox, TableCell, TableRow, Button,TextField } from "@mui/material";
+import { Box, Checkbox, TableCell, TableRow, Button, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Modal4OutItem from './Modal4OutItem';
 import Modal4 from "./Modal4";
@@ -23,6 +23,7 @@ const Modal4DetailItem = ({
   setCheckedRow,
   data,
   setData,
+  outdetails,
   textClick,
   modal4receiveDetail,
   setreceiveDetail,
@@ -33,7 +34,8 @@ const Modal4DetailItem = ({
   setIsButtonDisabled,
   graybutton,
   disabled,
-  isInChulgo
+  isInChulgo,
+  allCheckboxesDisabled
 }) => {
 
   const [isEditing, setIsEditing] = useState(false);
@@ -43,32 +45,32 @@ const Modal4DetailItem = ({
   const [selectedRowData, setSelectedRowData] = useState(null); // 선택된 행 데이터 추가
   const [newdata, setnewdata] = useState(null);
   // const [count, setCount] = useState(stockcnt);
-  const [clickedItems,setClickedItems] = useState();
-  const [disable,setDisable] = useState();
+  const [clickedItems, setClickedItems] = useState();
+  const [disable, setDisable] = useState();
+
+  console.log('data', data)
+  console.log('outdetails', outdetails)
+  // const [value, setValue] = useState(0);
+  // const max = receivecnt;
+
+  // const handleInputChange = (event) => {
+  //   const inputValue = count;
+  //   if (inputValue <= max) {
+  //     setValue(inputValue);
+  //   } else {
+  //     setValue(max);
+  //   }
+  // }
 
 
 
-    // const [value, setValue] = useState(0);
-    // const max = receivecnt;
 
-    // const handleInputChange = (event) => {
-    //   const inputValue = count;
-    //   if (inputValue <= max) {
-    //     setValue(inputValue);
-    //   } else {
-    //     setValue(max);
-    //   }
-    // }
+  // useEffect(() => {
+  //   console.log("===== find 확인 ===== ");
+  //   console.log(no,data)
+  //   console.log(data.filter((item)=> {item.no === no}));
 
-
-
-
-// useEffect(() => {
-//   console.log("===== find 확인 ===== ");
-//   console.log(no,data)
-//   console.log(data.filter((item)=> {item.no === no}));
-
-// }, [data]);
+  // }, [data]);
 
 
 
@@ -82,8 +84,8 @@ const Modal4DetailItem = ({
 
 
   const handleBlur = () => {
-    updateReceiveCnt(count,no);
-    console.log("테에스트",count,no);
+    updateReceiveCnt(count, no);
+    console.log("테에스트", count, no);
   }
 
   const updatedCheckedRow = (e) => checkedRow.map((row) => {
@@ -127,11 +129,7 @@ const Modal4DetailItem = ({
   //   return item && item.checked;
   // };
 
-
-
-    // console.log("가가가가",updatedDetail)
   return (
-
     <TableRow
       key={no}
       sx={{
@@ -142,30 +140,37 @@ const Modal4DetailItem = ({
         "&.Mui-selected": {
           backgroundColor: "#000",
         },
+        ...(checkedRow.filter(row => row.master === mcode && row.state === "t" && !row.detail.every(item => item.state === "t")).length > 0 || isInChulgo ? { background: "#EFF8FF" } : {}),
       }}
       id="searchRow"
-
     >
-      <TableCell  sx={{ p: 0 }}>
-      <Checkbox
-            size="small"
-            onChange={(e) => {
 
-              setCheckedRow(updatedCheckedRow(e));
-            }}
-            checked={checkedRow.filter(row => (row.master === mcode && row.state === 't') || (row.detail.some(detail => detail.no === code && detail.state === 't'))).length > 0 ? true : false}
-            disabled={checkedRow.filter(row => row.master === mcode && row.state === "t" && !row.detail.every(item => item.state === "t")).length > 0 ? true : (isInChulgo? true : false)}
+      <TableCell sx={{ p: 0 }}>
+        <Checkbox
+          size="small"
+          onChange={(e) => {
+            setCheckedRow(updatedCheckedRow(e));
+          }}
+          checked={checkedRow.filter(row => (row.master === mcode && row.state === 't') || (row.detail.some(detail => detail.no === code && detail.state === 't'))).length > 0 ? true : false}
+          disabled={
+            (checkedRow.filter(row => row.master === mcode && row.state === "t"
+              && !row.detail.every(item => item.state === "t")).length > 0)
+              || ((data.filter(row => (row.receiveCode === mcode && row.productCode === pcode )).length>0)
+              && (outdetails.filter(row => (row.receiveCode === mcode && row.productCode === pcode )).length>0))
+              ?
+              true : (isInChulgo ? true : false)}
         />
       </TableCell>
-      <TableCell>{index+1}</TableCell>
+      <TableCell>{index + 1}</TableCell>
       <TableCell>{pcode}</TableCell>
-      <TableCell>{pname}</TableCell>
+      {/* <TableCell>{outdetails.filter(row => (row.receiveCode === mcode && row.productCode === pcode )).length }</TableCell> */}
+      <TableCell>{pname.length > 10 ? pname.substring(0, 10) + '...' : pname}</TableCell>
       <TableCell>{psize}</TableCell>
       <TableCell>{putil}</TableCell>
       <TableCell>{receivecnt}</TableCell>
       <TableCell>
         {stockcnt}
-      {/* <TextField
+        {/* <TextField
   // type="number"
   // id="stockcnt"
   // name="stockcnt"
@@ -181,7 +186,7 @@ const Modal4DetailItem = ({
  
 ></TextField> */}
       </TableCell>
-          {/* <Button onClick={() => {
+      {/* <Button onClick={() => {
             // const isDuplicateNo = clickedItems.some(item => item.no === no);
           if ( receivecnt >= stockcnt) {
              // 중복된 no가 있거나 receivecnt가 stockcnt 이상인 경우 함수를 실행하지 않음
@@ -199,7 +204,6 @@ const Modal4DetailItem = ({
           >저장</Button> */}
 
     </TableRow>
-
   );
 };
 export default Modal4DetailItem;

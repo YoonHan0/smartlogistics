@@ -28,9 +28,9 @@ const MasterItem = ({
   } else if (state === '진행') {
     bgcolor.current = '#B3BFF7';
   }
-  // useEffect(() => {
-  //   console.log(`disable****${disable}`);
-  // }, []);
+  useEffect(() => {
+    console.log('exit****', exit === '1');
+  }, []);
   return (
     <TableRow
       key={no}
@@ -71,7 +71,7 @@ const MasterItem = ({
       </TableCell>
       <TableCell id="code">{code}</TableCell>
       <TableCell>{date}</TableCell>
-      <TableCell>{exit === '1' ? username : username + '(퇴사자)'}</TableCell>
+      <TableCell>{exit === '0' ? username + '(퇴사자)' : username}</TableCell>
       <TableCell>{businessname}</TableCell>
       <TableCell>
         <Box

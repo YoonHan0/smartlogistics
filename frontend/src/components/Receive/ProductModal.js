@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Modal2 from "../Modal/Modal2";
 import Modal3 from "../Modal/scroll";
 import Modal4 from "../Modal/Modal4";
-import ManagerModal from "../Modal/ManagerModal";
+// import ManagerModal from "../Modal/ManagerModal";
 
 const ProductModal = () => {
   const [open2, setOpen2] = useState(false);
@@ -32,7 +32,7 @@ const ProductModal = () => {
         <Button onClick={() => toggleModal(open5, setOpen5)}>
           OPEN MANAGER
         </Button>
-        <ManagerModal open={open5} onClose={() => setOpen5(false)} />
+        {/* <ManagerModal open={open5} onClose={() => setOpen5(false)} /> */}
       </Box>
     </Box>
   );

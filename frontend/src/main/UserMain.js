@@ -6,6 +6,7 @@ import Donut from '../components/chart/Donut';
 import { customFetch } from '../components/custom/customFetch';
 import DateGraph from '../components/Inquiry/DateGraph';
 import jwt_decode from 'jwt-decode';
+import hello from '../assets/img/helloman.png';
 
 const UserMain = ({ info }) => {
   const [receive, setReceive] = useState({});
@@ -71,7 +72,12 @@ const UserMain = ({ info }) => {
                 marginRight: '15px',
               }}
             >
-              <Box>{`안녕하세요  ${info.name}님 🙋‍♂️`}</Box>
+
+              <Box sx={{ display: 'flex' }}>
+                {`안녕하세요  ${info.name}님 `}
+                <Box component="img" src={hello} sx={{ paddingLeft: '15px', width: '40px' }} />
+              </Box>
+
             </Typography>
             <span
               style={{

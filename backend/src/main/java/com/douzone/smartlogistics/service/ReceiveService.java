@@ -79,12 +79,16 @@ public class ReceiveService {
 	@Transactional
 	public boolean deleteMasterItem(List<String> masterCode) {
 		if(receiveRepository.checkStateReceiveByMasterCode(masterCode)) {		// release_count가 0이 아니면 대기가 아니라는 말이니까 동작X
-			System.out.println("===== 대기 상태가 아닌 데이터가 존재함! ===== ");
+			System.out.println("\n\n===== 대기 상태가 아닌 데이터가 존재함! ===== \n\n");
 			return false;
 		} else {
-			boolean isDeleteMasterSuccess = receiveRepository.deleteMasterItem(masterCode);
-			boolean isDeleteDetailSuccess = receiveRepository.deleteDetailByMasterNo(masterCode);
 			boolean isDeleteStock = receiveRepository.deleteStockByMasterCode(masterCode);
+			boolean isDeleteDetailSuccess = receiveRepository.deleteDetailByMasterNo(masterCode);
+			boolean isDeleteMasterSuccess = receiveRepository.deleteMasterItem(masterCode);
+
+			System.out.println("\n" + isDeleteMasterSuccess);
+			System.out.println(isDeleteDetailSuccess);
+			System.out.println(isDeleteStock + "\n");
 			return isDeleteMasterSuccess && isDeleteDetailSuccess && isDeleteStock;
 		}
 		
@@ -101,6 +105,10 @@ public class ReceiveService {
 		} else {
 			boolean isDeleteDetailSuccess = receiveRepository.deleteDetailItem(detailNo);
 			boolean isDeleteStock = receiveRepository.deleteStockByDetailNo(masterCode, detailNo);
+			
+			System.out.println("\n\n" + isDeleteDetailSuccess);
+			System.out.println(isDeleteStock + "\n\n");
+			
 			return (detailNo.size() == length)
 					? (isDeleteDetailSuccess && receiveRepository.deleteMasterByDetailNo(masterCode) && isDeleteStock)
 					: isDeleteDetailSuccess && isDeleteStock;

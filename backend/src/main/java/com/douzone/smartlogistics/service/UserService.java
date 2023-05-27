@@ -57,5 +57,8 @@ public class UserService {
 	public boolean deleteUsers(String[] data) {
 		return userRepository.deleteUsers(data);
 	}
+	public UserVo getUserfindByIdDuplicate(String id) {
+		return userRepository.getUserfindByIdDuplicate(id);
+	}
 
 }

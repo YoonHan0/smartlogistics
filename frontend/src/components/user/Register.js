@@ -59,6 +59,7 @@ const Register = ({ open, onClose, itemAddHandler }) => {
       id === "" ||
       password === "" ||
       name === "" ||
+      name.length > 12 ||
       phone === "" ||
       password !== checkPassword ||
       !/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{0,12}$/g.test(id) ||
@@ -79,16 +80,12 @@ const Register = ({ open, onClose, itemAddHandler }) => {
 
   const registerUser = async (file) => {
     const formData = new FormData();
-    formData.append("id", document.getElementById("id").value);
-    formData.append(
-      "password",
-      sha256(document.getElementById("password").value)
-    );
+    formData.append("id", id);
+    formData.append("password", sha256(password));
     formData.append("name", document.getElementById("username").value);
     formData.append("phone", phone);
     formData.append("role", "user");
     formData.append("file", file);
-
     return await itemAddHandler(formData);
   };
   return (
@@ -202,7 +199,11 @@ const Register = ({ open, onClose, itemAddHandler }) => {
               id="issue-name"
               display={onSubmit ? "block" : "none"}
             >
-              {name !== "" ? " " : "name가 빈값입니다."}
+              {name === ""
+                ? "name가 빈값입니다."
+                : name.length > 12
+                ? "이름은 12자 이하로 설정해야 합니다."
+                : " "}
             </Typography>
             <br></br>
             <TextField

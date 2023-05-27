@@ -35,8 +35,8 @@ const MyReceive = ({ info }) => {
     });
   };
   return (
-    <Grid item spacing={2} style={{ width: '50%' }}>
-      <Box sx={{ display: 'flex', }}>
+    <Grid item spacing={2} style={{ width: '50%', marginLeft: '80px' }}>
+      <Box sx={{ display: 'flex' }}>
         <Box
           component="img"
           src={checkImg}
@@ -47,7 +47,7 @@ const MyReceive = ({ info }) => {
           }}
         />
         <span
-          style={{  
+          style={{
             fontSize: '16px',
             fontWeight: 800,
             marginTop: '5px',
@@ -77,10 +77,10 @@ const MyReceive = ({ info }) => {
           <Table stickyHeader size="small">
             <TableHead>
               <TableRow sx={{ height: 3 }}>
-                <TableCell sx={{ backgroundColor: '#F6F7F9' }}>입고번호</TableCell>
-                <TableCell sx={{ backgroundColor: '#F6F7F9' }}>입고일</TableCell>
-                <TableCell sx={{ backgroundColor: '#F6F7F9' }}>거래처</TableCell>
-                <TableCell sx={{ backgroundColor: '#F6F7F9' }}>진행상태</TableCell>
+                <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>입고번호</TableCell>
+                <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>입고일</TableCell>
+                <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>거래처</TableCell>
+                <TableCell sx={{ backgroundColor: '#F6F7F9', fontWeight: '800' }}>진행상태</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

@@ -91,8 +91,8 @@ public class UserController {
 			@RequestParam(value = "uc", required = true, defaultValue = "") String userCode,UserVo vo,	@RequestParam(value="file", required=false) MultipartFile file,@DBLog DBLogVo logVO) {
 		System.out.println("------"+vo);
 		System.out.println(file);
-		vo.setProfile(FileUploadService.restoreImage(file));
-		//return null;
+		vo.setProfile(file==null?"":FileUploadService.restoreImage(file));
+		System.out.println("------"+vo);
 		JsonResult.success(userService.updateMypageByCode(userCode,vo,logVO));
 		return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success(vo));
 	}
@@ -111,8 +111,9 @@ public class UserController {
 		userVo.setInsert_dt(authUser.getDt());
 		userVo.setProfile(FileUploadService.restoreImage(file));
 
-		if(userService.getUserfindById(userVo.getId())!=null) {
-			return ResponseEntity.status(HttpStatus.OK).body(JsonResult.success("중복된 아이디입니다."));
+		if(userService.getUserfindByIdDuplicate(userVo.getId())!=null) {
+			System.out.println(userService.getUserfindByIdDuplicate(userVo.getId()));
+			return ResponseEntity.status(HttpStatus.OK).body(JsonResult.fail("중복된 아이디입니다."));
 		}
 		
 		userService.addUser(userVo);
