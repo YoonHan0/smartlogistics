@@ -44,7 +44,9 @@ function BusinessItem({
       <TableCell id="code" ref={refCode}>
         {code}
       </TableCell>
-      <TableCell>{name}</TableCell>
+      <TableCell id="name" title={name}>
+        {name.length > 10 ? name.substring(0, 10) + "..." : name}
+      </TableCell>
       <TableCell>{phone}</TableCell>
     </TableRow>
   );

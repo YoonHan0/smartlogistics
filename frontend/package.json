@@ -54,7 +54,8 @@
     "react-transition-group": "^4.4.5",
     "react-virtualized": "^9.22.5",
     "sha256": "^0.2.0",
-    "styled-components": "^5.3.10"
+    "styled-components": "^5.3.10",
+    "sweetalert2": "^11.7.5"
   },
   "description": ""
 }

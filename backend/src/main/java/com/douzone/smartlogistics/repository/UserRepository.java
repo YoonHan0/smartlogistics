@@ -71,6 +71,9 @@ public class UserRepository {
 		}
 		return true;
 	}
+	public UserVo getUserfindByIdDuplicate(String id) {
+		return sqlSession.selectOne("user.getUserfindByIdDuplicate",id);
+	}
 
 	
 }

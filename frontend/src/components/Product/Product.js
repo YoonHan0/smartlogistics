@@ -22,6 +22,7 @@ const Product = () => {
   const form = useRef();
   const searchKw = useRef({ pkeywd: '', psize: '' });
 
+  const submitError = useRef('');
   // const loading = useRef(true);
 
   useEffect(() => {
@@ -47,7 +48,6 @@ const Product = () => {
     var url = `/api/product/list?pk=${searchKw.current.pkeywd}&ps=${searchKw.current.psize}&o=${startIndex.current}&l=${limit}`;
     setIsFetching(true);
     await customFetch(url, { method: 'get' }).then((json) => {
-      console.log(json.data);
       if (json.data.length === limit) {
         startIndex.current += limit;
       } else {
@@ -65,21 +65,21 @@ const Product = () => {
 
   // product 추가
   const itemAddHandler = async (item) => {
-    //console.log(item);
     if (item != null) {
       await customFetch('/api/product/data', {
         method: 'post',
         body: JSON.stringify(item),
       }).then((json) => {
-        console.log(json.data);
         if (json.data.state === 'true') {
           setProducts((prev) => [...prev, json.data.vo]);
           setCodeChk(true);
           alert('등록되었습니다.');
           setSearchEvent((prev) => !prev);
+          setDetail([]);
+          rowColor.current = '';
         } else {
           setCodeChk(false);
-          console.log(json.data.vo.state);
+
           if (json.data.vo.state === '1') {
             alert('이미 등록되어 있는 데이터 입니다');
           } else if (json.data.vo.state === '0') {
@@ -93,11 +93,11 @@ const Product = () => {
 
   //product 수정
   const itemUpdateHandler = async (item, target) => {
-    console.log('update');
+    // item: 객체 형태로 update form에 이쓴ㄴ 데이터들 / target: 품목 코드
     await customFetch(`/api/product/update?pc=${target}`, {
       method: 'post',
       body: JSON.stringify(item),
-    }).then(() => productSearch(null));
+    }).then(() => productSearch('search'));
     setSearchEvent((prev) => !prev);
   };
 
@@ -117,9 +117,12 @@ const Product = () => {
       method: 'post',
       body: JSON.stringify(data),
     }).then((json) => {
-      json.data === null
-        ? alert('사용되고 있는 데이터입니다. 입﹒출고를 완료한 후 삭제를 해주세요.')
-        : setProducts(products.filter((product) => json.data.indexOf(product.code) == -1));
+      if (json.data === null) {
+        submitError.current = '입출고 목록에서 사용하고 있는 데이터입니다.';
+      } else {
+        setProducts(products.filter((product) => json.data.indexOf(product.code) == -1));
+        submitError.current = '';
+      }
     });
     setSearchEvent((prev) => !prev);
   };
@@ -145,6 +148,7 @@ const Product = () => {
             searchEvent={searchEvent}
             loading={loading}
             productSearch={productSearch}
+            submitError={submitError}
           />
           <ProductUpdate productDetail={Detail} itemUpdateHandler={itemUpdateHandler} item={item} setItem={setItem} />
         </Box>

@@ -93,19 +93,26 @@ export default function UserUpdate({
           marginTop: 3,
         }}
       >
-        <TableContainer>
+        <TableContainer sx={{ marginTop: 3 }}>
           <Table size="small" sx={{ width: "100%" }}>
             <TableBody>
               <TableRow>
                 <TableCell
                   component="th"
                   scope="row"
-                  sx={{ backgroundColor: "#F6F7F9" }}
+                  sx={{
+                    backgroundColor: "#F6F7F9",
+                    minWidth: "94px",
+                    width: "30%",
+                    textAlign: "center",
+                    fontWeight: "800",
+                    padding: "6px 8px",
+                  }}
                 >
                   아이디
                 </TableCell>
 
-                <TableCell align="left">
+                <TableCell align="left" sx={{ padding: "6px 0px 6px 4px" }}>
                   <TextField
                     disabled
                     type="text"
@@ -113,8 +120,9 @@ export default function UserUpdate({
                     name="id"
                     variant="outlined"
                     size="small"
-                    InputProps={{ sx: { height: 30, width: 300 } }}
+                    InputProps={{ sx: { height: 30, width: "100%" } }}
                     value={item.id || ""}
+                    sx={{ width: "100%" }}
                   />
                 </TableCell>
               </TableRow>
@@ -123,20 +131,25 @@ export default function UserUpdate({
                 <TableCell
                   component="th"
                   scope="row"
-                  sx={{ backgroundColor: "#F6F7F9" }}
+                  sx={{
+                    backgroundColor: "#F6F7F9",
+                    textAlign: "center",
+                    fontWeight: "800",
+                  }}
                 >
                   이름
                 </TableCell>
 
-                <TableCell align="left" sx={{ display: "flex" }}>
+                <TableCell align="left" sx={{ padding: "6px 0px 6px 4px" }}>
                   <TextField
                     type="text"
                     id="name"
                     name="name"
                     size="small"
-                    InputProps={{ sx: { height: 30, width: 300 } }}
+                    InputProps={{ sx: { height: 30, width: "100%" } }}
                     onChange={changeHandler}
                     value={item.name || ""}
+                    sx={{ width: "100%" }}
                   />
                 </TableCell>
               </TableRow>
@@ -145,12 +158,16 @@ export default function UserUpdate({
                 <TableCell
                   component="th"
                   scope="row"
-                  sx={{ width: "200px", backgroundColor: "#F6F7F9" }}
+                  sx={{
+                    backgroundColor: "#F6F7F9",
+                    textAlign: "center",
+                    fontWeight: "800",
+                  }}
                 >
                   전화번호
                 </TableCell>
 
-                <TableCell align="left" sx={{ display: "flex" }}>
+                <TableCell align="left" sx={{ padding: "6px 0px 6px 4px" }}>
                   <TextField
                     type="text"
                     id="phone"
@@ -158,7 +175,8 @@ export default function UserUpdate({
                     size="small"
                     value={item.phone || ""}
                     onChange={changeHandler}
-                    InputProps={{ sx: { height: 30, width: 300 } }}
+                    InputProps={{ sx: { height: 30, width: "100%" } }}
+                    sx={{ width: "100%" }}
                   />
                 </TableCell>
               </TableRow>
@@ -167,19 +185,24 @@ export default function UserUpdate({
                 <TableCell
                   component="th"
                   scope="row"
-                  sx={{ backgroundColor: "#F6F7F9" }}
+                  sx={{
+                    backgroundColor: "#F6F7F9",
+                    textAlign: "center",
+                    fontWeight: "800",
+                  }}
                 >
                   비밀번호
                 </TableCell>
 
-                <TableCell align="left" sx={{ display: "flex" }}>
+                <TableCell align="left" sx={{ padding: "6px 0px 6px 4px" }}>
                   <TextField
                     type="password"
                     id="password"
                     name="password"
                     variant="outlined"
                     size="small"
-                    InputProps={{ sx: { height: 30, width: 300 } }}
+                    InputProps={{ sx: { height: 30, width: "100%" } }}
+                    sx={{ width: "100%" }}
                     value={item.password || ""}
                     onChange={changeHandler}
                     placeholder="영어,숫자 포함 최소 9자~최대20자"

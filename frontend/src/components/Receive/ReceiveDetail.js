@@ -73,6 +73,7 @@ const ReceiveDetail = ({
   const handleEnterKeyPress = (index) => {
     // 값이 있는 TextField는 건너뛰기 (추가)
     const nextIndex = index + 1;
+    console.log(nextIndex);
     const nextDetailItem = document.getElementById(`receivecnt-${nextIndex}`);
 
     if (nextDetailItem) {

@@ -12,7 +12,8 @@ const Modal4MasterItem = ({
   checkedRow,
   masterStateUpdate,
   rowColor,
-  state
+  state,
+  details,
 }) => {
   const handleCheckboxClick = (event) => {
     event.stopPropagation();

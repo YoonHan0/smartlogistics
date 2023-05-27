@@ -16,7 +16,7 @@ const SearchBar = ({ state, setState, searchKeyword, searchKw }) => {
     user_name: '',
     business_name: '',
     code: '',
-    st:searchKw.current.st
+    st: searchKw.current.st
   });
   const refForm = useRef(null);
 
@@ -35,9 +35,7 @@ const SearchBar = ({ state, setState, searchKeyword, searchKw }) => {
 
   const submit = (e) => {
     e.preventDefault();
-    console.log('searchTextFiled',searchTextFiled)
-    searchKw.current = searchTextFiled;
-    console.log(searchKw)
+    searchKw.current = ({ ...searchTextFiled, st: searchKw.current.st });
     searchKeyword('search');
     setSearchTextFiled({ ...searchTextFiled, user_name: '', business_name: '', code: '' });
   };
@@ -69,7 +67,7 @@ const SearchBar = ({ state, setState, searchKeyword, searchKw }) => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            p:'16px 0 0 16px',
+            p: '16px 0 0 16px',
             marginLeft: '30px',
             marginTop: '6px',
             marginBottom: '10px',
@@ -120,7 +118,10 @@ const SearchBar = ({ state, setState, searchKeyword, searchKw }) => {
                 bgcolor: state ? '#0671F7' : '#E7E6E6',
               }
             }}
-            onClick={e => setState(true)}
+            onClick={(e) => {
+              setState(true);
+              searchKw.current = ({ user_name: '', business_name: '', code: '', startdt: '', enddt: '', st:'ALL' });
+            }}
           >
             <FormatListBulletedIcon sx={{ fontSize: 20 }} />
           </Button>
@@ -163,8 +164,48 @@ const SearchBar = ({ state, setState, searchKeyword, searchKw }) => {
                 alignItems: 'center',
               }}
             >
-              <label sx={{ fontSize: '0.5rem' }}>기간</label>
-              <LocalizationProvider dateAdapter={AdapterDayjs} sx={{ height: '60px' }}>
+
+              <label style={{ fontSize: '0.9rem'}}>
+                담당자</label>
+              <TextField
+                type='text'
+                name='user_name'
+                onChange={onChangeHandler}
+                size='small'
+                sx={{ paddingLeft: 2, paddingRight: 5 }}
+                InputProps={{ sx: { height: 30, width: 150 } }}
+                value={searchTextFiled.user_name}
+              />
+              <label style={{ fontSize: '0.9rem' }}>
+                거래처</label>
+              <TextField
+                type='text'
+                name='business_name'
+                onChange={onChangeHandler}
+                size='small'
+                sx={{ paddingLeft: 2, paddingRight: 5 }}
+                InputProps={{ sx: { height: 30, width: 150 } }}
+                value={searchTextFiled.business_name}
+
+              />
+              <label style={{ fontSize: '0.9rem' }}>
+                코드</label>
+              <TextField
+                type='text'
+                name='code'
+                onChange={onChangeHandler}
+                size='small'
+                sx={{ paddingLeft: 2, paddingRight: 5 }}
+                InputProps={{ sx: { height: 30, width: 150 } }}
+                value={searchTextFiled.code}
+              />
+              <label style={{ fontSize: '0.9rem' }}>
+                기간</label>
+              <LocalizationProvider 
+                dateAdapter={AdapterDayjs} 
+                sx={{ 
+                  height: '60px',
+                }}>
                 <DemoContainer
                   components={['DatePicker']}
                   sx={{
@@ -172,7 +213,7 @@ const SearchBar = ({ state, setState, searchKeyword, searchKw }) => {
                     minWidth: 0,
                     '& .css-1xhypcz-MuiStack-root': {
                       padding: 0,
-                    },
+                    }
                   }}
                 >
                   <DatePicker
@@ -186,7 +227,7 @@ const SearchBar = ({ state, setState, searchKeyword, searchKw }) => {
                       overflow: 'hidden',
                       '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                         padding: 0,
-                        height: 30,
+                        height: '1em',
                         width: 105,
                         marginLeft: '10px',
                       },
@@ -196,17 +237,18 @@ const SearchBar = ({ state, setState, searchKeyword, searchKw }) => {
                       '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
                         minWidth: 0,
                         height: '35px',
-                      },
+                      }
                     }}
                     onAccept={handleAcceptStart}
                     value={searchTextFiled.startdt === '' ? dayjs().subtract(6, 'day') : dayjs(searchTextFiled.startdt)}
-                    ></DatePicker>
+                  ></DatePicker>
                   <span>~</span>
                   <DatePicker
                     readOnly={searchKw.sDate === '' || searchKw.sDate === null}
                     style={{
                       '& .css-3tvb69-MuiStack-root>.MuiTextField-root': {
                         minWidth: 0,
+                        p: 0,
                         backgroundColor: '#333',
                       },
                     }}
@@ -216,11 +258,11 @@ const SearchBar = ({ state, setState, searchKeyword, searchKw }) => {
                     }}
                     sx={{
                       minWidth: 0,
-                      paddingRight: 5,
+                      paddingLeft: 2,
                       overflow: 'hidden',
                       '& .css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input': {
                         padding: 0,
-                        height: 30,
+                        height: '1em',
                         width: 105,
                         marginLeft: '10px',
                       },
@@ -230,46 +272,15 @@ const SearchBar = ({ state, setState, searchKeyword, searchKw }) => {
                       '& .css-e1omjc-MuiStack-root>.MuiTextField-root': {
                         minWidth: 0,
                         height: '35px',
-                      },
+                      }
                     }}
-                    minDate={searchKw.startdt || dayjs().subtract(6, 'day')}                    onAccept={handleAcceptEnd}
+                    minDate={searchKw.startdt || dayjs().subtract(6, 'day')} onAccept={handleAcceptEnd}
                     value={searchTextFiled.enddt === '' ? dayjs().add(6, 'day') : dayjs(searchTextFiled.enddt)}
-                    ></DatePicker>
+                  ></DatePicker>
                 </DemoContainer>
               </LocalizationProvider>
-              <label sx={{ fontSize: '0.5rem' }}>담당자</label>
-              <TextField
-                type='text'
-                name='user_name'
-                onChange={onChangeHandler}
-                size='small'
-                sx={{ paddingLeft: 2, paddingRight: 5 }}
-                InputProps={{ sx: { height: 30, width: 150 } }}
-                value={searchTextFiled.user_name}
-              />
-              <label sx={{ fontSize: '0.5rem' }}>거래처</label>
-              <TextField
-                type='text'
-                name='business_name'
-                onChange={onChangeHandler}
-                size='small'
-                sx={{ paddingLeft: 2, paddingRight: 5 }}
-                InputProps={{ sx: { height: 30, width: 150 } }}
-                value={searchTextFiled.business_name}
-
-              />
-              <label sx={{ fontSize: '0.5rem' }}>번호</label>
-              <TextField
-                type='text'
-                name='code'
-                onChange={onChangeHandler}
-                size='small'
-                sx={{ paddingLeft: 2, paddingRight: 5 }}
-                InputProps={{ sx: { height: 30, width: 150 } }}
-                value={searchTextFiled.code}
-              />
-
             </Box>
+
             <Button type='submit' variant='outlined' sx={{ marginRight: 6 }}>
               <SearchIcon />
             </Button>

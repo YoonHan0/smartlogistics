@@ -7,8 +7,8 @@ import MyRelease from './MyRelease';
 
 const MyPage = ({ info, setUserInfo }) => {
   return (
-    <Box>
-      <Grid container>
+    <Box sx={{ minWidth: '1460px' }}>
+      <Grid container sx={{ width: '101%', marginLeft: '0px' }}>
         <Grid item xs={12}>
           <Grid
             item
@@ -23,6 +23,7 @@ const MyPage = ({ info, setUserInfo }) => {
               borderRadius: '8px',
               boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.1)',
               height: '100px',
+              marginTop: -2,
             }}
           >
             <Box
@@ -66,7 +67,7 @@ const MyPage = ({ info, setUserInfo }) => {
 
         <Grid
           item
-          xs={2}
+          xs={12}
           md={12}
           sx={{
             width: '100%',
@@ -84,24 +85,25 @@ const MyPage = ({ info, setUserInfo }) => {
             style={{
               fontSize: '18px',
               fontWeight: 800,
-              marginLeft: '30px',
+              marginLeft: '100px',
               marginTop: '30px',
             }}
           >
             나의정보
           </span>
           <MyData info={info} setUserInfo={setUserInfo} />
-          <Box sx={{ marginLeft: "30px" }}>
+          <Box sx={{ marginLeft: '30px' }}>
             <span
               style={{
                 fontSize: '18px',
                 fontWeight: 800,
                 marginTop: '30px',
+                marginLeft: '80px',
               }}
             >
               나의활동
             </span>
-            <Box sx={{ display: 'flex', width: '100%', marginTop:2 }}>
+            <Box sx={{ display: 'flex', width: '100%', marginTop: 2 }}>
               <MyReceive info={info} />
               <MyRelease info={info} />
             </Box>

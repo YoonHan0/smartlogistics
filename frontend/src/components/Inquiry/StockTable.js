@@ -6,9 +6,6 @@ import { Box } from '@mui/system';
 const StockTable = ({ list, searchKw, searchKeyword, loading }) => {
   const handleWindowScroll = (event) => {
     const { scrollTop, clientHeight, scrollHeight } = event.target;
-    // console.log('scrollTop', scrollTop)
-    // console.log('clientHeight', clientHeight)
-    // console.log('scrollHeight', scrollHeight)
 
     if (clientHeight + scrollTop + 10 > scrollHeight) {
       searchKeyword('load');
@@ -116,7 +113,7 @@ const StockTable = ({ list, searchKw, searchKeyword, loading }) => {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={12} sx={{ textAlign: 'center' }}>
-                        등록된 입고리스트가 없습니다.
+                        해당하는 현황 리스트가 없습니다.
                       </TableCell>
                     </TableRow>
                   )}

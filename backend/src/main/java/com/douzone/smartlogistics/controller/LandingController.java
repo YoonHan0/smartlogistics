@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class LandingController {
-	
-	@RequestMapping("")
+
+	@RequestMapping({ "", "/receive", "/release", "/product", "/business", "/mypage", "/inquiry" })
 	public String index() {
 		return "index";
 	}
-	
+
 	@GetMapping("favicon.ico")
 	@ResponseBody
 	public void returnNoFavivon() {

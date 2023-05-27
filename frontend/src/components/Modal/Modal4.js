@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -31,7 +31,6 @@ import dayjs from 'dayjs';
 const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
 
 
-
   const loading = useRef(true);
   const [isFetching, setIsFetching] = useState(false);
   const startIndex = useRef(0);
@@ -41,141 +40,103 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
 
 
   useEffect(() => {
-    console.log("asdjsidjiasdia")
     modal4receiveMasterSearch(null, 'load');
-  
   }, []);
-
-
-
-
 
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
-  const [checkedRow, setCheckedRow] = useState([{master: "", state:"f",detail: [{no:"",state:"f"}]}]);
+  const [checkedRow, setCheckedRow] = useState([{ master: "", state: "f", detail: [{ no: "", state: "f" }] }]);
   const rowColor = useRef();
-  const[data,setData] = useState([]);     // 추기된 출고 리스트 관리하는 state
+  const [data, setData] = useState([]);     // 추가된 출고 리스트 관리하는 state
   const [masterCode, setMasterCode] = useState();
   // ReceiveMaster
   const [modal4receiveMaster, setreceiveMaster] = useState([]);
   // ReceiveDetail
   const [modal4receiveDetail, setreceiveDetail] = useState([]);
-  const[modal4outlist,setoutdetail] = useState([]);
+  const [modal4outlist, setoutdetail] = useState([]);
 
   const [releaseMaster, setreleaseMaster] = useState([]);
   // releaseDetail
   const [releaseDetail, setreleaseDetail] = useState([{}]);
   // const [checkItems, setCheckItems] = useState([]);
-  const[nocheck,setNocheck] = useState([]);
+  const [nocheck, setNocheck] = useState([]);
   // const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
- /* date값을 가지고 있는 */
- const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
+  /* date값을 가지고 있는 */
+  const [seDate, setSeDate] = useState({ sDate: '', eDate: '' });
 
- // receive Master 수량 미입력
- const [disable, setDisable] = useState({});
+  // receive Master 수량 미입력
+  const [disable, setDisable] = useState({});
 
- // check 선택한 품목리스트
- const [pumokList, setPumokList] = useState([]);
- const [prevNoListOfDetailStateT, setPrevNoListOfDetailStateT] = useState([]);
+  // check 선택한 품목리스트
+  const [pumokList, setPumokList] = useState([]);
+  const [prevNoListOfDetailStateT, setPrevNoListOfDetailStateT] = useState([]);
 
-    useEffect(() => {
-        //console.log("====== 추가된 출고 리스트 관리하는 state =====");
-        // console.log(data);
-        let changedModal4receiveDetail = modal4receiveDetail.map((pumokItem) => {
-            let isInChulgo = false;
-            data.forEach((chulgoItem) => {
-                if(pumokItem.no === chulgoItem.no) {
-                    isInChulgo = true;
-                }
-            })
-            return {...pumokItem, isInChulgo: isInChulgo}
-        })
-        setreceiveDetail(changedModal4receiveDetail);
-        console.log("====== 품목리스트의 변경된 값 출력테스트 =====");
-        console.log(changedModal4receiveDetail); // 품목리스트
-    }, [data]);
-
-    useEffect(() => {
-        console.log("====== checkedRow state =====");
-        console.log(checkedRow);
-    }, [checkedRow]);
-
- // print pumokList if pumokList is changed ( test code )
- //    useEffect(() => {
- //        console.log("====== pumokList state =====");
- //        console.log(pumokList);
- //    }, [pumokList]);
-
-    useEffect(() => {
-        //console.log("====== 품목리스크 체크선택 변화 감지 =====");
-        // console.log("====== modal4receiveDetail state =====");
-        // console.log(modal4receiveDetail); // 입고목록
-        // console.log("====== checkedRow state =====");
-        // console.log(checkedRow);
-        let noListOfDetailStateT = [];
-        checkedRow.forEach((item) => {
-            item.detail.forEach((item2) => {
-                if (item2.state === "t") {
-                    noListOfDetailStateT.push(item2.no);
-                }
-            });
-        });
-        let isAdd = false;
-        // console.log('prevNoListOfDetailStateT', prevNoListOfDetailStateT.length);
-        // console.log('noListOfDetailStateT', noListOfDetailStateT.length);
-        if( prevNoListOfDetailStateT.length < noListOfDetailStateT.length )
-            isAdd = true;
-        setPrevNoListOfDetailStateT([...noListOfDetailStateT]);
-        // console.log('isChecked', isChecked);
-        //console.log("====== noListOfDetailStateT =====", noListOfDetailStateT);
-        if( isAdd ) { // 추가
-            // let checkedNo = noListOfDetailStateT[noListOfDetailStateT.length - 1];
-            // let checkedPumokList = modal4receiveDetail.filter((item) =>item.no === checkedNo);
-            // // console.log("====== checkedPumokList =====", checkedPumokList);
-            // setPumokList([ ...pumokList, checkedPumokList[0] ]);
-
-            let addedNoList = noListOfDetailStateT.filter((no) => !prevNoListOfDetailStateT.includes(no));
-            let addedPumokList = modal4receiveDetail.filter( (item) => addedNoList.includes(item.no) );
-            setPumokList([ ...pumokList, ...addedPumokList ]);
-        } else { // 삭제
-            // let unCheckedNoList = prevNoListOfDetailStateT.filter((item) => !noListOfDetailStateT.includes(item));
-            // let unCheckedNo = unCheckedNoList[0];
-            // //console.log("====== unCheckedNo =====", unCheckedNo);
-            // let filteredPumokList = pumokList.filter((item) => item.no !== unCheckedNo);
-            // setPumokList(filteredPumokList);
-
-            let removedNoList = prevNoListOfDetailStateT.filter((no) => !noListOfDetailStateT.includes(no));
-            let remainedPumokList = pumokList.filter( (item) => !removedNoList.includes(item.no) );
-            setPumokList(remainedPumokList);
+  useEffect(() => {
+    //console.log("====== 추가된 출고 리스트 관리하는 state =====");
+    // console.log(data);
+    let changedModal4receiveDetail = modal4receiveDetail.map((pumokItem) => {
+      let isInChulgo = false;
+      data.forEach((chulgoItem) => {
+        if (pumokItem.no === chulgoItem.no) {
+          isInChulgo = true;
         }
+      })
+      return { ...pumokItem, isInChulgo: isInChulgo }
+    })
+    setreceiveDetail(changedModal4receiveDetail);
+    console.log("====== 품목리스트의 변경된 값 출력테스트 =====");
+    console.log(changedModal4receiveDetail); // 품목리스트
+  }, [data]);
 
-    }, [checkedRow]);
 
-    const updatePumokList = (checked, pumokListInput) => {
-        // console.log(checked);
-        if (checked) {
-            setPumokList([...pumokList, ...pumokListInput]);
-        } else {
-            let filteredPumokList = pumokList.filter((item) => {
-                let isExclude = false;
-                pumokListInput.forEach((item2) => {
-                    if (item2.no === item.no) {
-                        isExclude = true;
-                    }
-                });
-
-                if (isExclude) {
-                    return false;
-                } else {
-                    return true;
-                }
-            } );
-            // console.log("filteredPumokList", filteredPumokList);
-
-            setPumokList(filteredPumokList);
+  useEffect(() => {
+    let noListOfDetailStateT = [];
+    checkedRow.forEach((item) => {
+      item.detail.forEach((item2) => {
+        if (item2.state === "t") {
+          noListOfDetailStateT.push(item2.no);
         }
+      });
+    });
+    let isAdd = false;
+    if (prevNoListOfDetailStateT.length < noListOfDetailStateT.length)
+      isAdd = true;
+    setPrevNoListOfDetailStateT([...noListOfDetailStateT]);
+
+    if (isAdd) { // 추가
+      let addedNoList = noListOfDetailStateT.filter((no) => !prevNoListOfDetailStateT.includes(no));
+      let addedPumokList = modal4receiveDetail.filter((item) => addedNoList.includes(item.no));
+      setPumokList([...pumokList, ...addedPumokList]);
+    } else { // 삭제
+      let removedNoList = prevNoListOfDetailStateT.filter((no) => !noListOfDetailStateT.includes(no));
+      let remainedPumokList = pumokList.filter((item) => !removedNoList.includes(item.no));
+      setPumokList(remainedPumokList);
     }
+  }, [checkedRow]);
+
+  const updatePumokList = (checked, pumokListInput) => {
+    if (checked) {
+      setPumokList([...pumokList, ...pumokListInput]);
+    } else {
+      let filteredPumokList = pumokList.filter((item) => {
+        let isExclude = false;
+        pumokListInput.forEach((item2) => {
+          if (item2.no === item.no) {
+            isExclude = true;
+          }
+        });
+
+        if (isExclude) {
+          return false;
+        } else {
+          return true;
+        }
+      });
+
+      setPumokList(filteredPumokList);
+    }
+  }
 
   const graybutton = (no) => {
     console.log("호로로롱 전", modal4receiveDetail);
@@ -213,106 +174,44 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
     }
   };
 
-
-
-
-  /* detail item에서 잔량 수정후 Enter */
-  // const updateReceiveCnt = (count,no) => {
-  //   const updatedData = modal4receiveDetail.map((item) => {
-  //     if (item.no === no) {
-  //       return {
-
-  //         ...item,
-  //         stockCount: count
-  //       };
-  //     }
-  //     return item;
-  //   });
-  //   setreceiveDetail(updatedData);
-
-
-  // };
-
-
-
-
-  /*const handleSaveMultiClick = (details) => {
-    let myCheckedRow = [];
-    if (checkedRow.length > 0 && details.length > 0) {
-      checkedRow.forEach((row) => {
-        row.detail.forEach((detail) => {
-          if (detail.state === 't' || row.state === 't') {
-            details.forEach((item) => {
-              if (item.no === detail.no && item.stockCount <= item.receiveCount) { // stockcnt가 receivecnt보다 작거나 같은 경우에만 추가
-                myCheckedRow.push({
-                  no: item.no,
-                  mcode: item.masterCode,
-                  pcode: item.productCode,
-                  pname: item.productName,
-                  psize: item.productSize,
-                  punit: item.productUnit,
-                  receivecnt: item.receiveCount,
-                  stockcnt: item.stockCount,
-                  checked: false,
-                });
-              }
-            });
-          }
-        });
-      });
-    }
-
-    const newData = data.filter((item) => {
-      return !myCheckedRow.some((row) => row.no === item.no);
+  const handleSaveMultiClick = (pumokList) => {
+    let chulgoList = pumokList.map(item => {
+      return {
+        no: item.no,
+        mcode: item.masterCode,
+        pcode: item.productCode,
+        pname: item.productName,
+        psize: item.productSize,
+        punit: item.productUnit,
+        receivecnt: item.receiveCount,
+        stockcnt: item.stockCount,
+        checked: false,
+      }
     });
-
-    if (newData.length + myCheckedRow.length === data.length) {
-      console.log('stockcnt is greater than receivecnt');
-    } else {
-      setData([...newData, ...myCheckedRow]);
-      console.log(modal4receiveDetail);
-    }
-  };*/
-    const handleSaveMultiClick = (pumokList) => {
-        let chulgoList = pumokList.map(item => {
-            return {
-                no: item.no,
-                mcode: item.masterCode,
-                pcode: item.productCode,
-                pname: item.productName,
-                psize: item.productSize,
-                punit: item.productUnit,
-                receivecnt: item.receiveCount,
-                stockcnt: item.stockCount,
-                checked: false,
-            }
-        });
-        let filteredChulgoList = chulgoList.filter(item => {
-            let isExclude = false;
-            data.forEach(item2 => {
-                if (item2.no === item.no) {
-                    isExclude = true;
-                }
-            });
-            if(isExclude) {
-                return false;
-            } else {
-                return true;
-            }
-        });
-
-        //console.log(chulgoList);
-        setData([...data, ...filteredChulgoList]);
-    }
+    let filteredChulgoList = chulgoList.filter(item => {
+      let isExclude = false;
+      data.forEach(item2 => {
+        if (item2.no === item.no) {
+          isExclude = true;
+        }
+      });
+      if (isExclude) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+    setData([...data, ...filteredChulgoList]);
+  }
 
 
   // 출고 체크 박스 선택
   const chulgoItemOnChangeCheck = (no) => { // [1, 2]
     //console.log('no', no);
-  
+
     let changedData = data.map((item, index) => {
       if (item.no === no) {
-        return {...item, checked: !item.checked};
+        return { ...item, checked: !item.checked };
       }
       return item;
     });
@@ -320,49 +219,7 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
     setData(changedData);
   }
 
-
-
-  // useEffect(() => {
-  //   modal4receiveMasterSearch(null,"loading");
-  // console.log(("modal4",modal4receiveMaster))
-  // }, []);
-
-
-
-
-  // ReceiveMaster검색
-  // const modal4receiveMasterSearch = async (searchKw) => {
-  //   var url = `/api/receive/list1`;
-  //   if (searchKw) {
-  //     url = `/api/receive/list1?rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${searchKw.startdt}&edt=${searchKw.enddt}`;
-  //   }
-  //   try {
-  //     const response = await fetch(url, {
-  //       method: "get",
-  //       headers: {
-  //         Accept: "application/json",
-  //         Authorization: localStorage.getItem("token"),
-  //       },
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error(`${response.status} ${response.statusText}`);
-  //     }
-  //     const json = await response.json();
-  //     if (json.result !== "success") {
-  //       throw new Error(`${json.result} ${json.message}`);
-  //     }
-  //     //console.log(json.data);
-  //     setreceiveMaster(json.data);
-
-
-  //     setCheckedRow(json.data.map(item => ({master: item.code, state: 'f', detail: [{no: '', state: 'f'}]})));
-  //     console.log("체크체크",checkedRow)
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
-  const modal4receiveMasterSearch = async (searchKw,state) => {
+  const modal4receiveMasterSearch = async (searchKw, state) => {
 
     if (state === 'search') {
       startIndex.current = 0;
@@ -398,30 +255,26 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
     if (searchKw) {
       url = `/api/receive/list1?o=${startIndex.current}&l=${limit}&rc=${searchKw.rcode}&bn=${searchKw.bname}&sdt=${startdt}&edt=${enddt}`;
     }
-    console.log("url",url)
+    console.log("url", url)
     if (scrollend.current === true) {
       return;
     }
 
     await customFetch(url, { method: 'get' }).then((json) => {
-      // const { dataList, sDate, eDate } = json.data; // dataList: 기존에 불러오던 data, sDate, eDate: 오늘 날짜를 기준으로 -7, +7일 date 값
-       console.log("호이이이이",json.data);
-       console.log("호이이이이2",modal4receiveMaster);
-      //  setreceiveMaster(dataList);
-      // setSeDate({ sDate: sDate, eDate: eDate });
-      //  setDisable(dataList.map(({ code, disable }) => ({ code, disable })));
       // 넘어온 데이터의 master code 값 담기
-       setreceiveMaster((pre) => [...pre, ...json.data]);
-      
-      setCheckedRow(
-        json.data.map((item) => ({
+      setreceiveMaster((pre) => [...pre, ...json.data]);
+
+      setCheckedRow((pre) => 
+      [...pre,
+        ...json.data.map((item) => ({
           master: item.code,
           state: 'f',
           detail: [{ no: '', state: 'f' }],
-        }))
+        }))]
       );
       if (json.data !== null) {
         loading.current = false;
+
       }
       if (json.data.length === 0) {
         scrollend.current = true;
@@ -432,45 +285,12 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
         setreceiveDetail([{}]);
       }
     })
-    .finally(() => {
-      startIndex.current += 10;
-      setIsFetching(false);
-    });
-};
+      .finally(() => {
+        startIndex.current += 10;
+        setIsFetching(false);
+      });
+  };
 
-  
-
-
-  // ReceiveDetail
-  // const modal4receiveDetailSearch = async (code) => {
-  //   try {
-  //     const response = await fetch(`/api/receive/detail?rc=${code}`, {
-  //       method: "get",
-  //       headers: {
-  //         Accept: "application/json",
-  //         Authorization: localStorage.getItem("token"),
-  //       },
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error(`${response.status} ${response.statusText}`);
-  //     }
-  //     const json = await response.json();
-  //     if (json.result !== "success") {
-  //       throw new Error(`${json.result} ${json.message}`);
-  //     }
-  //     //console.log(json.data);
-  //     setreceiveDetail(json.data);
-  //     rowColor.current = code;    // 선택된 행 background 색상 변경
-  //     const data = addDetailArrayHandler(json.data);
-  //     const filteredCheckedRow = data.map((row) => {    // detail [] 배열 중 no가 빈 값인 거 제외
-  //       const filteredDetail = row.detail.filter((detail) => detail.no !== '');
-  //       return { ...row, detail: filteredDetail };
-  //     });
-  //     setCheckedRow(filteredCheckedRow);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
 
   const modal4receiveDetailSearch = async (code) => {
     //선택한 입고의 입고번호 저장
@@ -538,11 +358,6 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
       return item;
     });
     setreceiveDetail(updatedData);
-
-    // console.log("업데이또",updatedData)
-    // console.log("업데이또 체크",count,no)
-    // console.log("업데이또 데이터 체크",modal4receiveDetail)
-
   };
 
 
@@ -562,25 +377,22 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
     };
   });
   return (
-    <div>
-      <div>
-        <Modal open={open} onClose={onClose}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "white",
-              width: "90%",
-              paddingLeft: '20px',
-              paddingRight: '20px',
-              paddingTop: '20px',
-              height: "90%",
-              borderRadius: "8px",
-            }}
-          >
-          <Grid >
+    <Box>
+      <Modal open={open} onClose={onClose}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            width: "90%",
+            padding: '20px',
+            height: "90%",
+            borderRadius: "8px",
+          }}
+        >
+          <Grid container style={{ height: '100%' }}>
             <Modal4Search callback={modal4receiveMasterSearch} seDate={seDate} />
             <Modal4ReceiveMaster
               masters={modal4receiveMaster}
@@ -594,18 +406,18 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
               loading={loading}
             />
             <Modal4ReceiveDetail details={modal4receiveDetail}
-                                 pumokList={pumokList}
-                                 checkedRow={checkedRow}
-                                 setCheckedRow={setCheckedRow}
-                                 clicks={handleSaveClick}
-                                 multiClicks={handleSaveMultiClick}
-                                 data={data}
-                                 setData={setData}
-                                 setreceiveDetail={setreceiveDetail}
-                                 modal4receiveDetail={modal4receiveDetail}
-                                updateReceiveCnt={updateReceiveCnt}
-                                graybutton={graybutton}
-
+              pumokList={pumokList}
+              checkedRow={checkedRow}
+              setCheckedRow={setCheckedRow}
+              clicks={handleSaveClick}
+              multiClicks={handleSaveMultiClick}
+              data={data}
+              setData={setData}
+              outdetails={details}
+              setreceiveDetail={setreceiveDetail}
+              modal4receiveDetail={modal4receiveDetail}
+              updateReceiveCnt={updateReceiveCnt}
+              graybutton={graybutton}
 
             />
             <Modal4Outlist
@@ -617,17 +429,14 @@ const Modal4 = ({ open, onClose, handleButtonClick, details, releaseAdd }) => {
               checkedRow={checkedRow}
               handleButtonClick={handleButtonClick}
               releaseAdd={releaseAdd}
-               details={modal4receiveDetail}
+              details={modal4receiveDetail}
               outdetails={details}
               updateReceiveCnt={updateReceiveCnt}
-              // setIsButtonDisabled={setIsButtonDisabled}
-              // isButtonDisabled={isButtonDisabled}
             />
           </Grid>
-          </Box>
-        </Modal>
-      </div>
-    </div>
+        </Box>
+      </Modal>
+    </Box>
   );
 };
 

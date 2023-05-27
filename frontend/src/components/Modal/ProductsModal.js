@@ -56,7 +56,13 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
       setSelectList([]);
     };
   }, [open]);
-
+  const onCloseAndClear = () => {
+    details = null;
+    setAddList([]);
+    setDeleteList([]);
+    setSelectList([]);
+    onClose();
+  };
   const handleWindowScroll = (event) => {
     const { scrollTop, clientHeight, scrollHeight } = event.target;
 
@@ -139,7 +145,7 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
   };
   return (
     <Box>
-      <Modal open={open} onClose={onClose}>
+      <Modal open={open} onClose={onCloseAndClear}>
         <Box
           sx={{
             position: 'absolute',
@@ -234,12 +240,8 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
               <TableContainer sx={{ height: 200 }} onScroll={handleWindowScroll}>
                 <Table stickyHeader sx={{ width: '100%' }} aria-labelledby="tableTitle" size="small">
                   <TableHead>
-                    <TableRow
-                      sx={{
-                        backgroundColor: '#F6F7F9',
-                      }}
-                    >
-                      <TableCell padding="checkbox">
+                    <TableRow>
+                      <TableCell padding="checkbox" sx={{ backgroundColor: '#F6F7F9' }}>
                         <Checkbox
                           color="primary"
                           onChange={(event) => {
@@ -257,16 +259,16 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
                           }
                         />
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
                         <strong>품번</strong>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
                         <strong>품명</strong>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
                         <strong>규격</strong>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" sx={{ backgroundColor: '#F6F7F9' }}>
                         <strong>단위</strong>
                       </TableCell>
                     </TableRow>
@@ -498,6 +500,7 @@ const ProductsModal = ({ open, onClose, handleButtonClick, details, receiveAdd }
               onClick={() => {
                 receiveAdd(addList.filter((itemA) => !details.find((itemB) => itemB.productCode === itemA.productCode)));
                 handleButtonClick('product', null);
+                onCloseAndClear();
               }}
             >
               <strong>등록</strong>

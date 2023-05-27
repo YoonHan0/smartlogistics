@@ -255,6 +255,7 @@ export default function BusinessModal({ open, onClose, handleButtonClick }) {
                               businessCode: data.code,
                               businessName: data.name,
                             });
+                            onCloseAndClear();
                           }}
                         >
                           선택

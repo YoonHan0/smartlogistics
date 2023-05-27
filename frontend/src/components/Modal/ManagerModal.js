@@ -46,6 +46,7 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
       .replace(/(\-{1,2})$/g, '');
   };
   const onCloseAndClear = () => {
+    console.log('close');
     setPerson([]);
     setSearchTextFiled({ keywd: '', phone: '' });
     startIndex.current = 0;
@@ -260,6 +261,7 @@ const ManagerModal = ({ open, onClose, handleButtonClick }) => {
                                   userId: data.id,
                                   userName: data.name,
                                 });
+                                onCloseAndClear();
                               }}
                             >
                               선택

@@ -52,7 +52,7 @@ const UserSerchBar = ({
         <span
           style={{
             backgroundColor: "#EBF2FF",
-            padding: "3px 8px",
+            padding: "2px 5px 4.5px 0",
           }}
         >
           <span

@@ -10,6 +10,8 @@ import styled from 'styled-components';
 import { Box, Checkbox, CircularProgress, FormControl, Grid, NativeSelect, Paper, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SelectedDataDeleteModal from '../Modal/SelectedDataDeleteModal';
+import Swal from 'sweetalert2';
+import { DocumentScanner, Warning } from '@mui/icons-material';
 
 /** 테이블 Header 고정을 위한 styled component 사용 */
 // top의 px값은 첫 행의 높이와 같게
@@ -30,9 +32,11 @@ const ProductList = ({
   searchEvent,
   loading,
   productSearch,
+  submitError,
 }) => {
   /** fetch, 즉 list를 출력하기 위한 state */
   const refForm = useRef(null);
+  const refAlertCheck = useRef('');
   /** Delete를 위한 체크박스 State */
   const [checkedButtons, setCheckedButtons] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
@@ -58,10 +62,24 @@ const ProductList = ({
     })
       .filter(({ n }) => n !== '')
       .reduce((res, { n, v }) => {
-        //console.log(`res: ${res}, n: ${n}, v: ${v}`);
+        
         if (v === '') {
           if (isCheck.current) {
             isCheck.current = false;
+            document.getElementById(n).focus();
+          }
+        }
+        if(n === "name" && v.length > 20) {
+          if (isCheck.current) {
+            isCheck.current = false;
+            Swal.fire({
+              icon: 'warning',
+              text: '품명은 20자 이내로 입력해주세요.',
+              confirmButtonText: '확인',
+              confirmButtonColor: '#737373',
+              width: '400px',
+            });
+            document.getElementById(n).value = "";
             document.getElementById(n).focus();
           }
         }
@@ -89,17 +107,12 @@ const ProductList = ({
     //console.log(`checked: ${checked}, code: ${code}`);
     checked
       ? setCheckedButtons([...checkedButtons, code])
-      : // console.log("체크 반영 완료");
-        // console.log(checkedButtons);
-        // console.log(checkedButtons.length);
-        // 클릭된 'code'랑 같으면 제거해서 새로운 배열을 만듬
-        setCheckedButtons(checkedButtons.filter((el) => el !== code));
-    // console.log("체크 해제 반영 완료");
+      : setCheckedButtons(checkedButtons.filter((el) => el !== code));
+      // 클릭된 'code'랑 같으면 제거해서 새로운 배열을 만듬
+
     if (isChecked) {
       setIsChecked(false);
     }
-    console.log(products.length);
-    console.log(checkedButtons.length);
     if (checked) {
       if (!isChecked) {
         products.length === checkedButtons.length + 1 ? setIsChecked((prev) => !prev) : null;
@@ -135,15 +148,19 @@ const ProductList = ({
 
   const handleClose = () => {
     setOpen(false);
+    submitError.current = '';
   };
 
   const modalMessage = () => {
     const length = checkedButtons.length;
+    // if (submitError.current != '') {
+    //   return submitError.current;
+    // }
     if (isChecked) {
       return '품목 전체를 삭제하시겠습니까?';
     }
     if (length === 0) {
-      return '선택한 데이터가 없습니다.';
+      return '체크된 데이터가 존재하지 않습니다.';
     }
     if (length === 1) {
       console.log(checkedButtons);
@@ -152,13 +169,19 @@ const ProductList = ({
     return length + '개의 품목을 삭제하시겠습니까?';
   };
 
-  const onDeleteButton = () => {
-    deleteItemHandler(checkedButtons);
+  const onDeleteButton = async () => {
+    await deleteItemHandler(checkedButtons);
     setCheckedButtons([]);
     setIsChecked(false);
     setItem({ code: '', name: '', phone: '' });
-    handleClose();
+
+    // if (submitError.current === '') {
+    //   // 삭제 가능한 거
+
+    // }
+    return submitError.current;
   };
+
   const handleWindowScroll = (event) => {
     const { scrollTop, clientHeight, scrollHeight } = event.target;
     if (clientHeight + scrollTop + 10 > scrollHeight) {
@@ -200,7 +223,39 @@ const ProductList = ({
         }}
       >
         <Box sx={{ width: '97%', display: 'flex' }}>
-          <DeleteIcon sx={{ padding: '7px', cursor: 'pointer', marginLeft: 'auto' }} onClick={handleOpen} />
+          <DeleteIcon sx={{ padding: '7px', cursor: 'pointer', marginLeft: 'auto' }} 
+                      onClick={() => {
+                        Swal.fire({
+                          text: modalMessage(), // modalMessage()
+                          icon: 'question',
+                          showCancelButton: true,
+                          confirmButtonColor: '#3085d6',
+                          cancelButtonColor: '#d33',
+                          confirmButtonText: '삭제',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                              const returnData = onDeleteButton();
+                              
+                              returnData.then(result => {
+                                if(result === "") {
+                                  Swal.fire('Deleted!', '삭제가 완료되었습니다', 'success');
+                                }
+                                else {
+                                  Swal.fire('', '입출고에서 사용되고 있는 데이터입니다.', 'error');
+                                }
+                              });
+                              
+
+                              
+                            }
+                            // else if(result.isConfirmed) {
+                            //   Swal.fire(
+                            //     '',
+                            //     '입출고에서 사용되고 있는 데이터입니다.',
+                            //     'error',
+                            //   )
+                            // }
+                        })}} />
         </Box>
         <FormControl component="form" id="table" onSubmit={handleSubmit} ref={refForm}>
           <TableContainer

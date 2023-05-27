@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Checkbox, TableCell, TableRow } from "@mui/material";
 
 const Useritem = ({
@@ -10,16 +10,21 @@ const Useritem = ({
   checkedButtons,
   changeHandler,
   handleCheckboxClick,
+  rowColor,
 }) => {
   const refCode = useRef(null);
   return (
     <TableRow
       key={no}
       sx={{
-        ":hover": {
-          background: "#EFF8FF",
-          fontWeight: 600,
-        },
+        ":hover":
+          rowColor.current === id
+            ? ""
+            : {
+                background: "#EFF8FF",
+                fontWeight: 600,
+              },
+        backgroundColor: rowColor.current === id ? "#DCF1FF" : "#FFF",
       }}
       id="searchRow"
       onClick={() => {
@@ -42,7 +47,9 @@ const Useritem = ({
       <TableCell id="code" ref={refCode}>
         {id}
       </TableCell>
-      <TableCell>{name}</TableCell>
+      <TableCell>
+        {name.length > 10 ? name.substring(0, 10) + "..." : name}
+      </TableCell>
       <TableCell>{phone}</TableCell>
     </TableRow>
   );
