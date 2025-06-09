@@ -9,3 +9,4 @@
 - FE : `React`
 - BE : `SpringBoot 2.7.8` / `Java 17`
 - DB : `MariaDB`
+- Build Tool: `Maven`
