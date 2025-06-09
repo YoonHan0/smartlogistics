@@ -33,5 +33,6 @@
  
 - BE
   - `Application.java` 실행
-    - Build 오류 시 [캐시 삭제](https://es2sun.tistory.com/246), [JAVA 버전 확인](https://dev-emmababy.tistory.com/139), [설정값 초기화](https://star992411.tistory.com/45) 하나씩 해보기
+    - Build 오류 시 [캐시 삭제](https://es2sun.tistory.com/246), [JAVA 버전 확인](https://dev-emmababy.tistory.com/139) 하나씩 해보기
+    - cannot resolve symbol.. 오류 시 [설정값 초기화](https://star992411.tistory.com/45)
     
