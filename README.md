@@ -34,5 +34,11 @@
 - BE
   - `Application.java` 실행
     - Build 오류 시 [캐시 삭제](https://es2sun.tistory.com/246), [JAVA 버전 확인](https://dev-emmababy.tistory.com/139) 하나씩 해보기
+    - <details>
+        <summary>Maven Runner 확인</summary>
+      
+        ![Image](https://github.com/user-attachments/assets/0272d6c9-b218-471d-be2c-077fcfc78c45)
+      
+      </details>
     - cannot resolve symbol.. 오류 시 [설정값 초기화](https://star992411.tistory.com/45)
     
