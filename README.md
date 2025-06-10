@@ -41,4 +41,5 @@
       
       </details>
     - cannot resolve symbol.. 오류 시 [설정값 초기화](https://star992411.tistory.com/45)
+  - [lombok 사용하기 in intelliJ ](https://inpa.tistory.com/entry/IntelliJ-%F0%9F%92%BD-Lombok-%EC%84%A4%EC%B9%98-%EB%B0%A9%EB%B2%95-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0)
     
