@@ -1,5 +1,7 @@
 # 🏭 smartlogistics
 
+### 회의록
+[회의록](https://github.com/0SeokExpedition-douzone2023/organize-minutes/tree/main)
 
 ### 개발환경
 - OS : Window, Mac
